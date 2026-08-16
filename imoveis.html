@@ -1448,7 +1448,7 @@
 
 
   <!-- ===================================================
-       FILTROS
+        FILTROS
   ==================================================== -->
 
   <section class="filters">
@@ -1833,7 +1833,7 @@
 
 
   <!-- ===================================================
-       RESULTADOS
+        RESULTADOS
   ==================================================== -->
 
   <div class="results-header">
@@ -2126,7 +2126,7 @@
       grid.style.maxWidth = '1000px';
       grid.style.margin = '0 auto';
       count.innerHTML = '';
-      grid.innerHTML = createPropertyCard(properties[0]);
+      grid.innerHTML = createPropertyCard(properties[0], true);
       initializeSlideshows();
       return;
     }
@@ -2217,1310 +2217,230 @@
 
   }
 
-
-
   /* =====================================================
-     FILTROS
+     APLICAR FILTROS
   ===================================================== */
 
   function applyFilters() {
 
-    const location =
-      document
-        .getElementById('filterLocation')
-        .value
-        .trim()
-        .toLowerCase();
-
-
-    const type =
-      document
-        .getElementById('filterType')
-        .value;
-
-
-    const minPrice =
-      Number(
-        document
-          .getElementById('filterMinPrice')
-          .value
-      ) || 0;
-
-
-    const maxPriceValue =
-      document
-        .getElementById('filterMaxPrice')
-        .value;
-
-
-    const maxPrice =
-      maxPriceValue === ''
-        ? Infinity
-        : Number(maxPriceValue);
-
-
-    const roomsValue =
-      document
-        .getElementById('filterRooms')
-        .value;
-
-
-    const rooms =
-      roomsValue === ''
-        ? 0
-        : Number(roomsValue);
-
-
-    const bathroomsValue =
-      document
-        .getElementById('filterBathrooms')
-        .value;
-
-
-    const bathrooms =
-      bathroomsValue === ''
-        ? 0
-        : Number(bathroomsValue);
-
-
-    const area =
-      Number(
-        document
-          .getElementById('filterArea')
-          .value
-      ) || 0;
-
-
-    const garage =
-      document
-        .getElementById('filterGarage')
-        .checked;
-
-
-    const pool =
-      document
-        .getElementById('filterPool')
-        .checked;
-
-
-    const luxury =
-      document
-        .getElementById('filterLuxury')
-        .checked;
-
-
-    const order =
-      document
-        .getElementById('filterOrder')
-        .value;
-
-
-
-    let filtered =
-      properties.filter(
-        property => {
-
-          const propertyLocation =
-            String(
-              property.localizacao || ''
-            ).toLowerCase();
-
-
-          const propertyPrice =
-            Number(
-              property.preco
-            ) || 0;
-
-
-          const propertyRooms =
-            Number(
-              property.quartos
-            ) || 0;
-
-
-          const propertyBathrooms =
-            Number(
-              property.casas_banho
-            ) || 0;
-
-
-          const propertyArea =
-            Number(
-              property.area
-            ) || 0;
-
-
-
-          if (
-            location &&
-            !propertyLocation.includes(
-              location
-            )
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            type &&
-            property.tipo !== type
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            propertyPrice < minPrice
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            propertyPrice > maxPrice
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            rooms &&
-            propertyRooms < rooms
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            bathrooms &&
-            propertyBathrooms <
-            bathrooms
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            area &&
-            propertyArea < area
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            garage &&
-            !isTrue(property.garagem)
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            pool &&
-            !isTrue(property.piscina)
-          ) {
-
-            return false;
-
-          }
-
-
-
-          if (
-            luxury &&
-            !isTrue(property.luxo)
-          ) {
-
-            return false;
-
-          }
-
-
-          return true;
-
-        }
-      );
-
-
-
-    /* ===================================================
-       ORDENAR
-    ==================================================== */
-
-    if (order === 'priceAsc') {
-
-      filtered.sort(
-        (a,b) =>
-          (Number(a.preco)||0) -
-          (Number(b.preco)||0)
-      );
-
+    timers.forEach(t => clearInterval(t));
+    timers = [];
+
+    const loc = document.getElementById('filterLocation')?.value.toLowerCase().trim() || '';
+    const type = document.getElementById('filterType')?.value || '';
+    const minPrice = parseFloat(document.getElementById('filterMinPrice')?.value) || 0;
+    const maxPrice = parseFloat(document.getElementById('filterMaxPrice')?.value) || Infinity;
+    const rooms = parseInt(document.getElementById('filterRooms')?.value) || 0;
+    const baths = parseInt(document.getElementById('filterBathrooms')?.value) || 0;
+    const minArea = parseFloat(document.getElementById('filterArea')?.value) || 0;
+    const order = document.getElementById('filterOrder')?.value || 'recent';
+
+    const hasGarage = document.getElementById('filterGarage')?.checked || false;
+    const hasPool = document.getElementById('filterPool')?.checked || false;
+    const isLuxury = document.getElementById('filterLuxury')?.checked || false;
+
+    let filtered = properties.filter(p => {
+      if (loc && !p.localizacao?.toLowerCase().includes(loc) && !p.titulo?.toLowerCase().includes(loc)) return false;
+      if (type && p.tipo !== type) return false;
+      if (p.preco < minPrice) return false;
+      if (maxPrice !== Infinity && p.preco > maxPrice) return false;
+      if (rooms && (p.quartos || 0) < rooms) return false;
+      if (baths && (p.casas_banho || 0) < baths) return false;
+      if (minArea && (p.area || 0) < minArea) return false;
+      if (hasGarage && !isTrue(p.garagem)) return false;
+      if (hasPool && !isTrue(p.piscina)) return false;
+      if (isLuxury && !isTrue(p.luxo)) return false;
+      return true;
+    });
+
+    if (order === 'priceAsc') filtered.sort((a, b) => (a.preco || 0) - (b.preco || 0));
+    else if (order === 'priceDesc') filtered.sort((a, b) => (b.preco || 0) - (a.preco || 0));
+    else if (order === 'areaDesc') filtered.sort((a, b) => (b.area || 0) - (a.area || 0));
+
+    const grid = document.getElementById('propertyGrid');
+    const count = document.getElementById('resultsCount');
+
+    count.innerHTML = `A mostrar <strong>${filtered.length}</strong> de <strong>${properties.length}</strong> imóveis`;
+
+    if (!filtered.length) {
+      grid.innerHTML = `
+        <div class="empty">
+          <i class="fa-solid fa-house-crack"></i>
+          <h2>Nenhum imóvel encontrado</h2>
+          <p>Tente ajustar os seus filtros de pesquisa para obter mais resultados.</p>
+        </div>
+      `;
+      return;
     }
 
-
-    if (order === 'priceDesc') {
-
-      filtered.sort(
-        (a,b) =>
-          (Number(b.preco)||0) -
-          (Number(a.preco)||0)
-      );
-
-    }
-
-
-    if (order === 'areaDesc') {
-
-      filtered.sort(
-        (a,b) =>
-          (Number(b.area)||0) -
-          (Number(a.area)||0)
-      );
-
-    }
-
-
-    renderProperties(
-      filtered
-    );
-
+    grid.innerHTML = filtered.map(p => createPropertyCard(p, false)).join('');
+    initializeSlideshows();
   }
 
-
-
   /* =====================================================
-     RENDER
+     CRIAR CARD DE IMÓVEL
   ===================================================== */
 
-  function renderProperties(
-    list
-  ) {
-
-    const grid =
-      document.getElementById(
-        'propertyGrid'
-      );
-
-
-    const count =
-      document.getElementById(
-        'resultsCount'
-      );
-
-
-    clearTimers();
-
-
-    count.innerHTML = `
-      <strong>
-        ${list.length}
-      </strong>
-      ${
-        list.length === 1
-          ? (selectedPropertyId ? 'imóvel selecionado' : 'imóvel encontrado')
-          : 'imóveis encontrados'
-      }
+  function createPropertyCard(property, isDetailView = false) {
+    const photos = property.photos || [];
+    const mainPhoto = property.imagem_url || (photos[0] ? photos[0].url : 'https://via.placeholder.com/600x400?text=Sem+Foto');
+    
+    let slideItems = photos.length ? photos.map((p, idx) => `
+      <div class="property-slide ${idx === 0 ? 'active' : ''}">
+        <img src="${escapeHtml(p.url)}" alt="${escapeHtml(property.titulo)}">
+      </div>
+    `).join('') : `
+      <div class="property-slide active">
+        <img src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(property.titulo)}">
+      </div>
     `;
 
-
-
-    if (!list.length) {
-
-      grid.innerHTML = `
-
-        <div class="empty">
-
-          <i class="fa-solid fa-house-circle-xmark"></i>
-
-          <h2>
-            Nenhum imóvel encontrado
-          </h2>
-
-          <p>
-            Experimente alterar ou limpar os filtros
-            de pesquisa.
-          </p>
-
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
-
-    grid.innerHTML =
-      list
-        .map(
-          property =>
-            createPropertyCard(
-              property
-            )
-        )
-        .join('');
-
-
-
-    initializeSlideshows();
-
-  }
-
-
-
-  /* =====================================================
-     CARTÃO
-  ===================================================== */
-
-  function createPropertyCard(
-    property
-  ) {
-
-    const photos =
-      Array.isArray(property.photos)
-        ? property.photos
-        : [];
-
-
-    let photoList =
-      photos
-        .filter(
-          photo =>
-            photo.url
-        );
-
-
-
-    /* Se não houver fotos na tabela
-       tenta usar imagem_capa */
-
-    if (
-      !photoList.length &&
-      property.imagem_capa
-    ) {
-
-      photoList = [
-        {
-          url:
-            property.imagem_capa
-        }
-      ];
-
-    }
-
-
-
-    const slideshowId =
-      'slideshow-' +
-      property.id;
-
-
-
-    let slidesHtml = '';
-
-
-
-    if (photoList.length) {
-
-      slidesHtml =
-        photoList
-          .map(
-            (photo,index) => `
-
-              <div
-                class="property-slide ${
-                  index === 0
-                    ? 'active'
-                    : ''
-                }"
-              >
-
-                <img
-                  src="${escapeHtml(photo.url)}"
-                  alt="${escapeHtml(property.titulo)} - fotografia ${index+1}"
-                  loading="${
-                    index === 0
-                      ? 'eager'
-                      : 'lazy'
-                  }"
-                >
-
-              </div>
-
-            `
-          )
-          .join('');
-
-    }
-    else {
-
-      slidesHtml = `
-
-        <div
-          class="property-slide active"
-        >
-
-          <div
-            style="
-              width:100%;
-              height:100%;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              color:#7b8387;
-              font-size:14px;
-            "
-          >
-
-            <i
-              class="fa-regular fa-image"
-              style="
-                font-size:40px;
-                margin-right:10px;
-              "
-            ></i>
-
-            Fotografia brevemente
-
-          </div>
-
-        </div>
-
-      `;
-
-    }
-
-
-
-    const showControls =
-      photoList.length > 1;
-
-
-
-    const garage =
-      isTrue(
-        property.garagem
-      );
-
-
-    const pool =
-      isTrue(
-        property.piscina
-      );
-
-
-    const luxury =
-      isTrue(
-        property.luxo
-      );
-
-
-
-    const tags = [];
-
-
-
-    if (garage) {
-
-      tags.push(`
-
-        <span class="property-tag">
-
-          <i class="fa-solid fa-car"></i>
-
-          Garagem
-
-        </span>
-
-      `);
-
-    }
-
-
-
-    if (pool) {
-
-      tags.push(`
-
-        <span class="property-tag">
-
-          <i class="fa-solid fa-person-swimming"></i>
-
-          Piscina
-
-        </span>
-
-      `);
-
-    }
-
-
-
-    if (luxury) {
-
-      tags.push(`
-
-        <span class="property-tag">
-
-          <i class="fa-solid fa-gem"></i>
-
-          Luxo
-
-        </span>
-
-      `);
-
-    }
-
-
+    let dots = photos.length > 1 ? `
+      <button class="slide-button slide-prev" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slide-button slide-next" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="slide-dots">
+        ${photos.map((_, idx) => `<button class="slide-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}" type="button"></button>`).join('')}
+      </div>
+    ` : '';
+
+    const energyClass = property.certificado_energetico ? property.certificado_energetico.toUpperCase().replace('+', 'plus').replace('-', 'minus') : '';
+    const energyBadge = property.certificado_energetico ? `
+      <div class="energy-rating">
+        <span class="energy-label">Certificado Energético</span>
+        <span class="energy-badge energy-${escapeHtml(energyClass)}">${escapeHtml(property.certificado_energetico)}</span>
+      </div>
+    ` : '';
+
+    const mapSection = (isDetailView && property.morada_completa) ? `
+      <div class="property-map-section">
+        <h3 class="property-map-heading">Localização</h3>
+        <p class="property-map-address"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(property.morada_completa)}</p>
+        <iframe class="property-map" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${encodeURIComponent(property.morada_completa)}&output=embed"></iframe>
+      </div>
+    ` : '';
 
     return `
-
       <article class="property-card">
-
-
-        <!-- SLIDESHOW -->
-
-        <div
-          class="property-slideshow"
-          id="${slideshowId}"
-        >
-
-          ${slidesHtml}
-
-
-          <!-- FNAI WATERMARK -->
-
-          <div class="fnai-watermark">
-            FNAI
-          </div>
-
-
-          ${
-            showControls
-              ? `
-
-                <button
-                  type="button"
-                  class="slide-button slide-prev"
-                  data-action="prev"
-                  aria-label="Fotografia anterior"
-                >
-
-                  <i class="fa-solid fa-chevron-left"></i>
-
-                </button>
-
-
-                <button
-                  type="button"
-                  class="slide-button slide-next"
-                  data-action="next"
-                  aria-label="Fotografia seguinte"
-                >
-
-                  <i class="fa-solid fa-chevron-right"></i>
-
-                </button>
-
-
-                <div class="slide-dots">
-
-                  ${photoList
-                    .map(
-                      (_,index) => `
-
-                        <button
-                          type="button"
-                          class="slide-dot ${
-                            index === 0
-                              ? 'active'
-                              : ''
-                          }"
-                          data-index="${index}"
-                          aria-label="Fotografia ${index+1}"
-                        ></button>
-
-                      `
-                    )
-                    .join('')}
-
-                </div>
-
-              `
-              : ''
-          }
-
+        <div class="property-slideshow">
+          ${slideItems}
+          ${dots}
+          <div class="fnai-watermark">FNAI</div>
         </div>
-
-
-
-        <!-- INFORMAÇÃO -->
-
         <div class="property-info">
-
-
-          <span class="property-status">
-
-            ${escapeHtml(
-              property.estado ||
-              'VENDA'
-            )}
-
-          </span>
-
-
-
-          <h2>
-            ${escapeHtml(
-              property.titulo
-            )}
-          </h2>
-
-
-
+          <span class="property-status">${escapeHtml(property.status || 'PARA VENDA')}</span>
+          <h2>${escapeHtml(property.titulo || 'Imóvel')}</h2>
           <div class="property-location">
-
-            <i
-              class="fa-solid fa-location-dot"
-            ></i>
-
-            ${escapeHtml(
-              property.localizacao
-            )}
-
+            <i class="fa-solid fa-location-dot"></i>
+            ${escapeHtml(property.localizacao || 'Portugal')}
           </div>
-
-
-
-          <div class="property-price">
-
-            ${formatPrice(
-              property.preco
-            )}
-
-          </div>
-
-
-
-          <!-- CARACTERÍSTICAS -->
-
+          <div class="property-price">${formatPrice(property.preco)}</div>
+          
           <div class="property-features">
-
-
-            <div class="feature">
-
-              <i class="fa-solid fa-bed"></i>
-
-              <strong>
-                ${Number(
-                  property.quartos
-                ) || 0}
-              </strong>
-
-              <span>
-                Quartos
-              </span>
-
-            </div>
-
-
-
-            <div class="feature">
-
-              <i class="fa-solid fa-bath"></i>
-
-              <strong>
-                ${Number(
-                  property.casas_banho
-                ) || 0}
-              </strong>
-
-              <span>
-                WC
-              </span>
-
-            </div>
-
-
-
-            <div class="feature">
-
-              <i class="fa-solid fa-ruler-combined"></i>
-
-              <strong>
-                ${
-                  property.area
-                    ? escapeHtml(
-                        property.area
-                      )
-                    : '—'
-                }
-              </strong>
-
-              <span>
-                m²
-              </span>
-
-            </div>
-
-
-
-            <div class="feature">
-
-              <i class="fa-solid fa-car"></i>
-
-              <strong>
-                ${garage ? 'Sim' : 'Não'}
-              </strong>
-
-              <span>
-                Garagem
-              </span>
-
-            </div>
-
-
+            <div class="feature"><i class="fa-solid fa-bed"></i><strong>${property.quartos ?? '-'}</strong><span>Quartos</span></div>
+            <div class="feature"><i class="fa-solid fa-bath"></i><strong>${property.casas_banho ?? '-'}</strong><span>WCs</span></div>
+            <div class="feature"><i class="fa-solid fa-ruler-combined"></i><strong>${property.area ? property.area + ' m²' : '-'}</strong><span>Área</span></div>
+            <div class="feature"><i class="fa-solid fa-building"></i><strong>${escapeHtml(property.tipo || '-')}</strong><span>Tipo</span></div>
           </div>
 
+          <div class="property-tags">
+            ${isTrue(property.garagem) ? '<span class="property-tag"><i class="fa-solid fa-car"></i> Garagem</span>' : ''}
+            ${isTrue(property.piscina) ? '<span class="property-tag"><i class="fa-solid fa-person-swimming"></i> Piscina</span>' : ''}
+            ${isTrue(property.luxo) ? '<span class="property-tag"><i class="fa-solid fa-gem"></i> Luxo</span>' : ''}
+          </div>
 
-
-          <!-- TAGS -->
-
-          ${
-            tags.length
-              ? `
-
-                <div class="property-tags">
-
-                  ${tags.join('')}
-
-                </div>
-
-              `
-              : ''
-          }
-
-
-
-          <!-- CERTIFICADO ENERGÉTICO (só na página de detalhe do imóvel) -->
-
-          ${
-            selectedPropertyId && property.categoria_energetica
-              ? `
-                <div class="energy-rating">
-                  <span class="energy-label">Categoria Energética</span>
-                  <span class="energy-badge energy-${escapeHtml(String(property.categoria_energetica).replace('+','plus').replace('-','minus'))}">
-                    ${escapeHtml(property.categoria_energetica)}
-                  </span>
-                </div>
-              `
-              : ''
-          }
-
-
-
-          <!-- DESCRIÇÃO -->
-
-          <p class="property-description">
-
-            ${escapeHtml(
-              property.descricao ||
-              'Para mais informações sobre este imóvel, entre em contacto comigo.'
-            )}
-
+          <p class="property-description" style="${isDetailView ? '-webkit-line-clamp: initial; display: block;' : ''}">
+            ${escapeHtml(property.descricao || 'Sem descrição disponível.')}
           </p>
 
+          ${energyBadge}
+          ${mapSection}
 
-          <!-- MAPA DE LOCALIZAÇÃO (só na página de detalhe do imóvel) -->
-
-          ${
-            selectedPropertyId && property.endereco
-              ? `
-                <section class="property-map-section">
-                  <div class="property-map-heading">
-                    <div class="eyebrow">
-                      LOCALIZAÇÃO
-                    </div>
-                    <h2>Onde se encontra este imóvel</h2>
-                    <p class="property-map-address"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(property.endereco || '')}</p>
-                  </div>
-
-                  <iframe
-                    class="property-map"
-                    src="https://www.google.com/maps?q=${encodeURIComponent(property.endereco)}&output=embed"
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    allowfullscreen
-                    title="Mapa da localização de ${escapeHtml(property.titulo || 'imóvel')}">
-                  </iframe>
-                </section>
-              `
-              : ''
-          }
-
-
-
-          <!-- WHATSAPP -->
-
-          <a
-            href="https://wa.me/41792601145?text=${encodeURIComponent(
-              'Olá Jo, gostaria de obter informações sobre o imóvel "' +
-              (property.titulo || '') +
-              '".'
-            )}"
-            target="_blank"
-            rel="noopener"
-            class="property-button"
-          >
-
-            <i class="fa-brands fa-whatsapp"></i>
-
-            Pedir informações
-
-          </a>
-
-
-
-          ${
-            property.fnai_url
-              ? `
-
-                <a
-                  href="${escapeHtml(
-                    property.fnai_url
-                  )}"
-                  target="_blank"
-                  rel="noopener"
-                  class="fnai-link"
-                >
-
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
-
-                  Ver anúncio na FNAI
-
-                </a>
-
-              `
-              : ''
-          }
-
-
+          ${!isDetailView ? `
+            <a href="imoveis.html?id=${property.id}" class="property-button">
+              <i class="fa-solid fa-eye"></i> Ver Detalhes
+            </a>
+          ` : `
+            <a href="https://wa.me/41792601145?text=${encodeURIComponent('Olá Jo Torres, gostaria de mais informações sobre o imóvel: ' + (property.titulo || ''))}" target="_blank" rel="noopener" class="property-button" style="background:#25D366;margin-top:20px;">
+              <i class="fa-brands fa-whatsapp"></i> Contactar no WhatsApp
+            </a>
+          `}
         </div>
-
       </article>
-
     `;
-
   }
 
-
-
   /* =====================================================
-     SLIDESHOWS
+     SLIDESHOW LOGIC
   ===================================================== */
 
   function initializeSlideshows() {
+    const containers = document.querySelectorAll('.property-slideshow');
+    containers.forEach(container => {
+      const slides = container.querySelectorAll('.property-slide');
+      const prevBtn = container.querySelector('.slide-prev');
+      const nextBtn = container.querySelector('.slide-next');
+      const dots = container.querySelectorAll('.slide-dot');
 
-    const slideshows =
-      document.querySelectorAll(
-        '.property-slideshow'
-      );
+      if (slides.length <= 1) return;
 
+      let currentIndex = 0;
 
-    slideshows.forEach(
-      slideshow => {
+      function goToSlide(index) {
+        slides[currentIndex].classList.remove('active');
+        if (dots[currentIndex]) dots[currentIndex].classList.remove('active');
 
-        const slides =
-          slideshow.querySelectorAll(
-            '.property-slide'
-          );
+        currentIndex = (index + slides.length) % slides.length;
 
-
-        if (
-          slides.length <= 1
-        ) {
-
-          return;
-
-        }
-
-
-        let current = 0;
-
-        let timer;
-
-
-
-        const dots =
-          slideshow.querySelectorAll(
-            '.slide-dot'
-          );
-
-
-
-        function showSlide(
-          index
-        ) {
-
-          current =
-            (
-              index +
-              slides.length
-            ) %
-            slides.length;
-
-
-          slides.forEach(
-            (slide,i) => {
-
-              slide.classList.toggle(
-                'active',
-                i === current
-              );
-
-            }
-          );
-
-
-          dots.forEach(
-            (dot,i) => {
-
-              dot.classList.toggle(
-                'active',
-                i === current
-              );
-
-            }
-          );
-
-        }
-
-
-
-        function next() {
-
-          showSlide(
-            current + 1
-          );
-
-        }
-
-
-
-        function previous() {
-
-          showSlide(
-            current - 1
-          );
-
-        }
-
-
-
-        function start() {
-
-          clearInterval(timer);
-
-          timer =
-            setInterval(
-              next,
-              4500
-            );
-
-        }
-
-
-
-        slideshow
-          .querySelector(
-            '.slide-prev'
-          )
-          .addEventListener(
-            'click',
-            function() {
-
-              previous();
-
-              start();
-
-            }
-          );
-
-
-
-        slideshow
-          .querySelector(
-            '.slide-next'
-          )
-          .addEventListener(
-            'click',
-            function() {
-
-              next();
-
-              start();
-
-            }
-          );
-
-
-
-        dots.forEach(
-          dot => {
-
-            dot.addEventListener(
-              'click',
-              function() {
-
-                showSlide(
-                  Number(
-                    dot.dataset.index
-                  )
-                );
-
-                start();
-
-              }
-            );
-
-          }
-        );
-
-
-
-        slideshow.addEventListener(
-          'mouseenter',
-          function() {
-
-            clearInterval(
-              timer
-            );
-
-          }
-        );
-
-
-
-        slideshow.addEventListener(
-          'mouseleave',
-          function() {
-
-            start();
-
-          }
-        );
-
-
-
-        start();
-
-        timers.push(timer);
-
+        slides[currentIndex].classList.add('active');
+        if (dots[currentIndex]) dots[currentIndex].classList.add('active');
       }
-    );
 
+      prevBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
+      });
+
+      nextBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentIndex + 1);
+      });
+
+      dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          const index = parseInt(dot.getAttribute('data-index'));
+          goToSlide(index);
+        });
+      });
+    });
   }
 
-
-
   /* =====================================================
-     LIMPAR TIMERS
+     EVENT LISTENERS & INICIALIZAÇÃO
   ===================================================== */
 
-  function clearTimers() {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadProperties();
 
-    timers.forEach(
-      timer =>
-        clearInterval(timer)
-    );
-
-
-    timers = [];
-
-  }
-
-
-
-  /* =====================================================
-     BOTÃO PESQUISAR
-  ===================================================== */
-
-  document
-    .getElementById(
-      'searchButton'
-    )
-    .addEventListener(
-      'click',
-      applyFilters
-    );
-
-
-
-  /* =====================================================
-     ENTER NOS CAMPOS
-  ===================================================== */
-
-  document
-    .querySelectorAll(
-      '.filter-field input'
-    )
-    .forEach(
-      input => {
-
-        input.addEventListener(
-          'keydown',
-          function(event) {
-
-            if (
-              event.key === 'Enter'
-            ) {
-
-              event.preventDefault();
-
-              applyFilters();
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-
-
-  /* =====================================================
-     LIMPAR FILTROS
-  ===================================================== */
-
-  document
-    .getElementById(
-      'clearFilters'
-    )
-    .addEventListener(
-      'click',
-      function() {
-
-        document
-          .getElementById(
-            'filterLocation'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterType'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterMinPrice'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterMaxPrice'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterRooms'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterBathrooms'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterArea'
-          )
-          .value = '';
-
-
-        document
-          .getElementById(
-            'filterOrder'
-          )
-          .value = 'recent';
-
-
-        document
-          .getElementById(
-            'filterGarage'
-          )
-          .checked = false;
-
-
-        document
-          .getElementById(
-            'filterPool'
-          )
-          .checked = false;
-
-
-        document
-          .getElementById(
-            'filterLuxury'
-          )
-          .checked = false;
-
-
-        applyFilters();
-
-      }
-    );
-
-
-
-  /* =====================================================
-     CARREGAR AO ABRIR
-  ===================================================== */
-
-  loadProperties();
+    document.getElementById('searchButton')?.addEventListener('click', applyFilters);
+    
+    document.getElementById('clearFilters')?.addEventListener('click', () => {
+      document.getElementById('filterLocation').value = '';
+      document.getElementById('filterType').value = '';
+      document.getElementById('filterMinPrice').value = '';
+      document.getElementById('filterMaxPrice').value = '';
+      document.getElementById('filterRooms').value = '';
+      document.getElementById('filterBathrooms').value = '';
+      document.getElementById('filterArea').value = '';
+      document.getElementById('filterOrder').value = 'recent';
+      document.getElementById('filterGarage').checked = false;
+      document.getElementById('filterPool').checked = false;
+      document.getElementById('filterLuxury').checked = false;
+      applyFilters();
+    });
+  });
 
 </script>
 
-
 </body>
-
 </html>
