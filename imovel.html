@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Imóvel | Jo Torres</title>
-<meta name="version" content="2026-08-16-property-v2">
+<meta name="version" content="2026-08-16-property-energy-single">
 <meta name="description" content="Detalhes do imóvel — Jo Torres, Consultor Imobiliário.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,12 +20,12 @@ a{text-decoration:none;color:inherit}
 .navigation .whatsapp{background:var(--gold);color:var(--dark);padding:10px 15px;border-radius:7px;font-weight:800}
 .mobile-menu-toggle{display:none;border:0;background:none;color:#fff;font-size:30px;width:46px;height:46px}
 .page{width:min(1380px,92%);margin:auto;padding:30px 0 80px}.back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:700;margin-bottom:20px}
-#app > .gallery{position:relative!important;width:100%!important;height:min(68vw,700px)!important;min-height:430px;background:#0c191c;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(0,0,0,.12)}
-#app > .gallery .slide{position:absolute!important;inset:0!important;display:none!important;width:100%!important;height:100%!important}#app > .gallery .slide.active{display:block!important}#app > .gallery .slide img{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;display:block!important;background:#0c191c}
-#app > .gallery .slide img.broken{object-fit:contain!important;padding:30px}.slide-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:52px;height:52px;border-radius:50%;border:0;background:rgba(7,23,27,.75);color:#fff;font-size:21px;cursor:pointer}
+.gallery{position:relative;width:100%;height:min(68vw,700px);min-height:430px;background:#0c191c;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(0,0,0,.12)}
+.slide{position:absolute;inset:0;display:none}.slide.active{display:block}.slide img{width:100%;height:100%;object-fit:cover;display:block;background:#0c191c}
+.slide img.broken{object-fit:contain;padding:30px}.slide-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:52px;height:52px;border-radius:50%;border:0;background:rgba(7,23,27,.75);color:#fff;font-size:21px;cursor:pointer}
 .prev{left:20px}.next{right:20px}.dots{position:absolute;z-index:6;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:7px}
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer}.dot.active{background:var(--gold);transform:scale(1.15)}
-#app > .gallery .fnai-watermark{position:absolute;right:25px;bottom:18px;z-index:6;color:#fff;font-weight:900;font-size:28px;text-shadow:0 2px 5px rgba(0,0,0,.6);letter-spacing:1px}
+.fnai-watermark{position:absolute;right:25px;bottom:18px;z-index:6;color:#fff;font-weight:900;font-size:28px;text-shadow:0 2px 5px rgba(0,0,0,.6);letter-spacing:1px}
 .content-grid{display:grid;grid-template-columns:minmax(0,1.75fr) 360px;gap:45px;margin-top:45px}
 .eyebrow{font-size:12px;letter-spacing:2px;font-weight:800;color:var(--gold);text-transform:uppercase}.title{font:700 clamp(40px,5vw,68px)/1.05 Georgia,serif;color:var(--dark);margin:7px 0 12px}
 .location{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:17px}.location i{color:var(--gold)}.price{font-size:34px;font-weight:900;color:var(--dark);margin:20px 0 28px}
@@ -43,7 +43,7 @@ a{text-decoration:none;color:inherit}
 .header{height:78px}.mobile-menu-toggle{display:grid;place-items:center;position:relative;z-index:1003}
 .navigation{position:absolute!important;top:100%!important;left:0!important;width:100%!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;padding:10px 5% 18px!important;background:var(--dark)!important;opacity:0;visibility:hidden;pointer-events:none;box-shadow:0 14px 28px rgba(0,0,0,.25);transition:.18s}
 .navigation.mobile-open{opacity:1;visibility:visible;pointer-events:auto}.navigation a{padding:15px 5px;border-bottom:1px solid rgba(255,255,255,.1);font-size:18px}.navigation .whatsapp{margin-top:12px;text-align:center}
-.page{width:92%;padding-top:22px}#app > .gallery{height:65vw!important;min-height:300px!important;border-radius:12px!important}.slide-btn{width:44px;height:44px}.prev{left:10px}.next{right:10px}.fnai-watermark{font-size:22px;right:14px;bottom:12px}
+.page{width:92%;padding-top:22px}.gallery{height:65vw;min-height:300px;border-radius:12px}.slide-btn{width:44px;height:44px}.prev{left:10px}.next{right:10px}.fnai-watermark{font-size:22px;right:14px;bottom:12px}
 .content-grid{grid-template-columns:1fr;gap:25px;margin-top:30px}.title{font-size:42px}.price{font-size:28px}.features{grid-template-columns:repeat(2,1fr);gap:0}.feature{padding:12px 4px;border-bottom:1px solid #e0e4e5}.feature:nth-child(2n){border-right:0}.map{height:380px}
 }
 </style>
@@ -71,8 +71,8 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function publicUrl(path){return path?sb.storage.from('imoveis').getPublicUrl(path).data.publicUrl:''}
 function candidates(photo){
  const a=[];
- if(photo?.storage_path)a.push(publicUrl(photo.storage_path));
  if(photo?.url)a.push(photo.url);
+ if(photo?.storage_path)a.push(publicUrl(photo.storage_path));
  return [...new Set(a.filter(Boolean))];
 }
 function imageHtml(photo,i,title){
@@ -99,7 +99,7 @@ function energyHtml(e){
 async function load(){
  if(!id){app.className='error';app.innerHTML='<h1>Imóvel não especificado</h1><p>Falta o ID do imóvel no endereço.</p>';return}
  const {data:p,error}=await sb.from('imoveis').select('*').eq('id',id).maybeSingle();
- if(error||!p){console.error('Erro ao carregar imóvel:',error);app.className='error';app.innerHTML='<h1>Imóvel não encontrado</h1><p>Não foi possível carregar o imóvel selecionado.</p>'+(error?'<p style="font-size:12px;color:#8a5555">'+esc(error.message)+'</p>':'');return}
+ if(error||!p){console.error(error);app.className='error';app.innerHTML='<h1>Imóvel não encontrado</h1><p>Não foi possível carregar o imóvel selecionado.</p>';return}
 
  const {data:photos,error:photoError}=await sb.from('imovel_fotos').select('*').eq('imovel_id',id).order('ordem',{ascending:true});
  if(photoError)console.warn(photoError);
@@ -160,7 +160,6 @@ async function load(){
  function show(n){if(!slideEls.length)return;current=(n+slideEls.length)%slideEls.length;slideEls.forEach((s,i)=>s.classList.toggle('active',i===current));dotEls.forEach((d,i)=>d.classList.toggle('active',i===current));thumbEls.forEach((t,i)=>t.classList.toggle('active',i===current))}
  document.getElementById('prev')?.addEventListener('click',()=>show(current-1));
  document.getElementById('next')?.addEventListener('click',()=>show(current+1));
- document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(current-1);if(e.key==='ArrowRight')show(current+1)});
  dotEls.forEach(d=>d.addEventListener('click',()=>show(Number(d.dataset.i))));
  thumbEls.forEach(t=>t.addEventListener('click',()=>show(Number(t.dataset.i))));
 }
