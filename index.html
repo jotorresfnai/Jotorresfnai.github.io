@@ -357,8 +357,6 @@ a{
   background:#fff;
   overflow:hidden;
   transition:.3s;
-  display:flex;
-  flex-direction:column;
 }
 
 .property-card:hover{
@@ -419,9 +417,6 @@ a{
 
 .property-body{
   padding:23px;
-  display:flex;
-  flex-direction:column;
-  flex:1;
 }
 
 .property-type{
@@ -474,78 +469,12 @@ a{
   color:var(--gold);
 }
 
-/* =========================================================
-   ESTILOS ADICIONADOS: CERTIFICADO ENERGÉTICO E MAPA
-========================================================= */
-
-.energy-rating{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:15px;
-  padding-top:12px;
-  border-top:1px solid var(--border);
-}
-
-.energy-label{
-  font-size:11px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.05em;
-  color:var(--muted);
-}
-
-.energy-badge{
-  min-width:32px;
-  height:28px;
-  padding:0 8px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:13px;
-  font-weight:800;
-  color:#fff;
-  border-radius:3px;
-  background:#4caf50;
-}
-
-.energy-Aplus, .energy-A { background:#168b35; }
-.energy-B { background:#65b93f; }
-.energy-Bminus { background:#b6cc32; }
-.energy-C { background:#f0c51b; }
-.energy-D { background:#ed9b20; }
-.energy-E { background:#e86d20; }
-.energy-F { background:#d64028; }
-
-.property-map-section{
-  margin-top:15px;
-  padding-top:12px;
-  border-top:1px solid var(--border);
-}
-
-.property-map-address{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-
-.property-map{
-  width:100%;
-  height:160px;
-  border:0;
-  border-radius:4px;
-}
-
 .property-link{
   display:inline-flex;
   align-items:center;
   gap:8px;
 
-  margin-top:auto;
-  padding-top:18px;
+  margin-top:18px;
 
   color:var(--dark);
   font-size:13px;
@@ -682,7 +611,6 @@ footer p{
   border:1px dashed var(--border);
   text-align:center;
   color:var(--muted);
-  grid-column: 1 / -1;
 }
 
 @media(max-width:1000px){
@@ -776,6 +704,8 @@ footer p{
 
 /* =========================================================
    MENU MOBILE — PROTÓTIPO FINAL
+   Menu abre por baixo do cabeçalho e ocupa 100% da largura.
+   Nunca cria uma coluna lateral nem corta a página.
 ========================================================= */
 html,
 body{
@@ -803,8 +733,13 @@ body{
   z-index:1003;
 }
 
+.mobile-menu-backdrop{
+  display:none;
+}
+
 @media (max-width:760px){
 
+  /* Cabeçalho fica numa única linha */
   .header{
     width:100%;
     box-sizing:border-box;
@@ -836,6 +771,8 @@ body{
     display:flex;
   }
 
+  /* O menu NÃO é uma barra lateral.
+     É um painel horizontal por baixo do header. */
   .header .navigation{
     position:absolute !important;
     top:100% !important;
@@ -913,6 +850,7 @@ body{
     overflow-x:hidden !important;
   }
 
+  /* Evita que títulos, hero e conteúdo provoquem largura extra */
   .page,
   main,
   section,
@@ -950,7 +888,6 @@ body{
   type="button" aria-label="Abrir menu" aria-expanded="false">
   <i class="fa-solid fa-bars"></i>
 </button>
-
 <nav class="navigation">
 
 <a href="#inicio">Início</a>
@@ -1261,169 +1198,229 @@ SUPABASE_KEY
 );
 
 function esc(value){
-  return String(value ?? '')
-  .replace(/[&<>"']/g,function(c){
-    return {
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#039;'
-    }[c];
-  });
+
+return String(value ?? '')
+.replace(/[&<>"']/g,function(c){
+
+return {
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[c];
+
+});
+
 }
+
 
 function money(value){
-  if(value === null || value === undefined || value === ''){
-    return 'Preço sob consulta';
-  }
 
-  return new Intl.NumberFormat(
-    'pt-PT',
-    {
-      style:'currency',
-      currency:'EUR',
-      maximumFractionDigits:0
-    }
-  ).format(value);
+if(value === null || value === undefined || value === ''){
+return 'Preço sob consulta';
 }
+
+return new Intl.NumberFormat(
+'pt-PT',
+{
+style:'currency',
+currency:'EUR',
+maximumFractionDigits:0
+}
+).format(value);
+
+}
+
 
 function feature(icon,value,label){
-  return `
-  <div class="feature">
-    <i class="${icon}"></i>
-    <span>
-      ${esc(value)}
-      ${label ? ' '+label : ''}
-    </span>
-  </div>
-  `;
+
+return `
+<div class="feature">
+
+<i class="${icon}"></i>
+
+<span>
+${esc(value)}
+${label ? ' '+label : ''}
+</span>
+
+</div>
+`;
+
 }
+
 
 async function loadProperties(){
 
-  const container = document.getElementById('propertyGrid');
+const container =
+document.getElementById('propertyGrid');
 
-  const result = await sb
-    .from('imoveis')
-    .select('*')
-    .eq('publicado',true)
-    .order('created_at',{ascending:false})
-    .limit(3);
+const result =
+await sb
+.from('imoveis')
+.select('*')
+.eq('publicado',true)
+.order('created_at',{ascending:false})
+.limit(3);
 
-  if(result.error){
-    container.innerHTML = '<div class="empty">Não foi possível carregar os imóveis.</div>';
-    return;
-  }
+if(result.error){
 
-  const properties = result.data || [];
+container.innerHTML =
+'<div class="empty">Não foi possível carregar os imóveis.</div>';
 
-  if(!properties.length){
-    container.innerHTML = '<div class="empty">De momento não existem imóveis publicados.</div>';
-    return;
-  }
+return;
 
-  const ids = properties.map(p=>p.id);
+}
 
-  const photosResult = await sb
-    .from('imovel_fotos')
-    .select('*')
-    .in('imovel_id',ids)
-    .order('ordem',{ascending:true});
+const properties =
+result.data || [];
 
-  const photos = photosResult.data || [];
+if(!properties.length){
 
-  container.innerHTML = properties.map(function(p){
+container.innerHTML =
+'<div class="empty">De momento não existem imóveis publicados.</div>';
 
-    const propertyPhotos = photos.filter(x=>x.imovel_id===p.id);
+return;
 
-    const image =
-      propertyPhotos[0]?.url ||
-      p.imagem_capa ||
-      '';
+}
 
-    /* Certificado Energético */
-    const cert = p.certificado_energetico || p.certificado || '';
-    const energyClass = cert ? cert.toUpperCase().replace('+', 'plus').replace('-', 'minus') : '';
-    const energyBadgeHtml = cert ? `
-      <div class="energy-rating">
-        <span class="energy-label">Certificado</span>
-        <span class="energy-badge energy-${esc(energyClass)}">${esc(cert)}</span>
-      </div>
-    ` : '';
+const ids =
+properties.map(p=>p.id);
 
-    /* Mapa de Localização */
-    const address = p.morada_completa || p.morada || p.localizacao || '';
-    const mapHtml = address ? `
-      <div class="property-map-section">
-        <div class="property-map-address">
-          <i class="fa-solid fa-map-location-dot"></i>
-          <span>${esc(address)}</span>
-        </div>
-        <iframe 
-          class="property-map" 
-          loading="lazy" 
-          allowfullscreen 
-          src="https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed">
-        </iframe>
-      </div>
-    ` : '';
+const photosResult =
+await sb
+.from('imovel_fotos')
+.select('*')
+.in('imovel_id',ids)
+.order('ordem',{ascending:true});
 
-    return `
-      <article class="property-card">
-        <a href="imoveis.html?id=${encodeURIComponent(p.id)}">
-          <div class="property-image">
-            ${
-              image
-              ? `<img src="${esc(image)}" alt="${esc(p.titulo)}" loading="lazy">`
-              : ''
-            }
-            <div class="property-badge">
-              ${esc(p.tipo || 'IMÓVEL')}
-            </div>
-            ${p.luxo ? `
-            <div class="property-badge luxury" style="left:auto;right:14px;">
-              <i class="fa-solid fa-gem"></i> LUXO
-            </div>
-            ` : ''}
-            <div class="fnai-watermark">
-              FNAI
-            </div>
-          </div>
-        </a>
+const photos =
+photosResult.data || [];
 
-        <div class="property-body">
-          <div class="property-type">VENDA</div>
-          <h3>${esc(p.titulo)}</h3>
-          
-          <div class="property-location">
-            <i class="fa-solid fa-location-dot"></i>
-            ${esc(p.localizacao)}
-          </div>
+container.innerHTML =
+properties.map(function(p){
 
-          <div class="property-price">
-            ${money(p.preco)}
-          </div>
+const propertyPhotos =
+photos.filter(x=>x.imovel_id===p.id);
 
-          <div class="features">
-            ${p.area ? feature('fa-solid fa-ruler-combined', p.area+' m²', '') : ''}
-            ${p.quartos !== null && p.quartos !== undefined ? feature('fa-solid fa-bed', p.quartos, 'quartos') : ''}
-            ${p.casas_banho !== null && p.casas_banho !== undefined ? feature('fa-solid fa-bath', p.casas_banho, 'WC') : ''}
-            ${p.garagem ? feature('fa-solid fa-car', '', 'Garagem') : ''}
-            ${p.piscina ? feature('fa-solid fa-person-swimming', '', 'Piscina') : ''}
-          </div>
+const image =
+propertyPhotos[0]?.url ||
+p.imagem_capa ||
+'';
 
-          ${energyBadgeHtml}
-          ${mapHtml}
+return `
 
-          <a href="imoveis.html?id=${encodeURIComponent(p.id)}" class="property-link">
-            Ver imóvel <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-      </article>
-    `;
+<article class="property-card">
 
-  }).join('');
+<a href="imoveis.html?id=${encodeURIComponent(p.id)}">
+
+<div class="property-image">
+
+${
+image
+?
+`<img
+src="${esc(image)}"
+alt="${esc(p.titulo)}"
+loading="lazy"
+>`
+:
+''
+}
+
+<div class="property-badge">
+${esc(p.tipo || 'IMÓVEL')}
+</div>
+
+${p.luxo ? `
+<div
+class="property-badge luxury"
+style="left:auto;right:14px;">
+<i class="fa-solid fa-gem"></i>
+LUXO
+</div>
+` : ''}
+
+<div class="fnai-watermark">
+FNAI
+</div>
+
+</div>
+
+<div class="property-body">
+
+<div class="property-type">
+VENDA
+</div>
+
+<h3>
+${esc(p.titulo)}
+</h3>
+
+<div class="property-location">
+
+<i class="fa-solid fa-location-dot"></i>
+
+${esc(p.localizacao)}
+
+</div>
+
+<div class="property-price">
+${money(p.preco)}
+</div>
+
+<div class="features">
+
+${p.area ? feature(
+'fa-solid fa-ruler-combined',
+p.area+' m²',
+''
+) : ''}
+
+${p.quartos !== null ? feature(
+'fa-solid fa-bed',
+p.quartos,
+'pessoas'
+) : ''}
+
+${p.casas_banho !== null ? feature(
+'fa-solid fa-bath',
+p.casas_banho,
+'WC'
+) : ''}
+
+${p.garagem ? feature(
+'fa-solid fa-car',
+'',
+'Garagem'
+) : ''}
+
+${p.piscina ? feature(
+'fa-solid fa-person-swimming',
+'',
+'Piscina'
+) : ''}
+
+</div>
+
+<div class="property-link">
+
+Ver imóvel
+
+<i class="fa-solid fa-arrow-right"></i>
+
+</div>
+
+</div>
+
+</a>
+
+</article>
+
+`;
+
+}).join('');
 
 }
 
