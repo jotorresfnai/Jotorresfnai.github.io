@@ -3029,10 +3029,10 @@
 
 
 
-          <!-- CERTIFICADO ENERGÉTICO -->
+          <!-- CERTIFICADO ENERGÉTICO (só na página de detalhe do imóvel) -->
 
           ${
-            property.categoria_energetica
+            selectedPropertyId && property.categoria_energetica
               ? `
                 <div class="energy-rating">
                   <span class="energy-label">Categoria Energética</span>
@@ -3058,10 +3058,10 @@
           </p>
 
 
-          <!-- MAPA DE LOCALIZAÇÃO -->
+          <!-- MAPA DE LOCALIZAÇÃO (só na página de detalhe do imóvel) -->
 
           ${
-            property.endereco
+            selectedPropertyId && property.endereco
               ? `
                 <section class="property-map-section">
                   <div class="property-map-heading">
