@@ -1294,126 +1294,83 @@
     }
 
   
-.energy-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-top:4px;
-  margin-bottom:18px;
-  font-size:13px;
-  color:#687177;
-  font-weight:700;
-}
-.energy-letter{
-  min-width:40px;
-  height:32px;
-  padding:0 9px;
-  display:inline-flex;
+/* ===== MENU MOBILE ===== */
+.mobile-menu-toggle{
+  display:none;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font-size:28px;
+  width:46px;
+  height:46px;
+  padding:0;
   align-items:center;
   justify-content:center;
-  border-radius:2px;
-  color:#fff;
-  font-size:18px;
-  font-weight:900;
-  line-height:1;
+  cursor:pointer;
+  z-index:1002;
 }
-.energy-Aplus,.energy-A{background:#70ad47}
-.energy-B,.energy-Bminus{background:#a8c85a}
-.energy-C{background:#f2c84b}
-.energy-D{background:#ee9b43}
-.energy-E{background:#e06f43}
-.energy-F{background:#cf3f3f}
+.mobile-menu-backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.48);
+  z-index:998;
+}
+.mobile-menu-backdrop.open{display:block}
 
-.property-map-section{
-  width:100vw;
-  margin-left:calc(50% - 50vw);
-  margin-top:55px;
-  background:#eef1f2;
-}
-.property-map-heading{
-  width:min(1400px,92%);
-  margin:0 auto;
-  padding:42px 0 22px;
-}
-.property-map-heading .eyebrow{
-  margin-bottom:6px;
-}
-.property-map-heading h2{
-  font-family:Georgia,serif;
-  font-size:clamp(30px,4vw,48px);
-  color:#07171b;
-}
-.property-map{
-  width:100%;
-  height:480px;
-  border:0;
-  display:block;
-}
-@media(max-width:700px){
-  .property-map{height:360px}
-  .property-map-heading{padding:32px 6% 18px;width:100%}
-}
+@media(max-width:760px){
+  .mobile-menu-toggle{
+    display:flex;
+    color:#fff;
+    flex:0 0 46px;
+  }
 
+  .header{
+    position:relative;
+    z-index:1000;
+  }
 
-.property-map-section{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:42px 0 0;background:#f5f6f7}
-.property-map-heading{max-width:1200px;margin:0 auto 20px;padding:0 24px}
-.property-map-address{margin:10px 0 0;color:#6b7280;font-size:15px}
-.property-map{display:block;width:100%;height:520px;border:0;margin:0}
-@media(max-width:760px){.property-map{height:400px}.property-map-heading{padding:0 18px}}
+  .header .navigation{
+    position:fixed;
+    top:70px;
+    right:0;
+    width:min(310px,88vw);
+    height:calc(100vh - 70px);
+    padding:28px 22px;
+    background:#07171b;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+    transform:translateX(105%);
+    transition:transform .25s ease;
+    z-index:999;
+    box-shadow:-10px 0 30px rgba(0,0,0,.22);
+    overflow-y:auto;
+  }
 
+  .header .navigation.mobile-open{
+    transform:translateX(0);
+  }
 
-.energy-rating{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin:22px 0;
-  padding-top:18px;
-  border-top:1px solid var(--border,#e5e5e5);
-}
-.energy-label{
-  font-size:13px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#5f686c;
-}
-.energy-badge{
-  min-width:48px;
-  height:42px;
-  padding:0 10px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  font-weight:800;
-  color:#fff;
-  border-radius:3px;
-  background:#4caf50;
-}
-.energy-Aplus,.energy-A{background:#168b35}
-.energy-B{background:#65b93f}
-.energy-Bminus{background:#b6cc32}
-.energy-C{background:#f0c51b}
-.energy-D{background:#ed9b20}
-.energy-E{background:#e86d20}
-.energy-F{background:#d64028}
-.property-map-section{
-  width:100%;
-  margin:42px 0 0;
-  border-top:1px solid var(--border,#e5e5e5);
-  padding-top:32px;
-}
-.property-map{
-  display:block;
-  width:100%;
-  height:520px;
-  border:0;
-  margin:24px 0 0;
-}
-.property-map-heading{margin-bottom:0}
-.property-map-address{
-  margin:10px 0 0;
-  color:#667176;
+  .header .navigation a,
+  .header .navigation a:not(.whatsapp){
+    display:flex !important;
+    align-items:center;
+    padding:14px 10px;
+    font-size:15px !important;
+    color:#fff;
+    text-decoration:none;
+  }
+
+  .header .navigation .whatsapp{
+    justify-content:center;
+    margin-top:10px;
+  }
+
+  body.menu-open{
+    overflow:hidden;
+  }
 }
 
 </style>
@@ -1421,7 +1378,7 @@
 </head>
 
 
-<body>
+<body><div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
 
 
 <!-- =====================================================
@@ -1451,7 +1408,8 @@
   </a>
 
 
-  <nav class="navigation">
+  <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+<nav class="navigation">
 
     <a href="index.html">
       Início
@@ -2071,7 +2029,7 @@
 
         <i class="fa-solid fa-spinner fa-spin"></i>
 
-        <h2>A carregar imóvel</h2>
+        <h2>A carregar imóveis</h2>
 
         <p>
           Aguarde um momento...
@@ -2081,31 +2039,17 @@
     `;
 
 
-    /*
-       Se existir ?id=UUID na URL, estamos a abrir
-       um imóvel específico. Nesse caso NÃO carregamos
-       a lista completa: carregamos apenas esse imóvel.
-    */
-    const params = new URLSearchParams(window.location.search);
-    const selectedId = params.get('id');
-
-    let query = sb
-      .from('imoveis')
-      .select('*')
-      .eq('publicado', true);
-
-    if (selectedId) {
-      query = query.eq('id', selectedId);
-    } else {
-      query = query.order(
-        'created_at',
-        {
-          ascending: false
-        }
-      );
-    }
-
-    const result = await query;
+    const result =
+      await sb
+        .from('imoveis')
+        .select('*')
+        .eq('publicado', true)
+        .order(
+          'created_at',
+          {
+            ascending: false
+          }
+        );
 
 
     if (result.error) {
@@ -2136,68 +2080,8 @@
       result.data || [];
 
 
-    if (selectedId && !properties.length) {
-
-      const filters = document.querySelector('.filters');
-      if (filters) filters.style.display = 'none';
-
-      const heading = document.querySelector('.page-heading');
-      if (heading) {
-        heading.innerHTML = `
-          <div class="eyebrow">IMÓVEL</div>
-          <h1>Imóvel não encontrado</h1>
-          <p>O imóvel que procura não está disponível ou já não está publicado.</p>
-          <p style="margin-top:18px;">
-            <a href="imoveis.html" class="property-button" style="display:inline-flex;text-decoration:none;">
-              <i class="fa-solid fa-arrow-left"></i>
-              Ver todos os imóveis
-            </a>
-          </p>
-        `;
-      }
-
-      grid.innerHTML = '';
-      count.textContent = '';
-      return;
-    }
-
-
     await loadPhotos();
 
-
-    if (selectedId) {
-      /* Modo detalhe: esconder filtros e mostrar apenas o imóvel escolhido. */
-      const filters = document.querySelector('.filters');
-      if (filters) filters.style.display = 'none';
-
-      const heading = document.querySelector('.page-heading');
-      if (heading) {
-        heading.innerHTML = `
-          <div class="eyebrow">DETALHE DO IMÓVEL</div>
-          <h1>${escapeHtml(properties[0].titulo || 'Imóvel')}</h1>
-          <p>${escapeHtml(properties[0].localizacao || '')}</p>
-          <p style="margin-top:18px;">
-            <a href="imoveis.html" class="property-button" style="display:inline-flex;text-decoration:none;">
-              <i class="fa-solid fa-arrow-left"></i>
-              Voltar aos imóveis
-            </a>
-          </p>
-        `;
-      }
-
-      grid.style.gridTemplateColumns = 'minmax(0, 1fr)';
-      grid.style.maxWidth = '1000px';
-      grid.style.margin = '0 auto';
-      count.innerHTML = '';
-      grid.innerHTML = createPropertyCard(properties[0]);
-      initializeSlideshows();
-      return;
-    }
-
-
-    /* Modo lista normal: filtros + todos os imóveis. */
-    const filters = document.querySelector('.filters');
-    if (filters) filters.style.display = '';
 
     applyFilters();
 
@@ -3092,21 +2976,6 @@
 
 
 
-          ${
-            property.categoria_energetica
-              ? `
-                <div class="energy-rating">
-                  <span class="energy-label">Categoria Energética</span>
-                  <span class="energy-badge energy-${escapeHtml(String(property.categoria_energetica).replace('+','plus').replace('-','minus'))}">
-                    ${escapeHtml(property.categoria_energetica)}
-                  </span>
-                </div>
-              `
-              : ''
-          }
-
-
-
           <!-- DESCRIÇÃO -->
 
           <p class="property-description">
@@ -3117,31 +2986,6 @@
             )}
 
           </p>
-
-          ${
-            property.endereco
-              ? `
-                <section class="property-map-section">
-                  <div class="property-map-heading">
-                    <div class="eyebrow">
-                      LOCALIZAÇÃO
-                    </div>
-                    <h2>Onde se encontra este imóvel</h2>
-                    <p class="property-map-address"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(property.endereco || '')}</p>
-                  </div>
-
-                  <iframe
-                    class="property-map"
-                    src="https://www.google.com/maps?q=${encodeURIComponent(property.endereco)}&output=embed"
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    allowfullscreen
-                    title="Mapa da localização de ${escapeHtml(property.titulo || 'imóvel')}">
-                  </iframe>
-                </section>
-              `
-              : ''
-          }
 
 
 
@@ -3164,16 +3008,6 @@
 
           </a>
 
-
-
-          <a
-            href="imoveis.html?id=${encodeURIComponent(property.id)}"
-            class="property-button"
-            style="margin-top:12px;text-decoration:none;"
-          >
-            <i class="fa-solid fa-eye"></i>
-            Ver imóvel
-          </a>
 
 
           ${
@@ -3588,6 +3422,48 @@
 
 </script>
 
+
+
+<script>
+(function(){
+  const toggle=document.getElementById('mobileMenuToggle');
+  const nav=document.querySelector('.header .navigation');
+  const backdrop=document.getElementById('mobileMenuBackdrop');
+  if(!toggle || !nav) return;
+
+  function closeMenu(){
+    nav.classList.remove('mobile-open');
+    if(backdrop) backdrop.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded','false');
+    const icon=toggle.querySelector('i');
+    if(icon) icon.className='fa-solid fa-bars';
+  }
+
+  function openMenu(){
+    nav.classList.add('mobile-open');
+    if(backdrop) backdrop.classList.add('open');
+    document.body.classList.add('menu-open');
+    toggle.setAttribute('aria-expanded','true');
+    const icon=toggle.querySelector('i');
+    if(icon) icon.className='fa-solid fa-xmark';
+  }
+
+  toggle.addEventListener('click', function(){
+    nav.classList.contains('mobile-open') ? closeMenu() : openMenu();
+  });
+
+  if(backdrop) backdrop.addEventListener('click', closeMenu);
+
+  nav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', closeMenu);
+  });
+
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 760) closeMenu();
+  });
+})();
+</script>
 
 </body>
 

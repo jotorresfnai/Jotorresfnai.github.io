@@ -462,51 +462,49 @@ align-items:flex-start;
 }
 
 
-.energy-preview{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:42px;
-  height:34px;
-  padding:0 10px;
-  border-radius:3px;
-  background:#70ad47;
-  color:#fff;
-  font-weight:900;
-  font-size:18px;
-  vertical-align:middle;
-}
-.map-preview{
-  margin-top:12px;
-  border:1px solid #dfe3e5;
-  border-radius:12px;
-  overflow:hidden;
-  background:#eef1f2;
-  min-height:260px;
-}
-.map-preview iframe{
-  width:100%;
-  height:300px;
+.mobile-panel-toggle{
+  display:none;
   border:0;
-  display:block;
+  background:transparent;
+  color:#fff;
+  font-size:27px;
+  width:46px;
+  height:46px;
+  cursor:pointer;
 }
-.map-actions{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-  flex-wrap:wrap;
+.panel-backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:30;
 }
-.map-status{
-  font-size:12px;
-  color:#687177;
-  margin-top:8px;
+.panel-backdrop.open{display:block}
+@media(max-width:800px){
+  .mobile-panel-toggle{display:flex;align-items:center;justify-content:center}
+  .top{position:relative;z-index:40}
+  .side{
+    display:block !important;
+    position:fixed;
+    top:72px;
+    left:0;
+    bottom:0;
+    width:280px;
+    max-width:85vw;
+    transform:translateX(-105%);
+    transition:transform .25s ease;
+    z-index:40;
+    overflow-y:auto;
+    box-shadow:8px 0 25px rgba(0,0,0,.15);
+  }
+  .side.mobile-open{transform:translateX(0)}
 }
 
 </style>
 
 </head>
 
-<body>
+<body><div id="panelBackdrop" class="panel-backdrop"></div>
 
 
 <section id="login" class="login">
@@ -574,7 +572,7 @@ style="display:none"
 <section id="app" class="app">
 
 
-<header class="top">
+<header class="top"><button id="mobilePanelToggle" class="mobile-panel-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
 
 <div>
 
@@ -626,18 +624,6 @@ Imóveis
 
 </button>
 
-
-<button
-class="secondary"
-onclick="optimizeExistingPhotos()"
->
-
-<i class="fa-solid fa-compress"></i>
-
-Otimizar fotografias
-
-</button>
-
 </aside>
 
 
@@ -657,18 +643,6 @@ Gerir os imóveis publicados no site.
 </p>
 
 </div>
-
-
-<button
-class="secondary"
-onclick="optimizeExistingPhotos()"
->
-
-<i class="fa-solid fa-compress"></i>
-
-Otimizar fotografias existentes
-
-</button>
 
 
 <button
@@ -777,52 +751,7 @@ Localização
 <input
 id="localizacao"
 required
-placeholder="Ex.: Faro, Algarve"
 >
-
-</div>
-
-<div class="full">
-
-<label>
-Endereço completo para o mapa
-</label>
-
-<input
-id="endereco"
-type="text"
-placeholder="Ex.: Rua de São José, 123, 8000-000 Faro, Portugal"
->
-\small style="display:block;margin-top:7px;color:#6b7280">Escreva a morada/endereço exato. É este campo que será usado para localizar o imóvel no Google Maps.</small>
-
-</div>
-
-<div class="full">
-
-<label>
-Localização no mapa
-</label>
-
-<div class="map-actions">
-  <button type="button" class="secondary" onclick="previewMap()">
-    <i class="fa-solid fa-map-location-dot"></i>
-    Atualizar mapa
-  </button>
-  <button type="button" class="secondary" onclick="openGoogleMaps()">
-    <i class="fa-brands fa-google"></i>
-    Abrir no Google Maps
-  </button>
-</div>
-
-<div id="mapPreview" class="map-preview">
-  <div style="min-height:260px;display:grid;place-items:center;color:#7b8387;padding:20px;text-align:center">
-    <div>
-      <i class="fa-solid fa-map-location-dot" style="font-size:28px;margin-bottom:10px"></i>
-      <div>Escreva o endereço completo acima e carregue em “Atualizar mapa”.</div>
-    </div>
-  </div>
-</div>
-<div id="mapStatus" class="map-status"></div>
 
 </div>
 
@@ -902,26 +831,6 @@ Estado
 <option>Vendido</option>
 <option>Arrendado</option>
 
-</select>
-
-</div>
-
-<div>
-
-<label>
-Categoria Energética
-</label>
-
-<select id="categoria_energetica">
-<option value="">Não indicada</option>
-<option value="A+">A+</option>
-<option value="A">A</option>
-<option value="B">B</option>
-<option value="B-">B-</option>
-<option value="C">C</option>
-<option value="D">D</option>
-<option value="E">E</option>
-<option value="F">F</option>
 </select>
 
 </div>
@@ -1230,20 +1139,230 @@ loadProperties();
 
 async function loadProperties(){
 
-const box=$('properties');
-box.innerHTML='<div class="empty">A carregar...</div>';
+const box =
+$('properties');
 
-const result=await sb.from('imoveis').select('*').order('created_at',{ascending:false});
+box.innerHTML =
+'<div class="empty">A carregar...</div>';
 
-if(result.error){box.innerHTML='<div class="empty">Erro: '+esc(result.error.message)+'</div>';return;}
-const data=result.data||[];
-if(!data.length){box.innerHTML='<div class="empty">Ainda não existem imóveis.</div>';return;}
 
-box.innerHTML=data.map(function(p){
-const image=p.imagem_capa||'';
-return `<article class="card"><div class="thumb">${image?`<img src="${esc(image)}" alt="${esc(p.titulo)}" loading="lazy" decoding="async">`:''}<div class="fnai-watermark">FNAI</div></div><div class="body"><h3>${esc(p.titulo)}</h3><div class="muted"><i class="fa-solid fa-location-dot"></i> ${esc(p.localizacao)} · ${esc(p.tipo)}</div><div class="price">${p.preco?new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(p.preco):'Preço sob consulta'}</div><div class="muted">${p.area||0} m² · ${p.quartos||0} quartos · ${p.casas_banho||0} WC</div><div class="status-row">${p.garagem?'<span class="tag"><i class="fa-solid fa-car"></i> Garagem</span>':''}${p.piscina?'<span class="tag"><i class="fa-solid fa-person-swimming"></i> Piscina</span>':''}${p.luxo?'<span class="tag gold"><i class="fa-solid fa-gem"></i> Luxo</span>':''}${p.categoria_energetica?'<span class="tag"><i class="fa-solid fa-bolt"></i> Energia '+esc(p.categoria_energetica)+'</span>':''}${p.publicado?'<span class="tag">Publicado</span>':'<span class="tag">Rascunho</span>'}</div><div class="actions"><button class="secondary" onclick="editProperty('${p.id}')"><i class="fa-solid fa-pen"></i> Editar</button><button class="danger" onclick="deleteProperty('${p.id}')"><i class="fa-solid fa-trash"></i> Eliminar</button></div></div></article>`;
-}).join('');
+const result =
+await sb
+.from('imoveis')
+.select('*')
+.order('created_at',{
+ascending:false
+});
+
+
+if(result.error){
+
+box.innerHTML =
+'<div class="empty">Erro: '+esc(result.error.message)+'</div>';
+
+return;
+
 }
+
+
+const data =
+result.data || [];
+
+
+if(!data.length){
+
+box.innerHTML =
+'<div class="empty">Ainda não existem imóveis.</div>';
+
+return;
+
+}
+
+
+const ids =
+data.map(x=>x.id);
+
+
+const photoResult =
+await sb
+.from('imovel_fotos')
+.select('*')
+.in('imovel_id',ids)
+.order('ordem',{
+ascending:true
+});
+
+
+const photos =
+photoResult.data || [];
+
+
+box.innerHTML =
+data.map(function(p){
+
+const propertyPhotos =
+photos.filter(
+x=>x.imovel_id===p.id
+);
+
+
+const image =
+propertyPhotos[0]?.url ||
+p.imagem_capa ||
+'';
+
+
+return `
+
+<article class="card">
+
+<div class="thumb">
+
+${
+image
+?
+`<img
+src="${esc(image)}"
+alt="${esc(p.titulo)}"
+>`
+:
+''
+}
+
+<div class="fnai-watermark">
+FNAI
+</div>
+
+</div>
+
+
+<div class="body">
+
+<h3>
+${esc(p.titulo)}
+</h3>
+
+
+<div class="muted">
+
+<i class="fa-solid fa-location-dot"></i>
+
+${esc(p.localizacao)}
+·
+${esc(p.tipo)}
+
+</div>
+
+
+<div class="price">
+
+${
+p.preco
+?
+new Intl.NumberFormat(
+'pt-PT',
+{
+style:'currency',
+currency:'EUR',
+maximumFractionDigits:0
+}
+).format(p.preco)
+:
+'Preço sob consulta'
+}
+
+</div>
+
+
+<div class="muted">
+
+${p.area || 0} m²
+
+·
+
+${p.quartos || 0} quartos
+
+·
+
+${p.casas_banho || 0} WC
+
+</div>
+
+
+<div class="status-row">
+
+${
+p.garagem
+?
+'<span class="tag"><i class="fa-solid fa-car"></i> Garagem</span>'
+:
+''
+}
+
+${
+p.piscina
+?
+'<span class="tag"><i class="fa-solid fa-person-swimming"></i> Piscina</span>'
+:
+''
+}
+
+${
+p.luxo
+?
+'<span class="tag gold"><i class="fa-solid fa-gem"></i> Luxo</span>'
+:
+''
+}
+
+${
+p.publicado
+?
+'<span class="tag">Publicado</span>'
+:
+'<span class="tag">Rascunho</span>'
+}
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="secondary"
+onclick="editProperty('${p.id}')"
+>
+
+<i class="fa-solid fa-pen"></i>
+
+Editar
+
+</button>
+
+
+<button
+class="danger"
+onclick="deleteProperty('${p.id}')"
+>
+
+<i class="fa-solid fa-trash"></i>
+
+Eliminar
+
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+`;
+
+}).join('');
+
+}
+
 
 function openNew(){
 
@@ -1256,9 +1375,6 @@ $('modalTitle').textContent=
 
 currentPhotos=[];
 newFiles=[];
-
-$('categoria_energetica').value='';
-clearMapPreview();
 
 renderPhotos();
 
@@ -1306,9 +1422,8 @@ $('titulo').value=p.titulo || '';
 
 $('tipo').value=p.tipo || 'Moradia';
 
-$('localizacao').value=p.localizacao || '';
-
-$('endereco').value=p.endereco || '';
+$('localizacao').value=
+p.localizacao || '';
 
 $('preco').value=
 p.preco ?? '';
@@ -1324,9 +1439,6 @@ p.casas_banho ?? 0;
 
 $('estado').value=
 p.estado || 'Disponível';
-
-$('categoria_energetica').value=
-p.categoria_energetica || '';
 
 $('descricao').value=
 p.descricao || '';
@@ -1345,12 +1457,6 @@ $('luxo').checked=
 
 $('fnai_url').value=
 p.fnai_url || '';
-
-if(p.endereco){
-  previewMap();
-}else{
-  clearMapPreview();
-}
 
 
 const photosResult =
@@ -1375,68 +1481,6 @@ $('modal').style.display='block';
 }
 
 
-
-function googleMapsEmbedUrl(address){
-  return 'https://www.google.com/maps?q=' +
-    encodeURIComponent(address) +
-    '&z=16&output=embed';
-}
-
-function googleMapsOpenUrl(address){
-  return 'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent(address);
-}
-
-function clearMapPreview(){
-  const box=$('mapPreview');
-  if(box){
-    box.innerHTML=`
-      <div style="min-height:260px;display:grid;place-items:center;color:#7b8387;padding:20px;text-align:center">
-        <div>
-          <i class="fa-solid fa-map-location-dot" style="font-size:28px;margin-bottom:10px"></i>
-          <div>Escreva o endereço completo acima e carregue em “Atualizar mapa”.</div>
-        </div>
-      </div>`;
-  }
-  if($('mapStatus')) $('mapStatus').textContent='';
-}
-
-function previewMap(){
-  const address=$('endereco').value.trim();
-  if(!address){
-    alert('Introduza primeiro o endereço completo.');
-    $('endereco').focus();
-    return;
-  }
-
-  const box=$('mapPreview');
-  box.innerHTML=`
-    <iframe
-      src="${googleMapsEmbedUrl(address)}"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      allowfullscreen
-      title="Localização do imóvel">
-    </iframe>`;
-
-  $('mapStatus').innerHTML=
-    '<i class="fa-solid fa-location-dot"></i> Mapa baseado no endereço completo introduzido. Confirme a localização antes de publicar.';
-}
-
-function openGoogleMaps(){
-  const address=$('endereco').value.trim();
-  if(!address){
-    alert('Introduza primeiro o endereço completo.');
-    $('endereco').focus();
-    return;
-  }
-  window.open(googleMapsOpenUrl(address),'_blank','noopener');
-}
-
-$('endereco').addEventListener('blur',()=>{
-  if($('endereco').value.trim()) previewMap();
-});
-
 $('photos').onchange =
 function(e){
 
@@ -1449,507 +1493,391 @@ renderPhotos();
 };
 
 
-function renderPhotos(){const c=$('photoPreview');c.innerHTML='';currentPhotos.forEach((p,i)=>{const d=document.createElement('div');d.className='photo';d.draggable=true;d.dataset.kind='existing';d.dataset.index=i;d.dataset.photoId=p.id||'';const im=document.createElement('img');im.src=p.url;im.alt='Fotografia '+(i+1);const badge=document.createElement('span');badge.textContent=(i+1)+(i===0?' · CAPA':'');badge.style.cssText='position:absolute;left:5px;bottom:5px;background:#07171bdd;color:#fff;padding:4px 7px;border-radius:6px;font-size:11px;font-weight:700';const bt=document.createElement('button');bt.type='button';bt.textContent='×';bt.title='Eliminar fotografia';bt.onclick=()=>removePhoto(i);d.append(im,badge,bt);addDragEvents(d);c.appendChild(d)});newFiles.forEach((f,i)=>{const d=document.createElement('div');d.className='photo';d.draggable=true;d.dataset.kind='new';d.dataset.index=i;d.dataset.photoId='';const im=document.createElement('img');im.src=URL.createObjectURL(f);im.alt='Nova fotografia '+(i+1);const badge=document.createElement('span');badge.textContent='Nova '+(i+1);badge.style.cssText='position:absolute;left:5px;bottom:5px;background:#d4a72cee;color:#fff;padding:4px 7px;border-radius:6px;font-size:11px;font-weight:700';const bt=document.createElement('button');bt.type='button';bt.textContent='×';bt.onclick=()=>{newFiles.splice(i,1);renderPhotos()};d.append(im,badge,bt);addDragEvents(d);c.appendChild(d)});renumberPhotoBadges()}
-let draggedPhoto=null;function addDragEvents(el){el.addEventListener('dragstart',()=>{draggedPhoto=el;el.classList.add('dragging')});el.addEventListener('dragend',()=>{el.classList.remove('dragging');draggedPhoto=null;renumberPhotoBadges()});el.addEventListener('dragover',e=>{e.preventDefault();if(!draggedPhoto||draggedPhoto===el)return;const r=el.getBoundingClientRect();const after=e.clientY>r.top+r.height/2;if(after)el.parentNode.insertBefore(draggedPhoto,el.nextSibling);else el.parentNode.insertBefore(draggedPhoto,el)})}function renumberPhotoBadges(){[...$('photoPreview').children].forEach((el,i)=>{const b=el.querySelector('span');if(b&&!el.classList.contains('dragging'))b.textContent=(i+1)+(i===0?' · CAPA':'')})}function applyVisualPhotoOrder(){const items=[...$('photoPreview').children],existing=[],files=[];items.forEach(item=>{const i=Number(item.dataset.index);if(item.dataset.kind==='existing'&&currentPhotos[i])existing.push(currentPhotos[i]);else if(item.dataset.kind==='new'&&newFiles[i])files.push(newFiles[i])});currentPhotos=existing;newFiles=files}async function savePhotoOrder(){applyVisualPhotoOrder();for(let i=0;i<currentPhotos.length;i++){const p=currentPhotos[i];if(!p.id)continue;const r=await sb.from('imovel_fotos').update({ordem:i}).eq('id',p.id);if(r.error)return alert('Erro ao guardar a ordem: '+r.error.message)}const propertyId=$('propertyId').value;if(propertyId&&currentPhotos[0]){const r=await sb.from('imoveis').update({imagem_capa:currentPhotos[0].url}).eq('id',propertyId);if(r.error)return alert('Ordem guardada, mas erro ao atualizar capa: '+r.error.message)}renderPhotos();alert('Ordem das fotografias guardada.')}
+function renderPhotos(){
+
+$('photoPreview').innerHTML='';
+
+
+currentPhotos.forEach(
+function(p,i){
+
+const div =
+document.createElement('div');
+
+div.className='photo';
+
+
+div.innerHTML = `
+
+<img
+src="${esc(p.url)}"
+alt="Fotografia"
+>
+
+<button
+type="button"
+onclick="removePhoto(${i})"
+>
+×
+</button>
+
+`;
+
+
+$('photoPreview').appendChild(div);
+
+});
+
+
+newFiles.forEach(
+function(file,i){
+
+const div =
+document.createElement('div');
+
+div.className='photo';
+
+
+const img =
+document.createElement('img');
+
+img.src =
+URL.createObjectURL(file);
+
+
+const button =
+document.createElement('button');
+
+button.type='button';
+
+button.textContent='×';
+
+
+button.onclick =
+function(){
+
+newFiles.splice(i,1);
+
+renderPhotos();
+
+};
+
+
+div.append(
+img,
+button
+);
+
+
+$('photoPreview')
+.appendChild(div);
+
+});
+
+}
+
 
 async function removePhoto(i){
-if(!confirm('Eliminar esta fotografia?'))return;
-const photo=currentPhotos[i];
-const storageResult=await sb.storage.from('imoveis').remove([photo.storage_path]);
-if(storageResult.error){alert(storageResult.error.message);return;}
-const dbResult=await sb.from('imovel_fotos').delete().eq('id',photo.id);
-if(dbResult.error){alert(dbResult.error.message);return;}
+
+if(
+!confirm(
+'Eliminar esta fotografia?'
+)
+){
+return;
+}
+
+
+const photo =
+currentPhotos[i];
+
+
+const storageResult =
+await sb
+.storage
+.from('imoveis')
+.remove([
+photo.storage_path
+]);
+
+
+if(storageResult.error){
+
+alert(
+storageResult.error.message
+);
+
+return;
+
+}
+
+
+const dbResult =
+await sb
+.from('imovel_fotos')
+.delete()
+.eq('id',photo.id);
+
+
+if(dbResult.error){
+
+alert(
+dbResult.error.message
+);
+
+return;
+
+}
+
+
 currentPhotos.splice(i,1);
-const propertyId=$('propertyId').value;
-if(propertyId){await sb.from('imoveis').update({imagem_capa:currentPhotos[0]?.url||null}).eq('id',propertyId);}
+
 renderPhotos();
+
 }
 
-
-/*
- * Comprimir uma fotografia no próprio navegador.
- * Máximo: 2000 px no lado maior.
- * Formato final: WebP 82%.
- */
-async function compressImage(file){
-
-  const MAX_SIZE=2000;
-  const QUALITY=0.82;
-
-  if(!file || !file.type.startsWith('image/')){
-    throw new Error('Ficheiro de imagem inválido.');
-  }
-
-  const objectUrl=URL.createObjectURL(file);
-
-  try{
-
-    const img=await new Promise((resolve,reject)=>{
-
-      const image=new Image();
-
-      image.onload=()=>resolve(image);
-      image.onerror=()=>reject(new Error('Não foi possível ler a fotografia.'));
-      image.src=objectUrl;
-
-    });
-
-    let width=img.naturalWidth;
-    let height=img.naturalHeight;
-
-    if(!width || !height){
-      throw new Error('A fotografia não tem dimensões válidas.');
-    }
-
-    if(width>MAX_SIZE || height>MAX_SIZE){
-
-      const ratio=Math.min(
-        MAX_SIZE/width,
-        MAX_SIZE/height
-      );
-
-      width=Math.max(1,Math.round(width*ratio));
-      height=Math.max(1,Math.round(height*ratio));
-
-    }
-
-    const canvas=document.createElement('canvas');
-
-    canvas.width=width;
-    canvas.height=height;
-
-    const ctx=canvas.getContext('2d');
-
-    if(!ctx){
-      throw new Error('O navegador não suporta a compressão da imagem.');
-    }
-
-    ctx.drawImage(img,0,0,width,height);
-
-    const blob=await new Promise(resolve=>{
-      canvas.toBlob(
-        resolve,
-        'image/webp',
-        QUALITY
-      );
-    });
-
-    if(!blob){
-      throw new Error('Não foi possível converter a fotografia para WebP.');
-    }
-
-    const baseName=(file.name||'fotografia')
-      .replace(/\.[^.]+$/,'')
-      .replace(/[^a-zA-Z0-9._-]/g,'-');
-
-    const optimizedFile=new File(
-      [blob],
-      baseName+'.webp',
-      {
-        type:'image/webp',
-        lastModified:Date.now()
-      }
-    );
-
-    return {
-      file:optimizedFile,
-      extension:'webp',
-      contentType:'image/webp',
-      width:width,
-      height:height
-    };
-
-  }finally{
-
-    URL.revokeObjectURL(objectUrl);
-
-  }
-}
 
 $('propertyForm').onsubmit =
 async function(e){
 
 e.preventDefault();
 
-const saveBtn=$('propertyForm').querySelector('button.primary');
-if(saveBtn){
-  saveBtn.disabled=true;
-  saveBtn.textContent='A guardar...';
-}
 
-try{
+const id =
+$('propertyId').value;
 
-const id=$('propertyId').value;
 
-const payload={
-  titulo:$('titulo').value.trim(),
-  tipo:$('tipo').value,
-  localizacao:$('localizacao').value.trim(),
-  endereco:$('endereco').value.trim()||null,
-  preco:Number($('preco').value)||null,
-  area:Number($('area').value)||null,
-  quartos:Number($('quartos').value)||0,
-  casas_banho:Number($('casas_banho').value)||0,
-  estado:$('estado').value,
-  descricao:$('descricao').value.trim(),
-  categoria_energetica:$('categoria_energetica').value||null,
-  publicado:$('publicado').checked,
-  garagem:$('garagem').checked,
-  piscina:$('piscina').checked,
-  luxo:$('luxo').checked,
-  fnai_url:$('fnai_url').value.trim()||null
+const payload = {
+
+titulo:
+$('titulo').value.trim(),
+
+tipo:
+$('tipo').value,
+
+localizacao:
+$('localizacao').value.trim(),
+
+preco:
+Number($('preco').value) || null,
+
+area:
+Number($('area').value) || null,
+
+quartos:
+Number($('quartos').value) || 0,
+
+casas_banho:
+Number($('casas_banho').value) || 0,
+
+estado:
+$('estado').value,
+
+descricao:
+$('descricao').value.trim(),
+
+publicado:
+$('publicado').checked,
+
+garagem:
+$('garagem').checked,
+
+piscina:
+$('piscina').checked,
+
+luxo:
+$('luxo').checked,
+
+fnai_url:
+$('fnai_url').value.trim() || null
+
 };
+
 
 let propertyId=id;
 
-/* 1 — Guardar os dados do imóvel */
+
 if(id){
 
-  const result=await sb
-    .from('imoveis')
-    .update(payload)
-    .eq('id',id);
+const result =
+await sb
+.from('imoveis')
+.update(payload)
+.eq('id',id);
 
-  if(result.error)throw new Error(result.error.message);
+
+if(result.error){
+
+alert(
+result.error.message
+);
+
+return;
+
+}
 
 }else{
 
-  const result=await sb
-    .from('imoveis')
-    .insert(payload)
-    .select()
-    .single();
+const result =
+await sb
+.from('imoveis')
+.insert(payload)
+.select()
+.single();
 
-  if(result.error)throw new Error(result.error.message);
 
-  propertyId=result.data.id;
-}
-
-/*
- * 2 — Capturar a ordem que está atualmente visível.
- * Existing = fotografias já no Supabase.
- * New = fotografias ainda no computador.
- */
-const galleryItems=[...$('photoPreview').children];
-
-const orderedExisting=[];
-const orderedNew=[];
-
-galleryItems.forEach(item=>{
-
-  if(item.dataset.kind==='existing'){
-
-    const photo=currentPhotos.find(p=>p.id===item.dataset.photoId);
-
-    if(photo)orderedExisting.push(photo);
-
-  }else if(item.dataset.kind==='new'){
-
-    const index=Number(item.dataset.index);
-
-    if(newFiles[index])orderedNew.push(newFiles[index]);
-
-  }
-
-});
-
-/*
- * Se por alguma razão o browser não tiver metadata nos cartões,
- * mantemos a ordem actual da base de dados.
- */
-if(!orderedExisting.length && currentPhotos.length){
-  orderedExisting.push(...currentPhotos);
-}
-
-/*
- * 3 — Fazer upload das fotografias novas.
- * Elas são comprimidas antes de serem enviadas.
- */
-const finalPhotos=[...orderedExisting];
-
-for(const originalFile of orderedNew){
-
-  if(originalFile.size>10*1024*1024){
-    alert(originalFile.name+' ultrapassa 10 MB e foi ignorada.');
-    continue;
-  }
-
-  const optimized=await compressImage(originalFile);
-  const file=optimized.file;
-
-  if(file.size>10*1024*1024){
-    alert(file.name+' continua a ultrapassar 10 MB depois da compressão.');
-    continue;
-  }
-
-  const safe=file.name
-    .toLowerCase()
-    .replace(/[^a-z0-9._-]/g,'-')
-    .replace(/\.[^.]+$/,'');
-
-  const path=
-    propertyId+'/'+crypto.randomUUID()+
-    '-'+safe+'.'+optimized.extension;
-
-  const upload=await sb.storage
-    .from('imoveis')
-    .upload(
-      path,
-      file,
-      {
-        contentType:optimized.contentType,
-        upsert:false
-      }
-    );
-
-  if(upload.error){
-    throw new Error('Upload de '+originalFile.name+': '+upload.error.message);
-  }
-
-  const url=sb.storage
-    .from('imoveis')
-    .getPublicUrl(path)
-    .data.publicUrl;
-
-  const insert=await sb
-    .from('imovel_fotos')
-    .insert({
-      imovel_id:propertyId,
-      storage_path:path,
-      url:url,
-      ordem:0
-    })
-    .select()
-    .single();
-
-  if(insert.error){
-
-    await sb.storage
-      .from('imoveis')
-      .remove([path]);
-
-    throw new Error(
-      'Registo da imagem '+originalFile.name+': '+
-      insert.error.message
-    );
-  }
-
-  finalPhotos.push({
-    id:insert.data.id,
-    imovel_id:propertyId,
-    storage_path:path,
-    url:url
-  });
-}
-
-/*
- * 4 — Guardar a ordem FINAL.
- *
- * Isto é importante: tanto as fotografias antigas como as novas
- * passam pelo mesmo array. Assim podes:
- *
- * 3 fotos hoje
- * + 2 amanhã
- * + reorganizar todas
- *
- * sem perder a ordem.
- */
-for(let i=0;i<finalPhotos.length;i++){
-
-  const photo=finalPhotos[i];
-
-  const result=await sb
-    .from('imovel_fotos')
-    .update({ordem:i})
-    .eq('id',photo.id);
-
-  if(result.error){
-    throw new Error(
-      'Erro ao guardar a posição '+(i+1)+': '+
-      result.error.message
-    );
-  }
-
-  photo.ordem=i;
-}
-
-/*
- * 5 — A fotografia nº 1 é sempre a capa.
- */
-const coverUrl=finalPhotos[0]?.url||null;
-
-const coverResult=await sb
-  .from('imoveis')
-  .update({imagem_capa:coverUrl})
-  .eq('id',propertyId);
-
-if(coverResult.error){
-  throw new Error(
-    'Erro ao atualizar a fotografia de capa: '+
-    coverResult.error.message
-  );
-}
-
-/*
- * 6 — Atualizar o estado local para a próxima edição.
- */
-currentPhotos=finalPhotos;
-newFiles=[];
-
-closeModal();
-await loadProperties();
-
-}catch(error){
-
-console.error(error);
+if(result.error){
 
 alert(
-  'Não foi possível guardar o imóvel.\n\n'+
-  (error?.message||String(error))
+result.error.message
 );
 
-}finally{
-
-if(saveBtn){
-  saveBtn.disabled=false;
-  saveBtn.textContent='Guardar imóvel';
-}
+return;
 
 }
+
+
+propertyId =
+result.data.id;
+
+}
+
+
+for(
+const file of newFiles
+){
+
+if(
+file.size >
+10*1024*1024
+){
+
+alert(
+file.name+
+' ultrapassa 10 MB.'
+);
+
+continue;
+
+}
+
+
+const safe =
+file.name
+.toLowerCase()
+.replace(
+/[^a-z0-9._-]/g,
+'-'
+);
+
+
+const path =
+propertyId+
+'/'+
+crypto.randomUUID()+
+'-'+
+safe;
+
+
+const upload =
+await sb
+.storage
+.from('imoveis')
+.upload(
+path,
+file,
+{
+contentType:file.type,
+upsert:false
+}
+);
+
+
+if(upload.error){
+
+alert(
+'Upload: '+
+upload.error.message
+);
+
+continue;
+
+}
+
+
+const url =
+sb
+.storage
+.from('imoveis')
+.getPublicUrl(path)
+.data
+.publicUrl;
+
+
+const ordem =
+currentPhotos.length;
+
+
+const insert =
+await sb
+.from('imovel_fotos')
+.insert({
+
+imovel_id:
+propertyId,
+
+storage_path:
+path,
+
+url:url,
+
+ordem:ordem
+
+})
+.select()
+.single();
+
+
+if(insert.error){
+
+alert(
+'Registo da imagem: '+
+insert.error.message
+);
+
+continue;
+
+}
+
+
+currentPhotos.push({
+id:insert.data.id,
+storage_path:path,
+url:url
+});
+
+}
+
+
+if(currentPhotos.length){
+
+await sb
+.from('imoveis')
+.update({
+imagem_capa:
+currentPhotos[0].url
+})
+.eq('id',propertyId);
+
+}
+
+
+closeModal();
+
+loadProperties();
 
 };
 
-
-async function optimizeExistingPhotos(){
-
-if(!confirm('Isto vai otimizar as fotografias existentes. A versão antiga só será removida depois de a nova versão estar criada e registada. Continuar?'))return;
-
-const box=$('properties');
-const oldHtml=box.innerHTML;
-
-try{
-
-box.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><br><br>A preparar otimização...</div>';
-
-const photosResult=await sb
-.from('imovel_fotos')
-.select('id,imovel_id,storage_path,url,ordem')
-.order('imovel_id',{ascending:true})
-.order('ordem',{ascending:true});
-
-if(photosResult.error)throw photosResult.error;
-
-const photos=photosResult.data||[];
-
-if(!photos.length){
-alert('Não existem fotografias para otimizar.');
-box.innerHTML=oldHtml;
-return;
-}
-
-const propertiesResult=await sb
-.from('imoveis')
-.select('id,imagem_capa');
-
-if(propertiesResult.error)throw propertiesResult.error;
-
-const propertyMap=new Map((propertiesResult.data||[]).map(p=>[p.id,p]));
-
-let optimized=0;
-let skipped=0;
-let failed=0;
-const errors=[];
-
-for(let i=0;i<photos.length;i++){
-
-const photo=photos[i];
-
-box.innerHTML='<div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><br><br>Otimizar fotografia '+(i+1)+' de '+photos.length+'...</div>';
-
-try{
-
-const response=await fetch(photo.url,{cache:'no-store'});
-if(!response.ok)throw new Error('Não foi possível descarregar a fotografia ('+response.status+').');
-
-const blob=await response.blob();
-if(!blob.type.startsWith('image/'))throw new Error('O ficheiro não é uma imagem válida.');
-
-const originalName=(photo.storage_path.split('/').pop()||('foto-'+photo.id)).replace(/\.[^.]+$/,'');
-const originalFile=new File([blob],originalName+'.jpg',{type:blob.type,lastModified:Date.now()});
-const result=await compressImage(originalFile);
-const optimizedFile=result.file;
-
-if(optimizedFile.size>=blob.size && photo.storage_path.toLowerCase().endsWith('.webp')){
-skipped++;
-continue;
-}
-
-const safe=originalName.toLowerCase().replace(/[^a-z0-9._-]/g,'-');
-const newPath=photo.imovel_id+'/optimized-'+crypto.randomUUID()+'-'+safe+'.webp';
-
-const upload=await sb.storage
-.from('imoveis')
-.upload(newPath,optimizedFile,{contentType:'image/webp',upsert:false});
-
-if(upload.error)throw upload.error;
-
-const newUrl=sb.storage.from('imoveis').getPublicUrl(newPath).data.publicUrl;
-
-const update=await sb
-.from('imovel_fotos')
-.update({storage_path:newPath,url:newUrl})
-.eq('id',photo.id);
-
-if(update.error){
-await sb.storage.from('imoveis').remove([newPath]);
-throw update.error;
-}
-
-const property=propertyMap.get(photo.imovel_id);
-
-if(property && property.imagem_capa===photo.url){
-const coverUpdate=await sb
-.from('imoveis')
-.update({imagem_capa:newUrl})
-.eq('id',photo.imovel_id);
-
-if(coverUpdate.error)throw coverUpdate.error;
-property.imagem_capa=newUrl;
-}
-
-const removeOld=await sb.storage
-.from('imoveis')
-.remove([photo.storage_path]);
-
-if(removeOld.error){
-errors.push(photo.storage_path+': nova versão criada, mas a antiga não foi removida.');
-}
-
-optimized++;
-
-}catch(error){
-failed++;
-errors.push(photo.storage_path+': '+(error&&error.message?error.message:String(error)));
-}
-}
-
-await loadProperties();
-
-let message='Otimização concluída.\n\nFotografias processadas: '+photos.length+'\nOtimizadas: '+optimized+'\nIgnoradas: '+skipped+'\nCom erro: '+failed;
-
-if(errors.length){
-message+='\n\nDetalhes:\n'+errors.slice(0,10).join('\n');
-if(errors.length>10)message+='\n... e mais '+(errors.length-10)+' erro(s).';
-}
-
-alert(message);
-
-}catch(error){
-box.innerHTML=oldHtml;
-alert('Não foi possível iniciar a otimização: '+(error&&error.message?error.message:String(error)));
-}
-
-}
 
 async function deleteProperty(id){
 
@@ -2025,6 +1953,30 @@ loadProperties();
 
 init();
 
+</script>
+
+
+<script>
+(function(){
+ const b=document.getElementById('mobilePanelToggle');
+ const s=document.querySelector('.side');
+ const o=document.getElementById('panelBackdrop');
+ if(!b||!s)return;
+ function close(){
+   s.classList.remove('mobile-open'); if(o)o.classList.remove('open');
+   b.setAttribute('aria-expanded','false');
+   const i=b.querySelector('i'); if(i)i.className='fa-solid fa-bars';
+ }
+ b.addEventListener('click',function(){
+   const open=s.classList.toggle('mobile-open');
+   if(o)o.classList.toggle('open',open);
+   b.setAttribute('aria-expanded',open?'true':'false');
+   const i=b.querySelector('i'); if(i)i.className=open?'fa-solid fa-xmark':'fa-solid fa-bars';
+ });
+ if(o)o.addEventListener('click',close);
+ s.querySelectorAll('button,a').forEach(x=>x.addEventListener('click',close));
+ window.addEventListener('resize',()=>{if(innerWidth>800)close()});
+})();
 </script>
 
 </body>
