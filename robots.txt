@@ -1,0 +1,6 @@
+  User-agent: * 
+
+  Allow: / 
+
+
+  Sitemap: https://jotorresfnai.github.io/sitemap.xml
