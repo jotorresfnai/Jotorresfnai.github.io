@@ -147,7 +147,6 @@ async function load(){
    <h2>${money(p.preco)}</h2>
    <div class="location"><i class="fa-solid fa-house"></i>${esc(p.tipo||'Imóvel')}</div>
    <p class="muted">${esc(loc)}</p>
-   ${energyHtml(energy)}
    <a class="contact-btn" href="https://wa.me/41792601145?text=${encodeURIComponent('Olá, gostaria de obter informações sobre o imóvel '+title)}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Pedir informações</a>
    ${p.fnai_url?`<a class="fnai-link" href="${esc(p.fnai_url)}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver anúncio na FNAI</a>`:''}
   </aside>
