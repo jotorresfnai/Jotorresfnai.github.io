@@ -14,7 +14,40 @@ content="width=device-width,initial-scale=1"
 Painel — Jo Torres Imobiliário
 </title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+(function(){
+  const btn=document.getElementById('mobileMenuBtn');
+  const side=document.querySelector('.side');
+  const overlay=document.getElementById('mobileOverlay');
+  if(!btn || !side) return;
+
+  function closeMenu(){
+    side.classList.remove('mobile-open');
+    if(overlay) overlay.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  function toggleMenu(){
+    const open=side.classList.toggle('mobile-open');
+    if(overlay) overlay.classList.toggle('open',open);
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  }
+
+  btn.addEventListener('click',toggleMenu);
+  if(overlay) overlay.addEventListener('click',closeMenu);
+
+  side.querySelectorAll('button,a').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(window.innerWidth<=800) closeMenu();
+    });
+  });
+
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>800) closeMenu();
+  });
+})();
+
+</script>
 
 <link
 rel="stylesheet"
@@ -505,31 +538,28 @@ align-items:flex-start;
 
 .seo-panel{background:#fafaf8;border:1px solid #e5e0d6;border-radius:14px;padding:18px;margin-top:6px}.seo-head{display:flex;justify-content:space-between;gap:15px;align-items:center}.seo-score{font-weight:800}.seo-preview{margin-top:14px;background:#fff;border:1px solid #e2e5e7;border-radius:10px;padding:14px}.seo-preview-title{color:#1a0dab;font-size:18px}.seo-preview-url{color:#188038;font-size:13px;margin:4px 0}.seo-preview-desc{color:#4d5156;font-size:13px;line-height:1.45}.seo-meter{height:7px;background:#e5e7e9;border-radius:99px;overflow:hidden;margin-top:10px}.seo-meter span{display:block;height:100%;width:0;background:#d4a72c;transition:.2s}
 
-/* ===== PAINEL MENU MOBILE FINAL ===== */
-.mobile-panel-toggle{
+.mobile-menu-btn{
   display:none;
   border:0;
   background:transparent;
   color:#fff;
-  font-size:27px;
-  width:46px;
-  height:46px;
-  align-items:center;
-  justify-content:center;
+  font-size:28px;
+  line-height:1;
+  padding:8px 10px;
+  border-radius:10px;
   cursor:pointer;
-  z-index:1002;
 }
-.panel-backdrop{
+.mobile-overlay{
   display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.45);
   z-index:30;
 }
-.panel-backdrop.open{display:block}
+.mobile-overlay.open{display:block}
 @media(max-width:800px){
-  .mobile-panel-toggle{display:flex}
-  .top{position:relative;z-index:40}
+  .mobile-menu-btn{display:block;position:relative;z-index:41}
+  .top{position:relative;z-index:40;padding:0 16px}
   .side{
     display:block !important;
     position:fixed;
@@ -545,13 +575,23 @@ align-items:flex-start;
     box-shadow:8px 0 25px rgba(0,0,0,.15);
   }
   .side.mobile-open{transform:translateX(0)}
+  .content{padding:18px}
+  .layout{grid-template-columns:1fr}
+}
+
+
+.upload-normalized-note{
+  margin-top:8px;
+  font-size:12px;
+  color:#5f676a;
+  line-height:1.5;
 }
 
 </style>
 
 </head>
 
-<body><div id="panelBackdrop" class="panel-backdrop"></div>
+<body><div id="mobileOverlay" class="mobile-overlay"></div>
 
 
 <section id="login" class="login">
@@ -619,7 +659,7 @@ style="display:none"
 <section id="app" class="app">
 
 
-<header class="top"><button id="mobilePanelToggle" class="mobile-panel-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+<header class="top"><button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
 
 <div>
 
@@ -804,6 +844,8 @@ Tipo
 <option>Moradia</option>
 <option>Apartamento</option>
 <option>Villa</option>
+<option>Quinta</option>
+<option>Herdade</option>
 <option>Terreno</option>
 <option>Comercial</option>
 <option>Outro</option>
@@ -1111,7 +1153,8 @@ multiple
 >
 
 <p class="muted">
-Selecione várias imagens.
+Selecione várias imagens.<br>
+As fotografias são automaticamente recortadas para 16:9, comprimidas e convertidas para WebP antes do upload.<br>
 Máximo 10 MB por imagem.
 </p>
 
@@ -1548,8 +1591,17 @@ renderPhotos();
  */
 async function compressImage(file){
 
-  const MAX_SIZE=2000;
-  const QUALITY=0.82;
+  /*
+   * Normalização automática das fotografias:
+   * - corta para 16:9 para eliminar barras laterais/espacos vazios;
+   * - redimensiona para no máximo 2000 px de largura;
+   * - converte para WebP;
+   * - mantém a imagem sempre pronta para ocupar todo o espaço
+   *   dos cartões/slideshows.
+   */
+  const TARGET_RATIO=16/9;
+  const MAX_WIDTH=2000;
+  const QUALITY=0.84;
 
   if(!file || !file.type.startsWith('image/')){
     throw new Error('Ficheiro de imagem inválido.');
@@ -1569,37 +1621,68 @@ async function compressImage(file){
 
     });
 
-    let width=img.naturalWidth;
-    let height=img.naturalHeight;
+    const sourceWidth=img.naturalWidth;
+    const sourceHeight=img.naturalHeight;
 
-    if(!width || !height){
+    if(!sourceWidth || !sourceHeight){
       throw new Error('A fotografia não tem dimensões válidas.');
     }
 
-    if(width>MAX_SIZE || height>MAX_SIZE){
+    /*
+     * Crop central para 16:9.
+     * Nunca estica a fotografia.
+     */
+    let cropWidth=sourceWidth;
+    let cropHeight=Math.round(sourceWidth/TARGET_RATIO);
+    let cropX=0;
+    let cropY=0;
 
-      const ratio=Math.min(
-        MAX_SIZE/width,
-        MAX_SIZE/height
-      );
+    if(cropHeight>sourceHeight){
 
-      width=Math.max(1,Math.round(width*ratio));
-      height=Math.max(1,Math.round(height*ratio));
+      cropHeight=sourceHeight;
+      cropWidth=Math.round(sourceHeight*TARGET_RATIO);
+      cropX=Math.round((sourceWidth-cropWidth)/2);
+
+    }else{
+
+      cropY=Math.round((sourceHeight-cropHeight)/2);
+
+    }
+
+    let width=Math.min(MAX_WIDTH,cropWidth);
+    let height=Math.round(width/TARGET_RATIO);
+
+    if(height>cropHeight){
+
+      height=cropHeight;
+      width=Math.round(height*TARGET_RATIO);
 
     }
 
     const canvas=document.createElement('canvas');
-
     canvas.width=width;
     canvas.height=height;
 
     const ctx=canvas.getContext('2d');
 
     if(!ctx){
-      throw new Error('O navegador não suporta a compressão da imagem.');
+      throw new Error('O navegador não suporta a preparação da imagem.');
     }
 
-    ctx.drawImage(img,0,0,width,height);
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality='high';
+
+    ctx.drawImage(
+      img,
+      cropX,
+      cropY,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      width,
+      height
+    );
 
     const blob=await new Promise(resolve=>{
       canvas.toBlob(
@@ -2124,31 +2207,6 @@ loadProperties();
 
 init();
 
-</script>
-
-
-<script>
-(function(){
-  const b=document.getElementById('mobilePanelToggle');
-  const s=document.querySelector('.side');
-  const o=document.getElementById('panelBackdrop');
-  if(!b || !s) return;
-  function close(){
-    s.classList.remove('mobile-open');
-    if(o)o.classList.remove('open');
-    b.setAttribute('aria-expanded','false');
-    const i=b.querySelector('i'); if(i)i.className='fa-solid fa-bars';
-  }
-  b.addEventListener('click',function(){
-    const open=s.classList.toggle('mobile-open');
-    if(o)o.classList.toggle('open',open);
-    b.setAttribute('aria-expanded',open?'true':'false');
-    const i=b.querySelector('i'); if(i)i.className=open?'fa-solid fa-xmark':'fa-solid fa-bars';
-  });
-  if(o)o.addEventListener('click',close);
-  s.querySelectorAll('button,a').forEach(function(x){x.addEventListener('click',close);});
-  window.addEventListener('resize',function(){if(window.innerWidth>800)close();});
-})();
 </script>
 
 </body>
