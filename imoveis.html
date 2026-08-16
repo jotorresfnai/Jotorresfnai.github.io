@@ -1294,16 +1294,15 @@
     }
 
   
-/* ===== MENU MOBILE ===== */
+/* ===== MENU MOBILE FINAL ===== */
 .mobile-menu-toggle{
   display:none;
   border:0;
   background:transparent;
-  color:inherit;
-  font-size:28px;
+  color:#fff;
+  font-size:27px;
   width:46px;
   height:46px;
-  padding:0;
   align-items:center;
   justify-content:center;
   cursor:pointer;
@@ -1317,19 +1316,9 @@
   z-index:998;
 }
 .mobile-menu-backdrop.open{display:block}
-
 @media(max-width:760px){
-  .mobile-menu-toggle{
-    display:flex;
-    color:#fff;
-    flex:0 0 46px;
-  }
-
-  .header{
-    position:relative;
-    z-index:1000;
-  }
-
+  .mobile-menu-toggle{display:flex}
+  .header{position:relative;z-index:1000}
   .header .navigation{
     position:fixed;
     top:70px;
@@ -1345,32 +1334,20 @@
     transform:translateX(105%);
     transition:transform .25s ease;
     z-index:999;
-    box-shadow:-10px 0 30px rgba(0,0,0,.22);
     overflow-y:auto;
+    box-shadow:-10px 0 30px rgba(0,0,0,.22);
   }
-
-  .header .navigation.mobile-open{
-    transform:translateX(0);
-  }
-
+  .header .navigation.mobile-open{transform:translateX(0)}
   .header .navigation a,
   .header .navigation a:not(.whatsapp){
     display:flex !important;
     align-items:center;
     padding:14px 10px;
-    font-size:15px !important;
     color:#fff;
     text-decoration:none;
   }
-
-  .header .navigation .whatsapp{
-    justify-content:center;
-    margin-top:10px;
-  }
-
-  body.menu-open{
-    overflow:hidden;
-  }
+  .header .navigation .whatsapp{justify-content:center;margin-top:10px}
+  body.menu-open{overflow:hidden}
 }
 
 </style>
@@ -3439,7 +3416,6 @@
     const icon=toggle.querySelector('i');
     if(icon) icon.className='fa-solid fa-bars';
   }
-
   function openMenu(){
     nav.classList.add('mobile-open');
     if(backdrop) backdrop.classList.add('open');
@@ -3448,20 +3424,12 @@
     const icon=toggle.querySelector('i');
     if(icon) icon.className='fa-solid fa-xmark';
   }
-
-  toggle.addEventListener('click', function(){
+  toggle.addEventListener('click',function(){
     nav.classList.contains('mobile-open') ? closeMenu() : openMenu();
   });
-
-  if(backdrop) backdrop.addEventListener('click', closeMenu);
-
-  nav.querySelectorAll('a').forEach(function(link){
-    link.addEventListener('click', closeMenu);
-  });
-
-  window.addEventListener('resize', function(){
-    if(window.innerWidth > 760) closeMenu();
-  });
+  if(backdrop) backdrop.addEventListener('click',closeMenu);
+  nav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu);});
+  window.addEventListener('resize',function(){if(window.innerWidth>760) closeMenu();});
 })();
 </script>
 
