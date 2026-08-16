@@ -747,68 +747,362 @@ footer p{
 .search-button:hover{background:var(--dark2)}
 
 
-/* ===== MENU MOBILE FINAL ===== */
+
+
+
+/* ===== MOBILE HEADER / MENU ===== */
 .mobile-menu-toggle{
   display:none;
+  width:44px;
+  height:44px;
+  margin-left:auto;
   border:0;
   background:transparent;
   color:#fff;
-  font-size:27px;
-  width:46px;
-  height:46px;
+  font-size:25px;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  z-index:1002;
+  z-index:1003;
 }
 .mobile-menu-backdrop{
   display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.48);
-  z-index:998;
+  z-index:1000;
 }
 .mobile-menu-backdrop.open{display:block}
-@media(max-width:760px){
+
+@media (max-width: 760px){
   .mobile-menu-toggle{display:flex}
-  .header{position:relative;z-index:1000}
+  .header{
+    position:relative;
+    z-index:1002;
+  }
   .header .navigation{
-    position:fixed;
-    top:70px;
-    right:0;
-    width:min(310px,88vw);
-    height:calc(100vh - 70px);
-    padding:28px 22px;
-    background:#07171b;
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-    gap:8px;
-    transform:translateX(105%);
-    transition:transform .25s ease;
-    z-index:999;
-    overflow-y:auto;
-    box-shadow:-10px 0 30px rgba(0,0,0,.22);
-  }
-  .header .navigation.mobile-open{transform:translateX(0)}
-  .header .navigation a,
-  .header .navigation a:not(.whatsapp){
+    position:fixed !important;
+    top:0 !important;
+    right:0 !important;
+    width:min(300px,82vw) !important;
+    height:100vh !important;
+    padding:88px 24px 30px !important;
+    margin:0 !important;
+    background:#07171b !important;
     display:flex !important;
-    align-items:center;
-    padding:14px 10px;
-    color:#fff;
-    text-decoration:none;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:4px !important;
+    transform:translateX(105%) !important;
+    transition:transform .25s ease !important;
+    z-index:1001 !important;
+    overflow-y:auto !important;
+    box-shadow:-12px 0 32px rgba(0,0,0,.25);
   }
-  .header .navigation .whatsapp{justify-content:center;margin-top:10px}
+  .header .navigation.mobile-open{
+    transform:translateX(0) !important;
+  }
+  .header .navigation a{
+    display:flex !important;
+    width:100% !important;
+    align-items:center !important;
+    padding:14px 8px !important;
+    color:#fff !important;
+    text-decoration:none !important;
+    font-size:15px !important;
+  }
+  .header .navigation .whatsapp{
+    justify-content:center !important;
+    margin-top:12px !important;
+  }
   body.menu-open{overflow:hidden}
 }
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* FILTROS DA HOMEPAGE — mesmos filtros de imoveis.html */
+    .filters {
+
+      background: white;
+
+      border-radius: 18px;
+
+      padding: 25px;
+
+      box-shadow:
+        0 10px 35px rgba(0,0,0,.07);
+
+      border: 1px solid #e7eaec;
+
+      margin-bottom: 45px;
+    }
+
+
+    .filters-header {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 22px;
+    }
+
+
+    .filters-title {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      font-size: 20px;
+
+      font-weight: 800;
+
+      color: #07171b;
+    }
+
+
+    .filters-title i {
+
+      color: #d4a72c;
+    }
+
+
+    .clear-button {
+
+      border: 0;
+
+      background: transparent;
+
+      color: #777;
+
+      cursor: pointer;
+
+      font-size: 13px;
+
+      font-weight: 700;
+    }
+
+
+    .clear-button:hover {
+
+      color: #b38a1d;
+    }
+
+
+    .filter-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 16px;
+    }
+
+
+    .filter-field {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 7px;
+    }
+
+
+    .filter-field label {
+
+      font-size: 12px;
+
+      font-weight: 800;
+
+      color: #505960;
+
+      text-transform: uppercase;
+
+      letter-spacing: .5px;
+    }
+
+
+    .filter-field label i {
+
+      color: #d4a72c;
+
+      width: 18px;
+    }
+
+
+    .filter-field input,
+    .filter-field select {
+
+      width: 100%;
+
+      height: 46px;
+
+      border: 1px solid #dfe3e5;
+
+      border-radius: 9px;
+
+      padding: 0 13px;
+
+      background: #fff;
+
+      color: #172126;
+
+      outline: none;
+    }
+
+
+    .filter-field input:focus,
+    .filter-field select:focus {
+
+      border-color: #d4a72c;
+
+      box-shadow:
+        0 0 0 3px rgba(212,167,44,.12);
+    }
+
+
+    /* =====================================================
+       CHECKBOXES
+    ===================================================== */
+
+    .filter-options {
+
+      grid-column: 1 / -1;
+
+      display: flex;
+
+      gap: 12px;
+
+      flex-wrap: wrap;
+
+      padding-top: 4px;
+    }
+
+
+    .filter-option {
+
+      position: relative;
+    }
+
+
+    .filter-option input {
+
+      position: absolute;
+
+      opacity: 0;
+
+      pointer-events: none;
+    }
+
+
+    .filter-option label {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 9px;
+
+      padding: 11px 15px;
+
+      border: 1px solid #dfe3e5;
+
+      border-radius: 9px;
+
+      background: white;
+
+      cursor: pointer;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      color: #4d565b;
+
+      transition: .2s;
+    }
+
+
+    .filter-option label i {
+
+      color: #b38a1d;
+    }
+
+
+    .filter-option input:checked + label {
+
+      background: #07171b;
+
+      border-color: #07171b;
+
+      color: white;
+    }
+
+
+    .filter-option input:checked + label i {
+
+      color: #d4a72c;
+    }
+
+
+    .search-row {
+
+      display: flex;
+
+      justify-content: flex-end;
+
+      margin-top: 20px;
+    }
+
+
+    .search-button {
+
+      border: 0;
+
+      background: #d4a72c;
+
+      color: white;
+
+      padding: 13px 28px;
+
+      border-radius: 9px;
+
+      cursor: pointer;
+
+      font-weight: 800;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 9px;
+
+      transition: .2s;
+    }
+
+
+    .search-button:hover {
+
+      background: #b88d20;
+
+      transform: translateY(-1px);
+    }
+
+
 
 </style>
 </head>
 
-<body><div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
-
-<header class="header">
+<body><div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div><header class="header">
 
 <a href="index.html" class="logo">
 
@@ -823,6 +1117,9 @@ footer p{
 
 <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
 
+<button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+  <i class="fa-solid fa-bars"></i>
+</button>
 <nav class="navigation" id="mainNavigation">
 
 <a href="#inicio">Início</a>
@@ -888,38 +1185,378 @@ Fale comigo
 
 </section>
 
-<section class="search-panel" aria-label="Pesquisar imóveis">
-  <div class="search-title">Encontre o seu próximo imóvel</div>
-  <form id="homeSearchForm">
-    <div class="search-grid">
-      <div class="search-field">
-        <i class="fa-solid fa-location-dot"></i>
-        <input id="searchLocation" type="text" placeholder="Localidade">
+<section class="filters home-filters" aria-label="Filtros de imóveis">
+
+    <div class="filters-header">
+
+      <div class="filters-title">
+
+        <i class="fa-solid fa-sliders"></i>
+
+        Filtros
+
       </div>
-      <div class="search-field">
-        <i class="fa-solid fa-house"></i>
-        <select id="searchType">
-          <option value="">Tipo de imóvel</option>
-          <option>Moradia</option><option>Apartamento</option><option>Villa</option>
-          <option>Terreno</option><option>Comercial</option><option>Outro</option>
-        </select>
-      </div>
-      <div class="search-field">
-        <i class="fa-solid fa-euro-sign"></i>
-        <input id="searchMaxPrice" type="number" min="0" placeholder="Preço máximo">
-      </div>
-      <div class="search-field">
-        <i class="fa-solid fa-bed"></i>
-        <select id="searchRooms">
-          <option value="">Quartos</option>
-          <option value="1">1+</option><option value="2">2+</option><option value="3">3+</option>
-          <option value="4">4+</option><option value="5">5+</option>
-        </select>
-      </div>
-      <button class="search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Pesquisar</button>
+
+
+      <button
+        type="button"
+        class="clear-button"
+        id="clearFilters"
+      >
+
+        <i class="fa-solid fa-rotate-left"></i>
+
+        Limpar
+
+      </button>
+
     </div>
-  </form>
-</section>
+
+
+
+    <div class="filter-grid">
+
+
+      <!-- LOCALIZAÇÃO -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-location-dot"></i>
+
+          Localidade
+
+        </label>
+
+        <input
+          id="filterLocation"
+          type="text"
+          placeholder="Ex.: Braga"
+        >
+
+      </div>
+
+
+
+      <!-- TIPO -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-building"></i>
+
+          Tipo de imóvel
+
+        </label>
+
+        <select id="filterType">
+
+          <option value="">
+            Todos os tipos
+          </option>
+
+          <option value="Moradia">
+            Moradia
+          </option>
+
+          <option value="Apartamento">
+            Apartamento
+          </option>
+
+          <option value="Villa">
+            Villa
+          </option>
+
+          <option value="Terreno">
+            Terreno
+          </option>
+
+          <option value="Comercial">
+            Comercial
+          </option>
+
+          <option value="Outro">
+            Outro
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <!-- PREÇO MIN -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-euro-sign"></i>
+
+          Preço mínimo
+
+        </label>
+
+        <input
+          id="filterMinPrice"
+          type="number"
+          min="0"
+          placeholder="Ex.: 200000"
+        >
+
+      </div>
+
+
+
+      <!-- PREÇO MAX -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-euro-sign"></i>
+
+          Preço máximo
+
+        </label>
+
+        <input
+          id="filterMaxPrice"
+          type="number"
+          min="0"
+          placeholder="Ex.: 800000"
+        >
+
+      </div>
+
+
+
+      <!-- QUARTOS -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-bed"></i>
+
+          Quartos
+
+        </label>
+
+        <select id="filterRooms">
+
+          <option value="">
+            Qualquer
+          </option>
+
+          <option value="1">
+            1+
+          </option>
+
+          <option value="2">
+            2+
+          </option>
+
+          <option value="3">
+            3+
+          </option>
+
+          <option value="4">
+            4+
+          </option>
+
+          <option value="5">
+            5+
+          </option>
+
+          <option value="6">
+            6+
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <!-- WC -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-bath"></i>
+
+          Casas de banho
+
+        </label>
+
+        <select id="filterBathrooms">
+
+          <option value="">
+            Qualquer
+          </option>
+
+          <option value="1">
+            1+
+          </option>
+
+          <option value="2">
+            2+
+          </option>
+
+          <option value="3">
+            3+
+          </option>
+
+          <option value="4">
+            4+
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <!-- ÁREA -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-ruler-combined"></i>
+
+          Área mínima
+
+        </label>
+
+        <input
+          id="filterArea"
+          type="number"
+          min="0"
+          placeholder="Ex.: 150"
+        >
+
+      </div>
+
+
+
+      <!-- ORDENAR -->
+
+      <div class="filter-field">
+
+        <label>
+
+          <i class="fa-solid fa-arrow-down-wide-short"></i>
+
+          Ordenar
+
+        </label>
+
+        <select id="filterOrder">
+
+          <option value="recent">
+            Mais recentes
+          </option>
+
+          <option value="priceAsc">
+            Preço: menor primeiro
+          </option>
+
+          <option value="priceDesc">
+            Preço: maior primeiro
+          </option>
+
+          <option value="areaDesc">
+            Maior área primeiro
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <!-- OPÇÕES -->
+
+      <div class="filter-options">
+
+
+        <div class="filter-option">
+
+          <input
+            type="checkbox"
+            id="filterGarage"
+          >
+
+          <label for="filterGarage">
+
+            <i class="fa-solid fa-car"></i>
+
+            Garagem
+
+          </label>
+
+        </div>
+
+
+
+        <div class="filter-option">
+
+          <input
+            type="checkbox"
+            id="filterPool"
+          >
+
+          <label for="filterPool">
+
+            <i class="fa-solid fa-person-swimming"></i>
+
+            Piscina
+
+          </label>
+
+        </div>
+
+
+
+        <div class="filter-option">
+
+          <input
+            type="checkbox"
+            id="filterLuxury"
+          >
+
+          <label for="filterLuxury">
+
+            <i class="fa-solid fa-gem"></i>
+
+            Imóvel de luxo
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="search-row">
+
+      <button
+        type="button"
+        id="searchButton"
+        class="search-button"
+      ><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Pesquisar imóveis</span></button>
+
+    </div>
+
+  </section>
 
 <section class="section about" id="sobre">
 
@@ -1226,8 +1863,14 @@ async function loadProperties(filters={}){
 
   if(filters.location) query=query.ilike('localizacao','%'+filters.location+'%');
   if(filters.type) query=query.eq('tipo',filters.type);
+  if(filters.minPrice) query=query.gte('preco',Number(filters.minPrice));
   if(filters.maxPrice) query=query.lte('preco',Number(filters.maxPrice));
   if(filters.rooms) query=query.gte('quartos',Number(filters.rooms));
+  if(filters.bathrooms) query=query.gte('casas_banho',Number(filters.bathrooms));
+  if(filters.area) query=query.gte('area',Number(filters.area));
+  if(filters.garage) query=query.eq('garagem',true);
+  if(filters.pool) query=query.eq('piscina',true);
+  if(filters.luxury) query=query.eq('luxo',true);
 
   const result=await query;
 
@@ -1279,15 +1922,33 @@ async function loadProperties(filters={}){
   }).join('');
 }
 
-document.getElementById('homeSearchForm').addEventListener('submit',e=>{
-  e.preventDefault();
+document.getElementById('searchButton').addEventListener('click',()=>{
   loadProperties({
-    location:document.getElementById('searchLocation').value.trim(),
-    type:document.getElementById('searchType').value,
-    maxPrice:document.getElementById('searchMaxPrice').value,
-    rooms:document.getElementById('searchRooms').value
+    location:document.getElementById('filterLocation').value.trim(),
+    type:document.getElementById('filterType').value,
+    minPrice:document.getElementById('filterMinPrice').value,
+    maxPrice:document.getElementById('filterMaxPrice').value,
+    rooms:document.getElementById('filterRooms').value,
+    bathrooms:document.getElementById('filterBathrooms').value,
+    area:document.getElementById('filterArea').value,
+    garage:document.getElementById('filterGarage').checked,
+    pool:document.getElementById('filterPool').checked,
+    luxury:document.getElementById('filterLuxury').checked
   });
   document.getElementById('imoveis').scrollIntoView({behavior:'smooth'});
+});
+
+document.getElementById('clearFilters').addEventListener('click',()=>{
+  ['filterLocation','filterMinPrice','filterMaxPrice','filterArea'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['filterType','filterRooms','filterBathrooms','filterOrder'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.selectedIndex=0;
+  });
+  ['filterGarage','filterPool','filterLuxury'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.checked=false;
+  });
+  loadProperties({});
 });
 
 const mobileMenuBtn=document.getElementById('mobileMenuBtn');
@@ -1313,37 +1974,69 @@ loadProperties();
 </script>
 
 
+
+
+
 <script>
 (function(){
-  const toggle=document.getElementById('mobileMenuToggle');
-  const nav=document.querySelector('.header .navigation');
-  const backdrop=document.getElementById('mobileMenuBackdrop');
-  if(!toggle || !nav) return;
+  const toggle = document.getElementById('mobileMenuToggle');
+  const nav = document.querySelector('.header .navigation');
+  const backdrop = document.getElementById('mobileMenuBackdrop');
+  if (!toggle || !nav) return;
 
   function closeMenu(){
     nav.classList.remove('mobile-open');
-    if(backdrop) backdrop.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
     document.body.classList.remove('menu-open');
     toggle.setAttribute('aria-expanded','false');
-    const icon=toggle.querySelector('i');
-    if(icon) icon.className='fa-solid fa-bars';
+    const icon = toggle.querySelector('i');
+    if (icon) icon.className = 'fa-solid fa-bars';
   }
+
   function openMenu(){
     nav.classList.add('mobile-open');
-    if(backdrop) backdrop.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
     document.body.classList.add('menu-open');
     toggle.setAttribute('aria-expanded','true');
-    const icon=toggle.querySelector('i');
-    if(icon) icon.className='fa-solid fa-xmark';
+    const icon = toggle.querySelector('i');
+    if (icon) icon.className = 'fa-solid fa-xmark';
   }
-  toggle.addEventListener('click',function(){
+
+  toggle.addEventListener('click', function(){
     nav.classList.contains('mobile-open') ? closeMenu() : openMenu();
   });
-  if(backdrop) backdrop.addEventListener('click',closeMenu);
-  nav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu);});
-  window.addEventListener('resize',function(){if(window.innerWidth>760) closeMenu();});
+
+  if (backdrop) backdrop.addEventListener('click', closeMenu);
+  nav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth > 760) closeMenu();
+  });
 })();
 </script>
 
 </body>
 </html>
+<style>
+.home-filters .filters-title{font-size:0}
+.home-filters .filters-title i{font-size:20px}
+.home-filters .search-button{
+  width:50px;height:46px;padding:0;justify-content:center;font-size:0
+}
+.home-filters .search-button i{font-size:18px}
+.home-filters .search-row{justify-content:flex-end}
+.sr-only{
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
+}
+@media(max-width:900px){
+  .home-filters .filter-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .home-filters{padding:18px}
+  .home-filters .filter-grid{grid-template-columns:1fr}
+  .home-filters .search-row{justify-content:flex-end}
+}
+</style>
