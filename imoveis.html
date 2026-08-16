@@ -1293,6 +1293,63 @@
 
     }
 
+  .energy-rating{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:22px 0;
+    padding-top:18px;
+    border-top:1px solid var(--border,#e5e5e5);
+  }
+  .energy-label{
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:#5f686c;
+  }
+  .energy-badge{
+    min-width:48px;
+    height:42px;
+    padding:0 10px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    font-weight:800;
+    color:#fff;
+    border-radius:3px;
+    background:#4caf50;
+  }
+  .energy-Aplus,.energy-A{background:#168b35}
+  .energy-B{background:#65b93f}
+  .energy-Bminus{background:#b6cc32}
+  .energy-C{background:#f0c51b}
+  .energy-D{background:#ed9b20}
+  .energy-E{background:#e86d20}
+  .energy-F{background:#d64028}
+
+  .property-map-section{
+    width:100%;
+    margin:42px 0 0;
+    border-top:1px solid var(--border,#e5e5e5);
+    padding-top:32px;
+  }
+  .property-map{
+    display:block;
+    width:100%;
+    height:520px;
+    border:0;
+    margin:24px 0 0;
+  }
+  .property-map-heading{margin-bottom:0}
+  .property-map-address{
+    margin:10px 0 0;
+    color:#667176;
+  }
+  @media(max-width:760px){
+    .property-map{height:400px}
+  }
   </style>
 
 </head>
@@ -2972,6 +3029,23 @@
 
 
 
+          <!-- CERTIFICADO ENERGÉTICO -->
+
+          ${
+            property.categoria_energetica
+              ? `
+                <div class="energy-rating">
+                  <span class="energy-label">Categoria Energética</span>
+                  <span class="energy-badge energy-${escapeHtml(String(property.categoria_energetica).replace('+','plus').replace('-','minus'))}">
+                    ${escapeHtml(property.categoria_energetica)}
+                  </span>
+                </div>
+              `
+              : ''
+          }
+
+
+
           <!-- DESCRIÇÃO -->
 
           <p class="property-description">
@@ -2982,6 +3056,34 @@
             )}
 
           </p>
+
+
+          <!-- MAPA DE LOCALIZAÇÃO -->
+
+          ${
+            property.endereco
+              ? `
+                <section class="property-map-section">
+                  <div class="property-map-heading">
+                    <div class="eyebrow">
+                      LOCALIZAÇÃO
+                    </div>
+                    <h2>Onde se encontra este imóvel</h2>
+                    <p class="property-map-address"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(property.endereco || '')}</p>
+                  </div>
+
+                  <iframe
+                    class="property-map"
+                    src="https://www.google.com/maps?q=${encodeURIComponent(property.endereco)}&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen
+                    title="Mapa da localização de ${escapeHtml(property.titulo || 'imóvel')}">
+                  </iframe>
+                </section>
+              `
+              : ''
+          }
 
 
 
