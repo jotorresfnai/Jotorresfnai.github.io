@@ -509,99 +509,17 @@ footer span{
 
 </style>
 
-<style id="SLIDESHOW_DOS_IMOVEIS_CSS">
-.gallery.gallery-slider {
-  position: relative !important;
-  display: block !important;
-  width: 100% !important;
-  height: 600px !important;
-  overflow: hidden !important;
-  border-radius: 10px !important;
-  background: #07171b !important;
-}
-.gallery.gallery-slider .gallery-slide {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  transition: opacity .35s ease !important;
-}
-.gallery.gallery-slider .gallery-slide.active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-.gallery.gallery-slider .gallery-slide img {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  margin: 0 !important;
-}
-.gallery-slider-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  width: 52px;
-  height: 52px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(7, 23, 27, .78);
-  color: #fff;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  padding: 0;
-}
-.gallery-slider-prev { left: 18px; }
-.gallery-slider-next { right: 18px; }
-.gallery-slider-dots {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-.gallery-slider-dot {
-  width: 9px;
-  height: 9px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,.65);
-  cursor: pointer;
-}
-.gallery-slider-dot.active {
-  background: #c9a34a;
-  transform: scale(1.2);
-}
-.gallery-slider-counter {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  z-index: 20;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(7,23,27,.72);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-}
-@media (max-width: 760px) {
-  .gallery.gallery-slider { height: 430px !important; }
-  .gallery-slider-button { width: 44px; height: 44px; }
-  .gallery-slider-prev { left: 10px; }
-  .gallery-slider-next { right: 10px; }
-}
-</style>
+<style id="SLIDESHOW_DOS_IMOVEIS_CSS">.gallery.gallery-slider{position:relative!important;display:block!important;width:100%!important;height:600px!important;overflow:hidden!important;border-radius:10px!important;background:#07171b!important}
+.gallery.gallery-slider .gallery-slide{position:absolute!important;inset:0!important;display:block!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:opacity .35s ease!important}
+.gallery.gallery-slider .gallery-slide.active{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+.gallery.gallery-slider .gallery-slide img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;margin:0!important}
+.gallery-slider-button{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:52px;height:52px;border:0;border-radius:50%;background:rgba(7,23,27,.78);color:#fff;cursor:pointer;display:grid;place-items:center;font-size:20px;padding:0}
+.gallery-slider-prev{left:18px}.gallery-slider-next{right:18px}
+.gallery-slider-dots{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;justify-content:center;gap:7px}
+.gallery-slider-dot{width:9px;height:9px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.65);cursor:pointer}
+.gallery-slider-dot.active{background:#c9a34a;transform:scale(1.2)}
+.gallery-slider-counter{position:absolute;right:18px;bottom:16px;z-index:20;padding:6px 10px;border-radius:999px;background:rgba(7,23,27,.72);color:#fff;font-size:12px;font-weight:700}
+@media(max-width:760px){.gallery.gallery-slider{height:430px!important}.gallery-slider-button{width:44px;height:44px}.gallery-slider-prev{left:10px}.gallery-slider-next{right:10px}}</style>
 </head>
 
 <body>
@@ -677,77 +595,35 @@ Voltar aos imóveis
 </a>
 
 
-    <div class="gallery gallery-slider" data-slider-ready="false">
-  
-    <div class="gallery-slide active" data-slide-index="0">
-      <img
+    <div class="gallery gallery-slider" data-slider-ready="false"><div class="gallery-slide active data-slide-index="0"><img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/fe6b1fec-36ad-4fb6-adf3-341bf2d81bbd/optimized-cff974bd-53df-4891-be44-ffcdea4a2642-optimized-370ed1f4-00f5-4d3d-9dc3-25c33ef6d6ee-04b812f8-21fa-409d-ae1c-573f43d73e5a-id46929501-0000-0500-0000-00001540a7be.jpg.webp"
             alt="Quinta T8 em Deocriste"
             
-          >
-    </div>
-  
-
-    <div class="gallery-slide" data-slide-index="1">
-      <img
+          ></div>
+<div class="gallery-slide data-slide-index="1"><img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/fe6b1fec-36ad-4fb6-adf3-341bf2d81bbd/optimized-aa47b6ad-0b62-4090-b934-1b8b4a09c330-optimized-db7f3a7d-2843-44a5-9d03-cc46b5706357-b1f1078a-76cd-49cb-8b5d-9573be59b323-id46929501-0000-0500-0000-00001540a7bb.jpg.webp"
             alt="Quinta T8 em Deocriste"
             loading="lazy"
-          >
-    </div>
-  
-
-    <div class="gallery-slide" data-slide-index="2">
-      <img
+          ></div>
+<div class="gallery-slide data-slide-index="2"><img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/fe6b1fec-36ad-4fb6-adf3-341bf2d81bbd/optimized-76bc7d55-a47b-4b3c-8db9-d1e2ef6d6914-optimized-8cf85c12-1817-4c00-86fe-6456b49c90c0-24672342-16e3-4dfa-ad4e-3bec00e4d56d-id46929501-0000-0500-0000-00001538294e.jpg.webp"
             alt="Quinta T8 em Deocriste"
             loading="lazy"
-          >
-    </div>
-  
-
-    <div class="gallery-slide" data-slide-index="3">
-      <img
+          ></div>
+<div class="gallery-slide data-slide-index="3"><img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/fe6b1fec-36ad-4fb6-adf3-341bf2d81bbd/optimized-6b025ffc-2bf0-4b77-87ac-f7919adcf3d1-optimized-ef6d5580-a959-462e-827c-91d3c5716a61-65aa0c55-bb5e-4a8a-babc-46b92eb56de6-id46929501-0000-0500-0000-00001540a7c3.jpg.webp"
             alt="Quinta T8 em Deocriste"
             loading="lazy"
-          >
-    </div>
-  
-
-    <div class="gallery-slide" data-slide-index="4">
-      <img
+          ></div>
+<div class="gallery-slide data-slide-index="4"><img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/fe6b1fec-36ad-4fb6-adf3-341bf2d81bbd/optimized-29078f88-665b-43e7-80e4-1d00f70d2ed8-optimized-7d65dea1-122f-42a4-b280-c1d4155f04da-d02d2a81-d456-4dee-9251-1a913a5f9466-id46929501-0000-0500-0000-000015382953.jpg.webp"
             alt="Quinta T8 em Deocriste"
             loading="lazy"
-          >
-    </div>
-  
-  <button class="gallery-slider-button gallery-slider-prev" type="button" aria-label="Fotografia anterior">
-    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-  </button>
-  <button class="gallery-slider-button gallery-slider-next" type="button" aria-label="Fotografia seguinte">
-    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-  </button>
-  <div class="gallery-slider-dots" aria-label="Selecionar fotografia">
-    
-    <button class="gallery-slider-dot active" type="button" data-slide-to="0" aria-label="Fotografia 1"></button>
-  
-
-    <button class="gallery-slider-dot" type="button" data-slide-to="1" aria-label="Fotografia 2"></button>
-  
-
-    <button class="gallery-slider-dot" type="button" data-slide-to="2" aria-label="Fotografia 3"></button>
-  
-
-    <button class="gallery-slider-dot" type="button" data-slide-to="3" aria-label="Fotografia 4"></button>
-  
-
-    <button class="gallery-slider-dot" type="button" data-slide-to="4" aria-label="Fotografia 5"></button>
-  
-  </div>
-  <div class="gallery-slider-counter" aria-live="polite">1 / 5</div>
-</div>
+          ></div><button class="gallery-slider-button gallery-slider-prev" type="button" aria-label="Fotografia anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button><button class="gallery-slider-button gallery-slider-next" type="button" aria-label="Fotografia seguinte"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button><div class="gallery-slider-dots" aria-label="Selecionar fotografia"><button class="gallery-slider-dot active type="button" data-slide-to="0" aria-label="Fotografia 1"></button>
+<button class="gallery-slider-dot type="button" data-slide-to="1" aria-label="Fotografia 2"></button>
+<button class="gallery-slider-dot type="button" data-slide-to="2" aria-label="Fotografia 3"></button>
+<button class="gallery-slider-dot type="button" data-slide-to="3" aria-label="Fotografia 4"></button>
+<button class="gallery-slider-dot type="button" data-slide-to="4" aria-label="Fotografia 5"></button></div><div class="gallery-slider-counter" aria-live="polite">1 / 5</div></div>
   
 
 <div class="main-grid">
@@ -925,56 +801,33 @@ CONSULTOR IMOBILIÁRIO
 
 </footer>
 
-<script id="SLIDESHOW_DOS_IMOVEIS_JS">
-(function () {
-  function initGallery(gallery) {
-    if (!gallery || gallery.dataset.sliderReady === "true") return;
-
-    const slides = Array.from(gallery.querySelectorAll(".gallery-slide"));
-    if (!slides.length) return;
-
-    gallery.dataset.sliderReady = "true";
-    let current = 0;
-
-    const dots = Array.from(gallery.querySelectorAll(".gallery-slider-dot"));
-    const counter = gallery.querySelector(".gallery-slider-counter");
-    const previous = gallery.querySelector(".gallery-slider-prev");
-    const next = gallery.querySelector(".gallery-slider-next");
-
-    function show(index) {
-      current = (index + slides.length) % slides.length;
-      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
-      dots.forEach((dot, i) => dot.classList.toggle("active", i === current));
-      if (counter) counter.textContent = (current + 1) + " / " + slides.length;
-    }
-
-    if (previous) previous.addEventListener("click", () => show(current - 1));
-    if (next) next.addEventListener("click", () => show(current + 1));
-    dots.forEach((dot, index) => dot.addEventListener("click", () => show(index)));
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    gallery.addEventListener("touchstart", event => {
-      if (!event.touches.length) return;
-      touchStartX = event.touches[0].clientX;
-      touchStartY = event.touches[0].clientY;
-    }, { passive: true });
-
-    gallery.addEventListener("touchend", event => {
-      if (!event.changedTouches.length) return;
-      const dx = event.changedTouches[0].clientX - touchStartX;
-      const dy = event.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-      show(dx < 0 ? current + 1 : current - 1);
-    }, { passive: true });
-
-    show(0);
-  }
-
-  document.querySelectorAll(".gallery.gallery-slider").forEach(initGallery);
-})();
-</script>
+<script id="SLIDESHOW_DOS_IMOVEIS_JS">(function(){
+function initGallery(gallery){
+if(!gallery||gallery.dataset.sliderReady==='true')return;
+const slides=Array.from(gallery.querySelectorAll('.gallery-slide'));
+if(!slides.length)return;
+gallery.dataset.sliderReady='true';
+let current=0;
+const dots=Array.from(gallery.querySelectorAll('.gallery-slider-dot'));
+const counter=gallery.querySelector('.gallery-slider-counter');
+const previous=gallery.querySelector('.gallery-slider-prev');
+const next=gallery.querySelector('.gallery-slider-next');
+function show(index){
+current=(index+slides.length)%slides.length;
+slides.forEach(function(slide,i){slide.classList.toggle('active',i===current)});
+dots.forEach(function(dot,i){dot.classList.toggle('active',i===current)});
+if(counter)counter.textContent=(current+1)+' / '+slides.length;
+}
+if(previous)previous.addEventListener('click',function(){show(current-1)});
+if(next)next.addEventListener('click',function(){show(current+1)});
+dots.forEach(function(dot,index){dot.addEventListener('click',function(){show(index)})});
+let startX=0;let startY=0;
+gallery.addEventListener('touchstart',function(event){if(!event.touches.length)return;startX=event.touches[0].clientX;startY=event.touches[0].clientY},{passive:true});
+gallery.addEventListener('touchend',function(event){if(!event.changedTouches.length)return;const dx=event.changedTouches[0].clientX-startX;const dy=event.changedTouches[0].clientY-startY;if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy))return;show(dx<0?current+1:current-1)},{passive:true});
+show(0);
+}
+document.querySelectorAll('.gallery.gallery-slider').forEach(initGallery);
+})();</script>
 </body>
 
 </html>
