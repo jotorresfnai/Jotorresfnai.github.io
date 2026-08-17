@@ -10,28 +10,36 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Imóveis | Jo Torres</title>
+  <title>Imóveis para venda | Jo Torres</title>
 
   <meta
     name="description"
-    content="Imóveis selecionados para venda por Jo Torres, Consultor Imobiliário e representante FNAI na Suíça."
+    content="Explore os imóveis para venda selecionados por Jo Torres, Consultor Imobiliário e representante FNAI na Suíça."
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <link
+    rel="canonical"
+    href="https://jotorresimobiliaria.github.io/imoveis.html"
   >
 
   <!-- FONT AWESOME -->
+
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
   >
 
   <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
   <style>
-
-    /* =====================================================
-       RESET
-    ===================================================== */
 
     * {
       box-sizing: border-box;
@@ -39,11 +47,9 @@
       padding: 0;
     }
 
-
     html {
       scroll-behavior: smooth;
     }
-
 
     body {
       font-family:
@@ -56,12 +62,10 @@
       line-height: 1.6;
     }
 
-
     a {
       color: inherit;
       text-decoration: none;
     }
-
 
     button,
     input,
@@ -97,7 +101,6 @@
       z-index: 20;
     }
 
-
     .logo {
 
       display: flex;
@@ -106,7 +109,6 @@
 
       gap: 12px;
     }
-
 
     .logo-circle {
 
@@ -128,7 +130,6 @@
       color: white;
     }
 
-
     .logo-text {
 
       display: flex;
@@ -136,14 +137,12 @@
       flex-direction: column;
     }
 
-
     .logo-text strong {
 
       font-size: 17px;
 
       letter-spacing: 1px;
     }
-
 
     .logo-text span {
 
@@ -156,7 +155,6 @@
       margin-top: 2px;
     }
 
-
     .navigation {
 
       display: flex;
@@ -168,7 +166,6 @@
       flex-wrap: wrap;
     }
 
-
     .navigation a {
 
       color: white;
@@ -178,12 +175,10 @@
       transition: .2s;
     }
 
-
     .navigation a:hover {
 
       color: #d4a72c;
     }
-
 
     .navigation .whatsapp {
 
@@ -200,7 +195,7 @@
 
 
     /* =====================================================
-       PAGE HEADER
+       PAGE
     ===================================================== */
 
     .page {
@@ -212,12 +207,10 @@
       padding: 70px 0 90px;
     }
 
-
     .page-heading {
 
       margin-bottom: 35px;
     }
-
 
     .eyebrow {
 
@@ -231,7 +224,6 @@
 
       margin-bottom: 10px;
     }
-
 
     .page-heading h1 {
 
@@ -248,7 +240,6 @@
       margin-bottom: 15px;
     }
 
-
     .page-heading p {
 
       max-width: 720px;
@@ -260,7 +251,7 @@
 
 
     /* =====================================================
-       FILTER BOX
+       FILTROS
     ===================================================== */
 
     .filters {
@@ -279,7 +270,6 @@
       margin-bottom: 45px;
     }
 
-
     .filters-header {
 
       display: flex;
@@ -292,7 +282,6 @@
 
       margin-bottom: 22px;
     }
-
 
     .filters-title {
 
@@ -309,12 +298,10 @@
       color: #07171b;
     }
 
-
     .filters-title i {
 
       color: #d4a72c;
     }
-
 
     .clear-button {
 
@@ -331,12 +318,10 @@
       font-weight: 700;
     }
 
-
     .clear-button:hover {
 
       color: #b38a1d;
     }
-
 
     .filter-grid {
 
@@ -348,7 +333,6 @@
       gap: 16px;
     }
 
-
     .filter-field {
 
       display: flex;
@@ -357,7 +341,6 @@
 
       gap: 7px;
     }
-
 
     .filter-field label {
 
@@ -372,14 +355,12 @@
       letter-spacing: .5px;
     }
 
-
     .filter-field label i {
 
       color: #d4a72c;
 
       width: 18px;
     }
-
 
     .filter-field input,
     .filter-field select {
@@ -400,7 +381,6 @@
 
       outline: none;
     }
-
 
     .filter-field input:focus,
     .filter-field select:focus {
@@ -429,12 +409,10 @@
       padding-top: 4px;
     }
 
-
     .filter-option {
 
       position: relative;
     }
-
 
     .filter-option input {
 
@@ -444,7 +422,6 @@
 
       pointer-events: none;
     }
-
 
     .filter-option label {
 
@@ -473,12 +450,10 @@
       transition: .2s;
     }
 
-
     .filter-option label i {
 
       color: #b38a1d;
     }
-
 
     .filter-option input:checked + label {
 
@@ -489,12 +464,10 @@
       color: white;
     }
 
-
     .filter-option input:checked + label i {
 
       color: #d4a72c;
     }
-
 
     .search-row {
 
@@ -504,7 +477,6 @@
 
       margin-top: 20px;
     }
-
 
     .search-button {
 
@@ -531,7 +503,6 @@
       transition: .2s;
     }
 
-
     .search-button:hover {
 
       background: #b88d20;
@@ -541,7 +512,7 @@
 
 
     /* =====================================================
-       RESULTS HEADER
+       RESULTADOS
     ===================================================== */
 
     .results-header {
@@ -557,14 +528,12 @@
       margin-bottom: 22px;
     }
 
-
     .results-count {
 
       font-size: 15px;
 
       color: #687177;
     }
-
 
     .results-count strong {
 
@@ -573,7 +542,7 @@
 
 
     /* =====================================================
-       PROPERTY GRID
+       GRID
     ===================================================== */
 
     .property-grid {
@@ -588,7 +557,7 @@
 
 
     /* =====================================================
-       PROPERTY CARD
+       CARD
     ===================================================== */
 
     .property-card {
@@ -608,7 +577,6 @@
         transform .25s,
         box-shadow .25s;
     }
-
 
     .property-card:hover {
 
@@ -636,7 +604,6 @@
       overflow: hidden;
     }
 
-
     .property-slide {
 
       position: absolute;
@@ -652,7 +619,6 @@
       z-index: 1;
     }
 
-
     .property-slide.active {
 
       opacity: 1;
@@ -661,7 +627,6 @@
 
       z-index: 2;
     }
-
 
     .property-slide img {
 
@@ -676,7 +641,7 @@
 
 
     /* =====================================================
-       FNAI WATERMARK
+       WATERMARK
     ===================================================== */
 
     .fnai-watermark {
@@ -705,7 +670,7 @@
 
 
     /* =====================================================
-       SLIDE BUTTONS
+       SLIDES
     ===================================================== */
 
     .slide-button {
@@ -741,24 +706,20 @@
       transition: .2s;
     }
 
-
     .slide-button:hover {
 
       background: #d4a72c;
     }
-
 
     .slide-prev {
 
       left: 12px;
     }
 
-
     .slide-next {
 
       right: 12px;
     }
-
 
     .slide-dots {
 
@@ -777,7 +738,6 @@
       gap: 6px;
     }
 
-
     .slide-dot {
 
       width: 7px;
@@ -795,7 +755,6 @@
       cursor: pointer;
     }
 
-
     .slide-dot.active {
 
       background: #d4a72c;
@@ -805,14 +764,13 @@
 
 
     /* =====================================================
-       PROPERTY INFO
+       INFO
     ===================================================== */
 
     .property-info {
 
       padding: 22px;
     }
-
 
     .property-status {
 
@@ -829,7 +787,6 @@
       margin-bottom: 6px;
     }
 
-
     .property-info h2 {
 
       font-family:
@@ -844,7 +801,6 @@
 
       margin-bottom: 8px;
     }
-
 
     .property-location {
 
@@ -861,12 +817,10 @@
       gap: 6px;
     }
 
-
     .property-location i {
 
       color: #d4a72c;
     }
-
 
     .property-price {
 
@@ -902,7 +856,6 @@
       margin-bottom: 16px;
     }
 
-
     .feature {
 
       display: flex;
@@ -918,7 +871,6 @@
       min-width: 0;
     }
 
-
     .feature i {
 
       color: #b38a1d;
@@ -928,7 +880,6 @@
       margin-bottom: 5px;
     }
 
-
     .feature strong {
 
       font-size: 13px;
@@ -937,7 +888,6 @@
 
       white-space: nowrap;
     }
-
 
     .feature span {
 
@@ -964,7 +914,6 @@
       margin-bottom: 16px;
     }
 
-
     .property-tag {
 
       display: inline-flex;
@@ -985,7 +934,6 @@
 
       font-weight: 800;
     }
-
 
     .property-tag i {
 
@@ -1016,7 +964,7 @@
 
 
     /* =====================================================
-       BUTTON
+       BOTÃO VER IMÓVEL
     ===================================================== */
 
     .property-button {
@@ -1044,8 +992,9 @@
       font-weight: 800;
 
       transition: .2s;
-    }
 
+      margin-bottom: 10px;
+    }
 
     .property-button:hover {
 
@@ -1054,7 +1003,46 @@
 
 
     /* =====================================================
-       FNAI LINK
+       WHATSAPP
+    ===================================================== */
+
+    .whatsapp-button {
+
+      width: 100%;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      gap: 8px;
+
+      background: #f3f4f4;
+
+      color: #172126;
+
+      padding: 11px;
+
+      border-radius: 8px;
+
+      font-size: 12px;
+
+      font-weight: 800;
+
+      transition: .2s;
+    }
+
+    .whatsapp-button:hover {
+
+      background: #d4a72c;
+
+      color: white;
+    }
+
+
+    /* =====================================================
+       FNAI
     ===================================================== */
 
     .fnai-link {
@@ -1075,7 +1063,6 @@
 
       font-weight: 700;
     }
-
 
     .fnai-link:hover {
 
@@ -1104,7 +1091,6 @@
       color: #70787d;
     }
 
-
     .empty i {
 
       font-size: 42px;
@@ -1113,7 +1099,6 @@
 
       margin-bottom: 15px;
     }
-
 
     .empty h2 {
 
@@ -1148,7 +1133,6 @@
       flex-wrap: wrap;
     }
 
-
     .footer-logo {
 
       display: flex;
@@ -1156,12 +1140,10 @@
       flex-direction: column;
     }
 
-
     .footer-logo strong {
 
       letter-spacing: 1px;
     }
-
 
     .footer-logo span {
 
@@ -1171,7 +1153,6 @@
 
       letter-spacing: 1.5px;
     }
-
 
     footer p {
 
@@ -1193,7 +1174,6 @@
           repeat(2, 1fr);
       }
 
-
       .property-grid {
 
         grid-template-columns:
@@ -1214,7 +1194,6 @@
         padding: 18px 5%;
       }
 
-
       .navigation {
 
         width: 100%;
@@ -1224,30 +1203,25 @@
         justify-content: flex-start;
       }
 
-
       .page {
 
         padding-top: 45px;
       }
-
 
       .filter-grid {
 
         grid-template-columns: 1fr;
       }
 
-
       .property-grid {
 
         grid-template-columns: 1fr;
       }
 
-
       .property-slideshow {
 
         height: 270px;
       }
-
 
       .filters-header {
 
@@ -1255,7 +1229,6 @@
 
         flex-direction: column;
       }
-
 
       .property-features {
 
@@ -1273,18 +1246,15 @@
         font-size: 12px;
       }
 
-
       .page-heading h1 {
 
         font-size: 43px;
       }
 
-
       .filters {
 
         padding: 18px;
       }
-
 
       .property-slideshow {
 
@@ -1307,7 +1277,10 @@
 
 <header class="header">
 
-  <a href="index.html" class="logo">
+  <a
+    href="index.html"
+    class="logo"
+  >
 
     <div class="logo-circle">
       JT
@@ -1368,8 +1341,6 @@
 <main class="page">
 
 
-  <!-- CABEÇALHO -->
-
   <section class="page-heading">
 
     <div class="eyebrow">
@@ -1426,8 +1397,6 @@
     <div class="filter-grid">
 
 
-      <!-- LOCALIZAÇÃO -->
-
       <div class="filter-field">
 
         <label>
@@ -1447,8 +1416,6 @@
       </div>
 
 
-
-      <!-- TIPO -->
 
       <div class="filter-field">
 
@@ -1496,8 +1463,6 @@
 
 
 
-      <!-- PREÇO MIN -->
-
       <div class="filter-field">
 
         <label>
@@ -1519,8 +1484,6 @@
 
 
 
-      <!-- PREÇO MAX -->
-
       <div class="filter-field">
 
         <label>
@@ -1541,8 +1504,6 @@
       </div>
 
 
-
-      <!-- QUARTOS -->
 
       <div class="filter-field">
 
@@ -1590,8 +1551,6 @@
 
 
 
-      <!-- WC -->
-
       <div class="filter-field">
 
         <label>
@@ -1630,8 +1589,6 @@
 
 
 
-      <!-- ÁREA -->
-
       <div class="filter-field">
 
         <label>
@@ -1652,8 +1609,6 @@
       </div>
 
 
-
-      <!-- ORDENAR -->
 
       <div class="filter-field">
 
@@ -1688,8 +1643,6 @@
       </div>
 
 
-
-      <!-- OPÇÕES -->
 
       <div class="filter-options">
 
@@ -1792,8 +1745,6 @@
 
 
 
-  <!-- IMÓVEIS -->
-
   <section
     id="propertyGrid"
     class="property-grid"
@@ -1852,20 +1803,13 @@
     );
 
 
-
   /* =====================================================
      ESTADO
   ===================================================== */
 
   let properties = [];
 
-  /* Imóvel selecionado vindo da homepage.
-     Ex.: imoveis.html?id=123 */
-  const selectedPropertyId =
-    new URLSearchParams(window.location.search).get('id');
-
   let timers = [];
-
 
 
   /* =====================================================
@@ -1892,6 +1836,56 @@
   }
 
 
+  /*
+   * IMPORTANTE:
+   *
+   * O slug já vem da coluna "slug"
+   * existente no Supabase.
+   *
+   * Exemplo:
+   *
+   * slug = moradia-t4-braga
+   *
+   * URL:
+   *
+   * /imoveis/moradia-t4-braga/
+   */
+
+  function getPropertyUrl(property) {
+
+    if (
+      property.slug &&
+      String(property.slug).trim() !== ''
+    ) {
+
+      return (
+        'imoveis/' +
+        encodeURIComponent(
+          String(property.slug).trim()
+        ) +
+        '/'
+      );
+
+    }
+
+
+    /*
+     * Fallback apenas para segurança.
+     *
+     * Como disseste que todos os imóveis
+     * já têm slug, normalmente isto
+     * nunca será utilizado.
+     */
+
+    return (
+      'imovel.html?id=' +
+      encodeURIComponent(
+        property.id
+      )
+    );
+
+  }
+
 
   function formatPrice(price) {
 
@@ -1916,7 +1910,6 @@
     ).format(price);
 
   }
-
 
 
   function isTrue(value) {
@@ -1949,17 +1942,21 @@
 
 
     grid.innerHTML = `
+
       <div class="empty">
 
         <i class="fa-solid fa-spinner fa-spin"></i>
 
-        <h2>A carregar imóveis</h2>
+        <h2>
+          A carregar imóveis
+        </h2>
 
         <p>
           Aguarde um momento...
         </p>
 
       </div>
+
     `;
 
 
@@ -1967,7 +1964,10 @@
       await sb
         .from('imoveis')
         .select('*')
-        .eq('publicado', true)
+        .eq(
+          'publicado',
+          true
+        )
         .order(
           'created_at',
           {
@@ -1978,22 +1978,35 @@
 
     if (result.error) {
 
+      console.error(
+        result.error
+      );
+
+
       grid.innerHTML = `
+
         <div class="empty">
 
           <i class="fa-solid fa-triangle-exclamation"></i>
 
-          <h2>Não foi possível carregar os imóveis</h2>
+          <h2>
+            Não foi possível carregar os imóveis
+          </h2>
 
           <p>
-            ${escapeHtml(result.error.message)}
+            ${escapeHtml(
+              result.error.message
+            )}
           </p>
 
         </div>
+
       `;
+
 
       count.textContent =
         'Erro ao carregar imóveis.';
+
 
       return;
 
@@ -2003,15 +2016,19 @@
     properties =
       result.data || [];
 
-    /* Se a página foi aberta através de "Ver imóvel",
-       mostramos apenas o imóvel selecionado. */
-    if (selectedPropertyId) {
-      properties = properties.filter(
-        property => String(property.id) === String(selectedPropertyId)
-      );
-    }
+
+    /*
+     * IMPORTANTE:
+     *
+     * NÃO filtramos pelo ID.
+     *
+     * A página imoveis.html deve mostrar
+     * TODOS os imóveis publicados.
+     */
+
 
     await loadPhotos();
+
 
     applyFilters();
 
@@ -2020,19 +2037,22 @@
 
 
   /* =====================================================
-     CARREGAR FOTOGRAFIAS
+     FOTOGRAFIAS
   ===================================================== */
 
   async function loadPhotos() {
 
     if (!properties.length) {
+
       return;
+
     }
 
 
     const ids =
       properties.map(
-        property => property.id
+        property =>
+          property.id
       );
 
 
@@ -2059,13 +2079,18 @@
         result.error
       );
 
+
       properties =
         properties.map(
           property => ({
+
             ...property,
+
             photos: []
+
           })
         );
+
 
       return;
 
@@ -2104,7 +2129,9 @@
 
     const location =
       document
-        .getElementById('filterLocation')
+        .getElementById(
+          'filterLocation'
+        )
         .value
         .trim()
         .toLowerCase();
@@ -2112,83 +2139,109 @@
 
     const type =
       document
-        .getElementById('filterType')
+        .getElementById(
+          'filterType'
+        )
         .value;
 
 
     const minPrice =
       Number(
         document
-          .getElementById('filterMinPrice')
+          .getElementById(
+            'filterMinPrice'
+          )
           .value
       ) || 0;
 
 
     const maxPriceValue =
       document
-        .getElementById('filterMaxPrice')
+        .getElementById(
+          'filterMaxPrice'
+        )
         .value;
 
 
     const maxPrice =
       maxPriceValue === ''
         ? Infinity
-        : Number(maxPriceValue);
+        : Number(
+            maxPriceValue
+          );
 
 
     const roomsValue =
       document
-        .getElementById('filterRooms')
+        .getElementById(
+          'filterRooms'
+        )
         .value;
 
 
     const rooms =
       roomsValue === ''
         ? 0
-        : Number(roomsValue);
+        : Number(
+            roomsValue
+          );
 
 
     const bathroomsValue =
       document
-        .getElementById('filterBathrooms')
+        .getElementById(
+          'filterBathrooms'
+        )
         .value;
 
 
     const bathrooms =
       bathroomsValue === ''
         ? 0
-        : Number(bathroomsValue);
+        : Number(
+            bathroomsValue
+          );
 
 
     const area =
       Number(
         document
-          .getElementById('filterArea')
+          .getElementById(
+            'filterArea'
+          )
           .value
       ) || 0;
 
 
     const garage =
       document
-        .getElementById('filterGarage')
+        .getElementById(
+          'filterGarage'
+        )
         .checked;
 
 
     const pool =
       document
-        .getElementById('filterPool')
+        .getElementById(
+          'filterPool'
+        )
         .checked;
 
 
     const luxury =
       document
-        .getElementById('filterLuxury')
+        .getElementById(
+          'filterLuxury'
+        )
         .checked;
 
 
     const order =
       document
-        .getElementById('filterOrder')
+        .getElementById(
+          'filterOrder'
+        )
         .value;
 
 
@@ -2199,8 +2252,10 @@
 
           const propertyLocation =
             String(
-              property.localizacao || ''
-            ).toLowerCase();
+              property.localizacao ||
+              ''
+            )
+            .toLowerCase();
 
 
           const propertyPrice =
@@ -2253,7 +2308,8 @@
 
 
           if (
-            propertyPrice < minPrice
+            propertyPrice <
+            minPrice
           ) {
 
             return false;
@@ -2263,7 +2319,8 @@
 
 
           if (
-            propertyPrice > maxPrice
+            propertyPrice >
+            maxPrice
           ) {
 
             return false;
@@ -2274,7 +2331,8 @@
 
           if (
             rooms &&
-            propertyRooms < rooms
+            propertyRooms <
+            rooms
           ) {
 
             return false;
@@ -2297,7 +2355,8 @@
 
           if (
             area &&
-            propertyArea < area
+            propertyArea <
+            area
           ) {
 
             return false;
@@ -2308,7 +2367,9 @@
 
           if (
             garage &&
-            !isTrue(property.garagem)
+            !isTrue(
+              property.garagem
+            )
           ) {
 
             return false;
@@ -2319,7 +2380,9 @@
 
           if (
             pool &&
-            !isTrue(property.piscina)
+            !isTrue(
+              property.piscina
+            )
           ) {
 
             return false;
@@ -2330,7 +2393,9 @@
 
           if (
             luxury &&
-            !isTrue(property.luxo)
+            !isTrue(
+              property.luxo
+            )
           ) {
 
             return false;
@@ -2349,34 +2414,52 @@
        ORDENAR
     ==================================================== */
 
-    if (order === 'priceAsc') {
+    if (
+      order === 'priceAsc'
+    ) {
 
       filtered.sort(
         (a,b) =>
-          (Number(a.preco)||0) -
-          (Number(b.preco)||0)
+          (
+            Number(a.preco) || 0
+          ) -
+          (
+            Number(b.preco) || 0
+          )
       );
 
     }
 
 
-    if (order === 'priceDesc') {
+    if (
+      order === 'priceDesc'
+    ) {
 
       filtered.sort(
         (a,b) =>
-          (Number(b.preco)||0) -
-          (Number(a.preco)||0)
+          (
+            Number(b.preco) || 0
+          ) -
+          (
+            Number(a.preco) || 0
+          )
       );
 
     }
 
 
-    if (order === 'areaDesc') {
+    if (
+      order === 'areaDesc'
+    ) {
 
       filtered.sort(
         (a,b) =>
-          (Number(b.area)||0) -
-          (Number(a.area)||0)
+          (
+            Number(b.area) || 0
+          ) -
+          (
+            Number(a.area) || 0
+          )
       );
 
     }
@@ -2392,7 +2475,7 @@
 
   /* =====================================================
      RENDER
-  ===================================================== */
+    ===================================================== */
 
   function renderProperties(
     list
@@ -2414,16 +2497,18 @@
 
 
     count.innerHTML = `
+
       <strong>
         ${list.length}
       </strong>
+
       ${
         list.length === 1
-          ? (selectedPropertyId ? 'imóvel selecionado' : 'imóvel encontrado')
+          ? 'imóvel encontrado'
           : 'imóveis encontrados'
       }
-    `;
 
+    `;
 
 
     if (!list.length) {
@@ -2439,8 +2524,8 @@
           </h2>
 
           <p>
-            Experimente alterar ou limpar os filtros
-            de pesquisa.
+            Experimente alterar ou limpar
+            os filtros de pesquisa.
           </p>
 
         </div>
@@ -2450,7 +2535,6 @@
       return;
 
     }
-
 
 
     grid.innerHTML =
@@ -2464,7 +2548,6 @@
         .join('');
 
 
-
     initializeSlideshows();
 
   }
@@ -2472,7 +2555,7 @@
 
 
   /* =====================================================
-     CARTÃO
+     CARTÃO DO IMÓVEL
   ===================================================== */
 
   function createPropertyCard(
@@ -2480,22 +2563,25 @@
   ) {
 
     const photos =
-      Array.isArray(property.photos)
+      Array.isArray(
+        property.photos
+      )
         ? property.photos
         : [];
 
 
     let photoList =
-      photos
-        .filter(
-          photo =>
-            photo.url
-        );
+      photos.filter(
+        photo =>
+          photo.url
+      );
 
 
-
-    /* Se não houver fotos na tabela
-       tenta usar imagem_capa */
+    /*
+     * Se não houver fotografias
+     * na tabela imovel_fotos,
+     * tenta imagem_capa.
+     */
 
     if (
       !photoList.length &&
@@ -2503,14 +2589,15 @@
     ) {
 
       photoList = [
+
         {
           url:
             property.imagem_capa
         }
+
       ];
 
     }
-
 
 
     const slideshowId =
@@ -2518,12 +2605,12 @@
       property.id;
 
 
-
     let slidesHtml = '';
 
 
-
-    if (photoList.length) {
+    if (
+      photoList.length
+    ) {
 
       slidesHtml =
         photoList
@@ -2539,8 +2626,12 @@
               >
 
                 <img
-                  src="${escapeHtml(photo.url)}"
-                  alt="${escapeHtml(property.titulo)} - fotografia ${index+1}"
+                  src="${escapeHtml(
+                    photo.url
+                  )}"
+                  alt="${escapeHtml(
+                    property.titulo
+                  )} - fotografia ${index + 1}"
                   loading="${
                     index === 0
                       ? 'eager'
@@ -2555,6 +2646,7 @@
           .join('');
 
     }
+
     else {
 
       slidesHtml = `
@@ -2594,10 +2686,8 @@
     }
 
 
-
     const showControls =
       photoList.length > 1;
-
 
 
     const garage =
@@ -2618,9 +2708,7 @@
       );
 
 
-
     const tags = [];
-
 
 
     if (garage) {
@@ -2640,7 +2728,6 @@
     }
 
 
-
     if (pool) {
 
       tags.push(`
@@ -2656,7 +2743,6 @@
       `);
 
     }
-
 
 
     if (luxury) {
@@ -2677,22 +2763,39 @@
 
 
 
+    /*
+     * =====================================================
+     * URL SEO DO IMÓVEL
+     * =====================================================
+     */
+
+    const propertyUrl =
+      getPropertyUrl(
+        property
+      );
+
+
+
     return `
 
-      <article class="property-card">
+      <article
+        class="property-card"
+      >
 
 
-        <!-- SLIDESHOW -->
+        <!-- =================================================
+             IMAGEM
+        ================================================== -->
 
         <div
           class="property-slideshow"
-          id="${slideshowId}"
+          id="${escapeHtml(
+            slideshowId
+          )}"
         >
 
           ${slidesHtml}
 
-
-          <!-- FNAI WATERMARK -->
 
           <div class="fnai-watermark">
             FNAI
@@ -2729,24 +2832,28 @@
 
                 <div class="slide-dots">
 
-                  ${photoList
-                    .map(
-                      (_,index) => `
+                  ${
+                    photoList
+                      .map(
+                        (_,index) => `
 
-                        <button
-                          type="button"
-                          class="slide-dot ${
-                            index === 0
-                              ? 'active'
-                              : ''
-                          }"
-                          data-index="${index}"
-                          aria-label="Fotografia ${index+1}"
-                        ></button>
+                          <button
+                            type="button"
+                            class="slide-dot ${
+                              index === 0
+                                ? 'active'
+                                : ''
+                            }"
+                            data-index="${index}"
+                            aria-label="Fotografia ${
+                              index + 1
+                            }"
+                          ></button>
 
-                      `
-                    )
-                    .join('')}
+                        `
+                      )
+                      .join('')
+                  }
 
                 </div>
 
@@ -2758,7 +2865,9 @@
 
 
 
-        <!-- INFORMAÇÃO -->
+        <!-- =================================================
+             INFORMAÇÃO
+        ================================================== -->
 
         <div class="property-info">
 
@@ -2775,9 +2884,22 @@
 
 
           <h2>
-            ${escapeHtml(
-              property.titulo
-            )}
+
+            <a
+              href="${escapeHtml(
+                propertyUrl
+              )}"
+              aria-label="Ver ${escapeHtml(
+                property.titulo
+              )}"
+            >
+
+              ${escapeHtml(
+                property.titulo
+              )}
+
+            </a>
+
           </h2>
 
 
@@ -2816,9 +2938,13 @@
               <i class="fa-solid fa-bed"></i>
 
               <strong>
-                ${Number(
-                  property.quartos
-                ) || 0}
+
+                ${
+                  Number(
+                    property.quartos
+                  ) || 0
+                }
+
               </strong>
 
               <span>
@@ -2834,9 +2960,13 @@
               <i class="fa-solid fa-bath"></i>
 
               <strong>
-                ${Number(
-                  property.casas_banho
-                ) || 0}
+
+                ${
+                  Number(
+                    property.casas_banho
+                  ) || 0
+                }
+
               </strong>
 
               <span>
@@ -2852,6 +2982,7 @@
               <i class="fa-solid fa-ruler-combined"></i>
 
               <strong>
+
                 ${
                   property.area
                     ? escapeHtml(
@@ -2859,6 +2990,7 @@
                       )
                     : '—'
                 }
+
               </strong>
 
               <span>
@@ -2874,7 +3006,13 @@
               <i class="fa-solid fa-car"></i>
 
               <strong>
-                ${garage ? 'Sim' : 'Não'}
+
+                ${
+                  garage
+                    ? 'Sim'
+                    : 'Não'
+                }
+
               </strong>
 
               <span>
@@ -2919,17 +3057,41 @@
 
 
 
-          <!-- WHATSAPP -->
+          <!-- =================================================
+               BOTÃO SEO
+          ================================================== -->
+
+          <a
+            href="${escapeHtml(
+              propertyUrl
+            )}"
+            class="property-button"
+          >
+
+            <i class="fa-solid fa-house"></i>
+
+            Ver imóvel
+
+          </a>
+
+
+
+          <!-- =================================================
+               WHATSAPP
+          ================================================== -->
 
           <a
             href="https://wa.me/41792601145?text=${encodeURIComponent(
               'Olá Jo, gostaria de obter informações sobre o imóvel "' +
-              (property.titulo || '') +
+              (
+                property.titulo ||
+                ''
+              ) +
               '".'
             )}"
             target="_blank"
             rel="noopener"
-            class="property-button"
+            class="whatsapp-button"
           >
 
             <i class="fa-brands fa-whatsapp"></i>
@@ -2939,6 +3101,10 @@
           </a>
 
 
+
+          <!-- =================================================
+               FNAI
+          ================================================== -->
 
           ${
             property.fnai_url
@@ -3009,12 +3175,10 @@
         let timer;
 
 
-
         const dots =
           slideshow.querySelectorAll(
             '.slide-dot'
           );
-
 
 
         function showSlide(
@@ -3055,7 +3219,6 @@
         }
 
 
-
         function next() {
 
           showSlide(
@@ -3063,7 +3226,6 @@
           );
 
         }
-
 
 
         function previous() {
@@ -3075,10 +3237,12 @@
         }
 
 
-
         function start() {
 
-          clearInterval(timer);
+          clearInterval(
+            timer
+          );
+
 
           timer =
             setInterval(
@@ -3089,12 +3253,23 @@
         }
 
 
-
-        slideshow
-          .querySelector(
+        const previousButton =
+          slideshow.querySelector(
             '.slide-prev'
-          )
-          .addEventListener(
+          );
+
+
+        const nextButton =
+          slideshow.querySelector(
+            '.slide-next'
+          );
+
+
+        if (
+          previousButton
+        ) {
+
+          previousButton.addEventListener(
             'click',
             function() {
 
@@ -3105,13 +3280,14 @@
             }
           );
 
+        }
 
 
-        slideshow
-          .querySelector(
-            '.slide-next'
-          )
-          .addEventListener(
+        if (
+          nextButton
+        ) {
+
+          nextButton.addEventListener(
             'click',
             function() {
 
@@ -3122,6 +3298,7 @@
             }
           );
 
+        }
 
 
         dots.forEach(
@@ -3146,7 +3323,6 @@
         );
 
 
-
         slideshow.addEventListener(
           'mouseenter',
           function() {
@@ -3159,7 +3335,6 @@
         );
 
 
-
         slideshow.addEventListener(
           'mouseleave',
           function() {
@@ -3170,10 +3345,11 @@
         );
 
 
-
         start();
 
-        timers.push(timer);
+        timers.push(
+          timer
+        );
 
       }
     );
@@ -3190,7 +3366,9 @@
 
     timers.forEach(
       timer =>
-        clearInterval(timer)
+        clearInterval(
+          timer
+        )
     );
 
 
@@ -3201,7 +3379,7 @@
 
 
   /* =====================================================
-     BOTÃO PESQUISAR
+     PESQUISAR
   ===================================================== */
 
   document
@@ -3216,7 +3394,7 @@
 
 
   /* =====================================================
-     ENTER NOS CAMPOS
+     ENTER
   ===================================================== */
 
   document
@@ -3259,6 +3437,7 @@
     .addEventListener(
       'click',
       function() {
+
 
         document
           .getElementById(
@@ -3345,7 +3524,7 @@
 
 
   /* =====================================================
-     CARREGAR AO ABRIR
+     INICIAR
   ===================================================== */
 
   loadProperties();
