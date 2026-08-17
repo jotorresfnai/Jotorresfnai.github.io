@@ -509,99 +509,6 @@ footer span{
 
 </style>
 
-<style id="SLIDESHOW_DOS_IMOVEIS_CSS">
-.gallery.gallery-slider {
-  position: relative !important;
-  display: block !important;
-  width: 100% !important;
-  height: 600px !important;
-  overflow: hidden !important;
-  border-radius: 10px !important;
-  background: #07171b !important;
-}
-.gallery.gallery-slider .gallery-slide {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  transition: opacity .35s ease !important;
-}
-.gallery.gallery-slider .gallery-slide.active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-.gallery.gallery-slider .gallery-slide img {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  margin: 0 !important;
-}
-.gallery-slider-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  width: 52px;
-  height: 52px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(7,23,27,.78);
-  color: #fff;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  padding: 0;
-}
-.gallery-slider-prev { left: 18px; }
-.gallery-slider-next { right: 18px; }
-.gallery-slider-dots {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-.gallery-slider-dot {
-  width: 9px;
-  height: 9px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,.65);
-  cursor: pointer;
-}
-.gallery-slider-dot.active {
-  background: #c9a34a;
-  transform: scale(1.2);
-}
-.gallery-slider-counter {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  z-index: 20;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(7,23,27,.72);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-}
-@media (max-width:760px) {
-  .gallery.gallery-slider { height: 430px !important; }
-  .gallery-slider-button { width: 44px; height: 44px; }
-  .gallery-slider-prev { left: 10px; }
-  .gallery-slider-next { right: 10px; }
-}
-</style>
 </head>
 
 <body>
@@ -677,35 +584,39 @@ Voltar aos imóveis
 </a>
 
 
-    <div class="gallery gallery-slider" data-slider-ready="false"><div class="gallery-slide active" data-slide-index="0"><img
+    <div class="gallery">
+      
+          <img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/68e8de3f-5f21-44e7-ad41-6e498426af7b/optimized-eae39bea-b45c-4ab5-af3b-4242b8513be4-optimized-00478bb9-1329-46cf-b820-0639b5a50a21-optimized-c5591753-7dd2-4cc3-b731-8140ccaeb189-optimized-f1e354cd-098e-46c7-8763-ec4d6bbe1e0b-a3bf82f1-f9fd-4ae4-a793-6727e36d8d81-id89d1d201-0000-0500-0000-00001a16b4e4.webp"
             alt="Moradia T4 de luxo"
             
-          ></div>
-<div class="gallery-slide" data-slide-index="1"><img
+          >
+        
+          <img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/68e8de3f-5f21-44e7-ad41-6e498426af7b/optimized-c25b7848-82e7-4894-80a6-bd68106e86ef-optimized-013cb9f4-7ce3-4754-b206-f310cb4fd6da-optimized-1c8a95cd-dd0e-467b-9a35-fc7e445bf46b-optimized-6f5f09b1-6a4c-4bc3-b77e-f9528da2d399-5b2e4a64-1415-4331-a37e-72526daee2e1-id89d1d201-0000-0500-0000-00001a16b4e3.webp"
             alt="Moradia T4 de luxo"
             loading="lazy"
-          ></div>
-<div class="gallery-slide" data-slide-index="2"><img
+          >
+        
+          <img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/68e8de3f-5f21-44e7-ad41-6e498426af7b/optimized-bf5a1c60-d8f0-491b-a401-296092534b05-optimized-0f335d20-4c06-478d-8dee-3e7be705f15a-optimized-6b51ca28-dd68-42c3-a228-58259ad9d044-optimized-1fbfb34b-2505-4eea-8c66-3643dfad9ca5-ba1f30b9-4dd1-4f88-95a2-d3c780fcdf18-id89d1d201-0000-0500-0000-00001a16b4a6.webp"
             alt="Moradia T4 de luxo"
             loading="lazy"
-          ></div>
-<div class="gallery-slide" data-slide-index="3"><img
+          >
+        
+          <img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/68e8de3f-5f21-44e7-ad41-6e498426af7b/optimized-f45cfb9c-cb27-43c6-bac5-5f6e4850220c-optimized-9847d3de-806c-4503-b28e-83eb0abebe2d-optimized-d914982f-6674-43b3-bd37-f55d4f296e5a-optimized-5f167859-4756-4ba1-a6db-d705c395e8b0-1ab25047-8fbe-4b0f-807b-995e3e22d8bd-id89d1d201-0000-0500-0000-00001a16b49f.webp"
             alt="Moradia T4 de luxo"
             loading="lazy"
-          ></div>
-<div class="gallery-slide" data-slide-index="4"><img
+          >
+        
+          <img
             src="https://scmorocdbdyvnxodpwyi.supabase.co/storage/v1/object/public/imoveis/68e8de3f-5f21-44e7-ad41-6e498426af7b/optimized-b3dec817-1a85-4b87-ae0f-b5d867893186-optimized-cfcdffb2-0ee4-4f5b-9fdc-95511c366ca9-optimized-aaa20bba-2874-4384-bd50-464b3656970a-optimized-4b059e98-440f-407f-9486-79add62cf2a1-343133d3-3682-4b5d-8a7a-b367d9cd1186-id89d1d201-0000-0500-0000-00001a16b497.webp"
             alt="Moradia T4 de luxo"
             loading="lazy"
-          ></div><button class="gallery-slider-button gallery-slider-prev" type="button" aria-label="Fotografia anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button><button class="gallery-slider-button gallery-slider-next" type="button" aria-label="Fotografia seguinte"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button><div class="gallery-slider-dots" aria-label="Selecionar fotografia"><button class="gallery-slider-dot active" type="button" data-slide-to="0" aria-label="Fotografia 1"></button>
-<button class="gallery-slider-dot" type="button" data-slide-to="1" aria-label="Fotografia 2"></button>
-<button class="gallery-slider-dot" type="button" data-slide-to="2" aria-label="Fotografia 3"></button>
-<button class="gallery-slider-dot" type="button" data-slide-to="3" aria-label="Fotografia 4"></button>
-<button class="gallery-slider-dot" type="button" data-slide-to="4" aria-label="Fotografia 5"></button></div><div class="gallery-slider-counter" aria-live="polite">1 / 5</div></div>
+          >
+        
+    </div>
   
 
 <div class="main-grid">
@@ -893,77 +804,6 @@ CONSULTOR IMOBILIÁRIO
 
 </footer>
 
-<script id="SLIDESHOW_DOS_IMOVEIS_JS">
-(function () {
-  function initGallery(gallery) {
-    if (!gallery || gallery.dataset.sliderReady === "true") return;
-
-    const slides = Array.from(gallery.querySelectorAll(".gallery-slide"));
-    if (!slides.length) return;
-
-    gallery.dataset.sliderReady = "true";
-    let current = 0;
-
-    const dots = Array.from(gallery.querySelectorAll(".gallery-slider-dot"));
-    const counter = gallery.querySelector(".gallery-slider-counter");
-    const previous = gallery.querySelector(".gallery-slider-prev");
-    const next = gallery.querySelector(".gallery-slider-next");
-
-    function show(index) {
-      current = (index + slides.length) % slides.length;
-
-      slides.forEach(function (slide, i) {
-        slide.classList.toggle("active", i === current);
-      });
-
-      dots.forEach(function (dot, i) {
-        dot.classList.toggle("active", i === current);
-      });
-
-      if (counter) {
-        counter.textContent = (current + 1) + " / " + slides.length;
-      }
-    }
-
-    if (previous) previous.addEventListener("click", function () {
-      show(current - 1);
-    });
-
-    if (next) next.addEventListener("click", function () {
-      show(current + 1);
-    });
-
-    dots.forEach(function (dot, index) {
-      dot.addEventListener("click", function () {
-        show(index);
-      });
-    });
-
-    let startX = 0;
-    let startY = 0;
-
-    gallery.addEventListener("touchstart", function (event) {
-      if (!event.touches.length) return;
-      startX = event.touches[0].clientX;
-      startY = event.touches[0].clientY;
-    }, { passive: true });
-
-    gallery.addEventListener("touchend", function (event) {
-      if (!event.changedTouches.length) return;
-
-      const dx = event.changedTouches[0].clientX - startX;
-      const dy = event.changedTouches[0].clientY - startY;
-
-      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-      show(dx < 0 ? current + 1 : current - 1);
-    }, { passive: true });
-
-    show(0);
-  }
-
-  document.querySelectorAll(".gallery.gallery-slider").forEach(initGallery);
-})();
-</script>
 </body>
 
 </html>
