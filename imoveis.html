@@ -1836,52 +1836,37 @@
   }
 
 
-  /*
-   * IMPORTANTE:
-   *
-   * O slug já vem da coluna "slug"
-   * existente no Supabase.
-   *
-   * Exemplo:
-   *
-   * slug = moradia-t4-braga
-   *
-   * URL:
-   *
-   * /imoveis/moradia-t4-braga/
-   */
+  /* =====================================================
+     URL DO IMÓVEL
+     
+     IMPORTANTE:
+     
+     O imóvel é aberto através do slug:
+     
+     /imoveis/nome-do-slug/
+     
+     Exemplo:
+     
+     /imoveis/moradia-t4-braga/
+  ===================================================== */
 
   function getPropertyUrl(property) {
 
     if (
-      property.slug &&
-      String(property.slug).trim() !== ''
+      !property.slug ||
+      String(property.slug).trim() === ''
     ) {
 
-      return (
-        'imoveis/' +
-        encodeURIComponent(
-          String(property.slug).trim()
-        ) +
-        '/'
-      );
+      return '#';
 
     }
 
-
-    /*
-     * Fallback apenas para segurança.
-     *
-     * Como disseste que todos os imóveis
-     * já têm slug, normalmente isto
-     * nunca será utilizado.
-     */
-
     return (
-      'imovel.html?id=' +
+      'imoveis/' +
       encodeURIComponent(
-        property.id
-      )
+        String(property.slug).trim()
+      ) +
+      '/'
     );
 
   }
@@ -2018,14 +2003,8 @@
 
 
     /*
-     * IMPORTANTE:
-     *
-     * NÃO filtramos pelo ID.
-     *
-     * A página imoveis.html deve mostrar
-     * TODOS os imóveis publicados.
+     * Mostra todos os imóveis publicados.
      */
-
 
     await loadPhotos();
 
@@ -2475,7 +2454,7 @@
 
   /* =====================================================
      RENDER
-    ===================================================== */
+  ===================================================== */
 
   function renderProperties(
     list
@@ -2763,11 +2742,9 @@
 
 
 
-    /*
-     * =====================================================
-     * URL SEO DO IMÓVEL
-     * =====================================================
-     */
+    /* =====================================================
+       URL SEO DO IMÓVEL
+    ===================================================== */
 
     const propertyUrl =
       getPropertyUrl(
@@ -3058,7 +3035,7 @@
 
 
           <!-- =================================================
-               BOTÃO SEO
+               BOTÃO VER IMÓVEL
           ================================================== -->
 
           <a
