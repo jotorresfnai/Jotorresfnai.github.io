@@ -4,9 +4,6 @@ import path from "path";
 const ROOT = path.resolve("imoveis");
 
 const CSS = `
-/* =========================================================
-   SLIDESHOW DOS IMÓVEIS
-========================================================= */
 .gallery.gallery-slider {
   position: relative !important;
   display: block !important;
@@ -54,7 +51,6 @@ const CSS = `
   font-size: 20px;
   padding: 0;
 }
-.gallery-slider-button:hover { background: rgba(7, 23, 27, .95); }
 .gallery-slider-prev { left: 18px; }
 .gallery-slider-next { right: 18px; }
 .gallery-slider-dots {
@@ -105,12 +101,17 @@ const JS = `
 (function () {
   function initGallery(gallery) {
     if (!gallery || gallery.dataset.sliderReady === "true") return;
+
     const slides = Array.from(gallery.querySelectorAll(".gallery-slide"));
     if (!slides.length) return;
+
     gallery.dataset.sliderReady = "true";
     let current = 0;
+
     const dots = Array.from(gallery.querySelectorAll(".gallery-slider-dot"));
     const counter = gallery.querySelector(".gallery-slider-counter");
+    const previous = gallery.querySelector(".gallery-slider-prev");
+    const next = gallery.querySelector(".gallery-slider-next");
 
     function show(index) {
       current = (index + slides.length) % slides.length;
@@ -119,19 +120,19 @@ const JS = `
       if (counter) counter.textContent = (current + 1) + " / " + slides.length;
     }
 
-    const previous = gallery.querySelector(".gallery-slider-prev");
-    const next = gallery.querySelector(".gallery-slider-next");
     if (previous) previous.addEventListener("click", () => show(current - 1));
     if (next) next.addEventListener("click", () => show(current + 1));
     dots.forEach((dot, index) => dot.addEventListener("click", () => show(index)));
 
     let touchStartX = 0;
     let touchStartY = 0;
+
     gallery.addEventListener("touchstart", event => {
       if (!event.touches.length) return;
       touchStartX = event.touches[0].clientX;
       touchStartY = event.touches[0].clientY;
     }, { passive: true });
+
     gallery.addEventListener("touchend", event => {
       if (!event.changedTouches.length) return;
       const dx = event.changedTouches[0].clientX - touchStartX;
@@ -142,22 +143,26 @@ const JS = `
 
     show(0);
   }
+
   document.querySelectorAll(".gallery.gallery-slider").forEach(initGallery);
 })();
 `;
 
 function addAssets(html) {
   let result = html;
-  if (!result.includes("SLIDESHOW DOS IMÓVEIS")) {
+
+  if (!result.includes("SLIDESHOW_DOS_IMOVEIS_CSS")) {
     result = result.includes("</head>")
-      ? result.replace("</head>", `<style>${CSS}</style>\n</head>`)
-      : `<style>${CSS}</style>\n${result}`;
+      ? result.replace("</head>", `<style id="SLIDESHOW_DOS_IMOVEIS_CSS">${CSS}</style>\n</head>`)
+      : `<style id="SLIDESHOW_DOS_IMOVEIS_CSS">${CSS}</style>\n${result}`;
   }
-  if (!result.includes("document.querySelectorAll(\".gallery.gallery-slider\")")) {
+
+  if (!result.includes("SLIDESHOW_DOS_IMOVEIS_JS")) {
     result = result.includes("</body>")
-      ? result.replace("</body>", `<script>${JS}</script>\n</body>`)
-      : `${result}\n<script>${JS}</script>\n`;
+      ? result.replace("</body>", `<script id="SLIDESHOW_DOS_IMOVEIS_JS">${JS}</script>\n</body>`)
+      : `${result}\n<script id="SLIDESHOW_DOS_IMOVEIS_JS">${JS}</script>\n`;
   }
+
   return result;
 }
 
@@ -171,9 +176,9 @@ function buildSlider(galleryHtml) {
     </div>
   `).join("\n");
 
-  const dots = images.map((_, index) =>
-    `<button class="gallery-slider-dot${index === 0 ? " active" : ""}" type="button" data-slide-to="${index}" aria-label="Fotografia ${index + 1}"></button>`
-  ).join("\n");
+  const dots = images.map((_, index) => `
+    <button class="gallery-slider-dot${index === 0 ? " active" : ""}" type="button" data-slide-to="${index}" aria-label="Fotografia ${index + 1}"></button>
+  `).join("\n");
 
   return `
 <div class="gallery gallery-slider" data-slider-ready="false">
@@ -194,24 +199,27 @@ function buildSlider(galleryHtml) {
 
 function transformFile(filePath) {
   const original = fs.readFileSync(filePath, "utf8");
+
   if (original.includes('class="gallery gallery-slider"') || original.includes("class='gallery gallery-slider'")) {
     return false;
   }
 
-  const match = original.match(/<div\s+class=["']gallery["'][^>]*>[\s\S]*?<\/div>/i);
+  // A galeria gerada pelo generate-properties.mjs contém apenas imagens diretas.
+  // Assim evitamos apanhar um </div> interior por engano.
+  const match = original.match(/<div\s+class=["']gallery["'][^>]*>\s*(?:<img\b[^>]*>\s*)+<\/div>/i);
   if (!match) return false;
 
   const slider = buildSlider(match[0]);
   if (!slider) return false;
 
-  let html = original.replace(match[0], slider);
-  html = addAssets(html);
+  const html = addAssets(original.replace(match[0], slider));
   fs.writeFileSync(filePath, html, "utf8");
   return true;
 }
 
 function findPropertyPages() {
   if (!fs.existsSync(ROOT)) return [];
+
   return fs.readdirSync(ROOT, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .map(entry => path.join(ROOT, entry.name, "index.html"))
