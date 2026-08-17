@@ -5,16 +5,24 @@
 
 <meta charset="utf-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1"
+>
 
-<title>Imóvel | Jo Torres — Consultor Imobiliário</title>
+<title>
+Imóvel | Jo Torres — Consultor Imobiliário
+</title>
 
 <meta
 name="description"
 content="Imóvel disponível através de Jo Torres, consultor imobiliário em Portugal e representante da FNAI na Suíça."
 >
 
-<meta name="robots" content="index, follow">
+<meta
+name="robots"
+content="index, follow"
+>
 
 <link
 rel="canonical"
@@ -22,8 +30,14 @@ href="https://jotorresfnai.github.io/imovel.html"
 id="canonical"
 >
 
-<!-- Open Graph -->
-<meta property="og:type" content="website">
+<!-- =====================================================
+     OPEN GRAPH
+===================================================== -->
+
+<meta
+property="og:type"
+content="website"
+>
 
 <meta
 property="og:url"
@@ -43,7 +57,10 @@ content="Imóvel disponível através de Jo Torres, consultor imobiliário em Po
 id="ogDescription"
 >
 
-<meta property="og:locale" content="pt_PT">
+<meta
+property="og:locale"
+content="pt_PT"
+>
 
 <meta
 property="og:image"
@@ -56,7 +73,10 @@ property="og:site_name"
 content="Jo Torres — Consultor Imobiliário"
 >
 
-<!-- Twitter / X -->
+<!-- =====================================================
+     TWITTER
+===================================================== -->
+
 <meta
 name="twitter:card"
 content="summary_large_image"
@@ -80,636 +100,1376 @@ content="https://jotorresfnai.github.io/og-imovel.jpg"
 id="twitterImage"
 >
 
+<!-- =====================================================
+     FONT AWESOME
+===================================================== -->
+
 <link
 rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 >
 
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
 <script
-src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-</script>
+src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
 
 <style>
 
+/* =========================================================
+   VARIÁVEIS
+========================================================= */
+
 :root{
+
   --dark:#07171b;
+
   --gold:#c9a34a;
+
   --text:#263238;
+
   --muted:#687277;
+
   --bg:#f5f6f6;
-  --white:#fff
+
+  --white:#fff;
+
 }
 
+
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
-  box-sizing:border-box
+  box-sizing:border-box;
 }
 
 html,
 body{
+
   margin:0;
+
   padding:0;
-  overflow-x:hidden
+
+  overflow-x:hidden;
+
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   background:var(--bg);
+
   color:var(--text);
-  line-height:1.6
+
+  line-height:1.6;
+
 }
 
 a{
+
   text-decoration:none;
-  color:inherit
+
+  color:inherit;
+
 }
 
+
+/* =========================================================
+   HEADER
+========================================================= */
+
 .header{
+
   height:82px;
+
   background:var(--dark);
+
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
   padding:0 5%;
+
   position:relative;
+
   z-index:100;
-  color:#fff
+
+  color:#fff;
+
 }
 
 .logo{
+
   display:flex;
+
   align-items:center;
-  gap:12px
+
+  gap:12px;
+
 }
 
 .logo-circle{
+
   width:48px;
+
   height:48px;
+
   border:1px solid var(--gold);
+
   border-radius:50%;
+
   display:grid;
+
   place-items:center;
+
   color:var(--gold);
-  font:700 18px Georgia,serif
+
+  font:
+    700 18px Georgia,serif;
+
 }
 
 .logo-text strong{
+
   display:block;
+
   letter-spacing:2px;
-  font-size:17px
+
+  font-size:17px;
+
 }
 
 .logo-text span{
+
   display:block;
+
   color:#b9c1c3;
+
   font-size:10px;
-  letter-spacing:2px
+
+  letter-spacing:2px;
+
 }
 
 .navigation{
+
   display:flex;
+
   align-items:center;
-  gap:26px
+
+  gap:26px;
+
 }
 
 .navigation a{
+
   font-size:14px;
-  color:#fff
+
+  color:#fff;
+
 }
 
 .navigation a:hover{
-  color:var(--gold)
+
+  color:var(--gold);
+
 }
 
 .navigation .whatsapp{
+
   background:var(--gold);
+
   color:var(--dark);
+
   padding:10px 15px;
+
   border-radius:7px;
-  font-weight:800
+
+  font-weight:800;
+
 }
 
 .mobile-menu-toggle{
+
   display:none;
+
   border:0;
+
   background:none;
+
   color:#fff;
+
   font-size:30px;
+
   width:46px;
-  height:46px
+
+  height:46px;
+
 }
 
+
+/* =========================================================
+   PAGE
+========================================================= */
+
 .page{
+
   width:min(1380px,92%);
+
   margin:auto;
-  padding:30px 0 80px
+
+  padding:30px 0 80px;
+
 }
 
 .back{
+
   display:inline-flex;
+
   align-items:center;
+
   gap:8px;
+
   color:var(--muted);
+
   font-weight:700;
-  margin-bottom:20px
+
+  margin-bottom:20px;
+
 }
+
+
+/* =========================================================
+   GALERIA / SLIDESHOW
+========================================================= */
 
 .gallery{
+
   position:relative;
+
   width:100%;
+
   height:min(68vw,700px);
+
   min-height:430px;
+
   background:#0c191c;
+
   border-radius:18px;
+
   overflow:hidden;
-  box-shadow:0 15px 45px rgba(0,0,0,.12)
+
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.12);
+
 }
 
+
+/*
+   IMPORTANTE:
+   Cada slide ocupa exatamente toda a galeria.
+*/
+
 .slide{
+
   position:absolute;
+
   inset:0;
-  display:none
+
+  width:100%;
+
+  height:100%;
+
+  opacity:0;
+
+  visibility:hidden;
+
+  pointer-events:none;
+
+  transition:
+    opacity .45s ease,
+    visibility .45s ease;
+
+  z-index:1;
+
 }
 
 .slide.active{
-  display:block
+
+  opacity:1;
+
+  visibility:visible;
+
+  pointer-events:auto;
+
+  z-index:2;
+
 }
 
-.slide img{
+
+/* =========================================================
+   IMAGEM PRINCIPAL
+========================================================= */
+
+.slide img.property-image{
+
   width:100%;
+
   height:100%;
+
   object-fit:cover;
+
   display:block;
-  background:#0c191c
+
+  background:#0c191c;
+
+  transition:
+    transform .4s ease;
+
 }
 
-.slide img.broken{
+.slide img.property-image.broken{
+
   object-fit:contain;
-  padding:30px
+
+  padding:30px;
+
 }
+
+
+/* =========================================================
+   SETAS
+========================================================= */
 
 .slide-btn{
+
   position:absolute;
+
   top:50%;
+
   transform:translateY(-50%);
-  z-index:5;
-  width:52px;
-  height:52px;
+
+  z-index:10;
+
+  width:54px;
+
+  height:54px;
+
   border-radius:50%;
-  border:0;
-  background:rgba(7,23,27,.75);
+
+  border:1px solid rgba(255,255,255,.25);
+
+  background:rgba(7,23,27,.78);
+
   color:#fff;
+
   font-size:21px;
-  cursor:pointer
+
+  cursor:pointer;
+
+  display:grid;
+
+  place-items:center;
+
+  transition:
+    background .2s ease,
+    transform .2s ease;
+
+}
+
+.slide-btn:hover{
+
+  background:rgba(7,23,27,.95);
+
+}
+
+.slide-btn:active{
+
+  transform:
+    translateY(-50%)
+    scale(.94);
+
 }
 
 .prev{
-  left:20px
+
+  left:20px;
+
 }
 
 .next{
-  right:20px
+
+  right:20px;
+
 }
 
+
+/* =========================================================
+   DOTS
+========================================================= */
+
 .dots{
+
   position:absolute;
-  z-index:6;
+
+  z-index:10;
+
   left:50%;
+
   bottom:20px;
+
   transform:translateX(-50%);
+
   display:flex;
-  gap:7px
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:7px 11px;
+
+  border-radius:20px;
+
+  background:rgba(7,23,27,.38);
+
+  backdrop-filter:blur(4px);
+
 }
 
 .dot{
+
   width:9px;
+
   height:9px;
+
+  padding:0;
+
+  border:0;
+
   border-radius:50%;
-  background:rgba(255,255,255,.55);
-  cursor:pointer
+
+  background:rgba(255,255,255,.6);
+
+  cursor:pointer;
+
+  transition:
+    transform .2s ease,
+    background .2s ease;
+
 }
 
 .dot.active{
+
   background:var(--gold);
-  transform:scale(1.15)
+
+  transform:scale(1.25);
+
 }
+
+
+/* =========================================================
+   CONTADOR
+========================================================= */
+
+.slide-counter{
+
+  position:absolute;
+
+  z-index:10;
+
+  top:18px;
+
+  left:18px;
+
+  background:rgba(7,23,27,.72);
+
+  color:#fff;
+
+  padding:6px 11px;
+
+  border-radius:20px;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  backdrop-filter:blur(4px);
+
+}
+
+
+/* =========================================================
+   FNAI
+========================================================= */
 
 .fnai-watermark{
+
   position:absolute;
+
   right:25px;
+
   bottom:18px;
-  z-index:6;
+
+  z-index:10;
+
   color:#fff;
+
   font-weight:900;
+
   font-size:28px;
-  text-shadow:0 2px 5px rgba(0,0,0,.6);
-  letter-spacing:1px
+
+  text-shadow:
+    0 2px 5px rgba(0,0,0,.6);
+
+  letter-spacing:1px;
+
 }
 
+
+/* =========================================================
+   MINIATURAS
+========================================================= */
+
+.thumbs{
+
+  display:flex;
+
+  gap:9px;
+
+  overflow-x:auto;
+
+  margin-top:10px;
+
+  padding:2px 2px 6px;
+
+  scrollbar-width:thin;
+
+}
+
+.thumb{
+
+  width:90px;
+
+  height:64px;
+
+  flex:0 0 90px;
+
+  border:2px solid transparent;
+
+  border-radius:7px;
+
+  overflow:hidden;
+
+  cursor:pointer;
+
+  background:#ddd;
+
+  padding:0;
+
+  opacity:.7;
+
+  transition:
+    opacity .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
+
+}
+
+.thumb:hover{
+
+  opacity:1;
+
+}
+
+.thumb.active{
+
+  border-color:var(--gold);
+
+  opacity:1;
+
+  transform:translateY(-1px);
+
+}
+
+.thumb img{
+
+  width:100%;
+
+  height:100%;
+
+  object-fit:cover;
+
+  display:block;
+
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
 .content-grid{
+
   display:grid;
-  grid-template-columns:minmax(0,1.75fr) 360px;
+
+  grid-template-columns:
+    minmax(0,1.75fr)
+    360px;
+
   gap:45px;
-  margin-top:45px
+
+  margin-top:45px;
+
 }
 
 .eyebrow{
+
   font-size:12px;
+
   letter-spacing:2px;
+
   font-weight:800;
+
   color:var(--gold);
-  text-transform:uppercase
+
+  text-transform:uppercase;
+
 }
 
 .title{
-  font:700 clamp(40px,5vw,68px)/1.05 Georgia,serif;
+
+  font:
+    700 clamp(40px,5vw,68px)/1.05
+    Georgia,serif;
+
   color:var(--dark);
-  margin:7px 0 12px
+
+  margin:7px 0 12px;
+
 }
 
 .location{
+
   display:flex;
+
   gap:8px;
+
   align-items:center;
+
   color:var(--muted);
-  font-size:17px
+
+  font-size:17px;
+
 }
 
 .location i{
-  color:var(--gold)
+
+  color:var(--gold);
+
 }
 
 .price{
+
   font-size:34px;
+
   font-weight:900;
+
   color:var(--dark);
-  margin:20px 0 28px
+
+  margin:20px 0 28px;
+
 }
 
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
 .features{
+
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+
+  grid-template-columns:
+    repeat(5,1fr);
+
   border-top:1px solid #e0e4e5;
+
   border-bottom:1px solid #e0e4e5;
+
   padding:20px 0;
-  margin-bottom:32px
+
+  margin-bottom:32px;
+
 }
 
 .feature{
+
   text-align:center;
-  border-right:1px solid #e0e4e5
+
+  border-right:1px solid #e0e4e5;
+
 }
 
 .feature:last-child{
-  border-right:0
+
+  border-right:0;
+
 }
 
 .feature i{
+
   display:block;
+
   color:var(--gold);
+
   font-size:18px;
-  margin-bottom:4px
+
+  margin-bottom:4px;
+
 }
 
 .feature strong{
+
   display:block;
+
   font-size:17px;
-  color:var(--dark)
+
+  color:var(--dark);
+
 }
 
 .feature span{
+
   font-size:11px;
-  color:var(--muted)
+
+  color:var(--muted);
+
 }
 
+
+/* =========================================================
+   TAGS
+========================================================= */
+
 .tags{
+
   display:flex;
+
   gap:8px;
+
   flex-wrap:wrap;
-  margin:0 0 28px
+
+  margin:0 0 28px;
+
 }
 
 .tag{
+
   display:inline-flex;
+
   align-items:center;
+
   gap:6px;
+
   background:#fff;
+
   border:1px solid #e1e5e6;
+
   border-radius:7px;
+
   padding:7px 10px;
+
   color:#596367;
+
   font-size:12px;
-  font-weight:800
+
+  font-weight:800;
+
 }
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
 
 .description,
 .address,
 .energy-section{
-  margin-top:32px
+
+  margin-top:32px;
+
 }
 
 .description h2,
 .address h2,
 .map-section h2{
-  font:700 32px Georgia,serif;
+
+  font:
+    700 32px Georgia,serif;
+
   color:var(--dark);
-  margin:0 0 12px
+
+  margin:0 0 12px;
+
 }
 
 .description p,
 .address p{
+
   white-space:pre-line;
+
   color:#596367;
+
   font-size:16px;
-  margin:0
+
+  margin:0;
+
 }
 
+
+/* =========================================================
+   CARD
+========================================================= */
+
 .card{
+
   background:#fff;
+
   border-radius:16px;
+
   border:1px solid #e4e8e9;
+
   padding:25px;
-  box-shadow:0 10px 35px rgba(0,0,0,.06);
-  height:max-content
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.06);
+
+  height:max-content;
+
 }
 
 .card h2{
-  font:700 28px Georgia,serif;
+
+  font:
+    700 28px Georgia,serif;
+
   color:var(--dark);
-  margin:0 0 18px
+
+  margin:0 0 18px;
+
 }
 
 .contact-btn{
+
   display:flex;
+
   justify-content:center;
+
   align-items:center;
+
   gap:9px;
+
   background:var(--dark);
+
   color:#fff;
+
   border-radius:8px;
+
   padding:14px;
-  font-weight:800
+
+  font-weight:800;
+
 }
 
 .fnai-link{
+
   display:flex;
+
   justify-content:center;
+
   align-items:center;
+
   gap:8px;
+
   color:#8a6a18;
+
   font-weight:800;
+
   font-size:13px;
-  margin-top:16px
+
+  margin-top:16px;
+
 }
 
+
+/* =========================================================
+   ENERGIA
+========================================================= */
+
 .energy{
+
   border-top:1px solid #e7e9ea;
+
   margin-top:22px;
-  padding-top:20px
+
+  padding-top:20px;
+
 }
 
 .energy-label{
+
   font-size:13px;
+
   color:var(--muted);
-  margin-bottom:9px
+
+  margin-bottom:9px;
+
 }
 
 .energy-symbol{
+
   width:52px;
+
   height:52px;
+
   background:#69a93e;
+
   color:#fff;
+
   display:grid;
+
   place-items:center;
+
   font-size:25px;
+
   font-weight:900;
-  border-radius:2px
+
+  border-radius:2px;
+
 }
+
 
 /* =========================================================
    MAPA
-   ========================================================= */
+========================================================= */
 
 .map-section{
-  margin-top:60px
+
+  margin-top:60px;
+
 }
 
 .map{
+
   height:520px;
+
   width:100%;
+
   border-radius:18px;
+
   overflow:hidden;
+
   background:#e8ebec;
+
   border:1px solid #dfe4e5;
+
   position:relative;
-  display:block
+
+  display:block;
+
 }
 
 .map iframe{
+
   display:block;
+
   width:100%;
+
   height:100%;
+
   min-height:520px;
-  border:0
+
+  border:0;
+
 }
 
-/* LINK DE RESERVA PARA TELEMÓVEL */
+
+/* =========================================================
+   MAPA MOBILE LINK
+========================================================= */
 
 .map-open{
+
   display:none;
+
   margin-top:12px;
+
   width:100%;
+
   padding:14px 18px;
+
   border-radius:8px;
+
   background:var(--dark);
+
   color:#fff;
+
   text-align:center;
-  font-weight:800
+
+  font-weight:800;
+
 }
 
 .map-open i{
+
   color:var(--gold);
-  margin-right:7px
+
+  margin-right:7px;
+
 }
 
 .map-empty{
+
   height:100%;
+
   display:grid;
+
   place-items:center;
+
   color:var(--muted);
+
   padding:30px;
-  text-align:center
+
+  text-align:center;
+
 }
 
-.thumbs{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  margin-top:10px
-}
 
-.thumb{
-  width:82px;
-  height:58px;
-  flex:0 0 82px;
-  border:2px solid transparent;
-  border-radius:6px;
-  overflow:hidden;
-  cursor:pointer;
-  background:#ddd
-}
-
-.thumb.active{
-  border-color:var(--gold)
-}
-
-.thumb img{
-  width:100%;
-  height:100%;
-  object-fit:cover
-}
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
 
 .loading,
 .error{
+
   padding:60px;
+
   text-align:center;
+
   background:#fff;
-  border-radius:16px
+
+  border-radius:16px;
+
 }
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media(max-width:760px){
 
   .header{
-    height:78px
+
+    height:78px;
+
   }
 
   .mobile-menu-toggle{
+
     display:grid;
+
     place-items:center;
+
     position:relative;
-    z-index:1003
+
+    z-index:1003;
+
   }
 
   .navigation{
+
     position:absolute!important;
+
     top:100%!important;
+
     left:0!important;
+
     width:100%!important;
+
     display:flex!important;
+
     flex-direction:column!important;
+
     align-items:stretch!important;
+
     gap:0!important;
+
     padding:10px 5% 18px!important;
+
     background:var(--dark)!important;
+
     opacity:0;
+
     visibility:hidden;
+
     pointer-events:none;
-    box-shadow:0 14px 28px rgba(0,0,0,.25);
-    transition:.18s
+
+    box-shadow:
+      0 14px 28px rgba(0,0,0,.25);
+
+    transition:.18s;
+
   }
 
   .navigation.mobile-open{
+
     opacity:1;
+
     visibility:visible;
-    pointer-events:auto
+
+    pointer-events:auto;
+
   }
 
   .navigation a{
+
     padding:15px 5px;
-    border-bottom:1px solid rgba(255,255,255,.1);
-    font-size:18px
+
+    border-bottom:
+      1px solid rgba(255,255,255,.1);
+
+    font-size:18px;
+
   }
 
   .navigation .whatsapp{
+
     margin-top:12px;
-    text-align:center
+
+    text-align:center;
+
   }
 
   .page{
+
     width:92%;
-    padding-top:22px
+
+    padding-top:22px;
+
   }
 
+
+  /* =======================================================
+     GALERIA MOBILE
+  ======================================================= */
+
   .gallery{
+
     height:65vw;
+
     min-height:300px;
-    border-radius:12px
+
+    max-height:600px;
+
+    border-radius:12px;
+
+    touch-action:pan-y;
+
+  }
+
+  .slide img.property-image{
+
+    object-fit:cover;
+
   }
 
   .slide-btn{
+
     width:44px;
-    height:44px
+
+    height:44px;
+
+    font-size:17px;
+
   }
 
   .prev{
-    left:10px
+
+    left:10px;
+
   }
 
   .next{
-    right:10px
+
+    right:10px;
+
+  }
+
+  .slide-counter{
+
+    top:12px;
+
+    left:12px;
+
+    font-size:11px;
+
+  }
+
+  .dots{
+
+    bottom:12px;
+
   }
 
   .fnai-watermark{
+
     font-size:22px;
+
     right:14px;
-    bottom:12px
+
+    bottom:12px;
+
   }
 
+  .thumb{
+
+    width:78px;
+
+    height:55px;
+
+    flex-basis:78px;
+
+  }
+
+
+  /* =======================================================
+     CONTEÚDO MOBILE
+  ======================================================= */
+
   .content-grid{
+
     grid-template-columns:1fr;
+
     gap:25px;
-    margin-top:30px
+
+    margin-top:30px;
+
   }
 
   .title{
-    font-size:42px
+
+    font-size:42px;
+
   }
 
   .price{
-    font-size:28px
+
+    font-size:28px;
+
   }
 
   .features{
-    grid-template-columns:repeat(2,1fr);
-    gap:0
+
+    grid-template-columns:
+      repeat(2,1fr);
+
+    gap:0;
+
   }
 
   .feature{
+
     padding:12px 4px;
-    border-bottom:1px solid #e0e4e5
+
+    border-bottom:
+      1px solid #e0e4e5;
+
   }
 
   .feature:nth-child(2n){
-    border-right:0
+
+    border-right:0;
+
   }
+
 
   /* =======================================================
      MAPA MOBILE
-     ======================================================= */
+  ======================================================= */
 
   .map-section{
-    margin-top:45px
+
+    margin-top:45px;
+
   }
 
   .map{
+
     height:380px;
+
     min-height:380px;
+
     width:100%;
+
     position:relative;
+
     display:block;
+
     overflow:hidden;
-    border-radius:14px
+
+    border-radius:14px;
+
   }
 
   .map iframe{
+
     display:block;
+
     width:100%;
+
     height:380px;
+
     min-height:380px;
-    border:0
+
+    border:0;
+
   }
 
   .map-open{
-    display:block
+
+    display:block;
+
+  }
+
+}
+
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+  .slide,
+  .thumb,
+  .dot,
+  .slide-btn{
+
+    transition:none!important;
+
   }
 
 }
@@ -718,11 +1478,20 @@ a{
 
 </head>
 
+
 <body>
+
+
+<!-- =======================================================
+     HEADER
+======================================================= -->
 
 <header class="header">
 
-<a class="logo" href="index.html">
+<a
+class="logo"
+href="index.html"
+>
 
 <div class="logo-circle">
 JT
@@ -742,6 +1511,7 @@ CONSULTOR IMOBILIÁRIO
 
 </a>
 
+
 <button
 class="mobile-menu-toggle"
 id="menuToggle"
@@ -752,6 +1522,7 @@ aria-expanded="false"
 <i class="fa-solid fa-bars"></i>
 
 </button>
+
 
 <nav
 class="navigation"
@@ -791,6 +1562,11 @@ WhatsApp
 
 </header>
 
+
+<!-- =======================================================
+     MAIN
+======================================================= -->
+
 <main class="page">
 
 <a
@@ -803,6 +1579,7 @@ href="imoveis.html"
 Voltar aos imóveis
 
 </a>
+
 
 <div
 id="app"
@@ -830,8 +1607,8 @@ const SUPABASE_KEY =
 
 const sb =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
@@ -840,7 +1617,9 @@ SUPABASE_KEY
 ========================================================= */
 
 const id =
-new URLSearchParams(location.search).get('id');
+new URLSearchParams(
+  location.search
+).get('id');
 
 const app =
 document.getElementById('app');
@@ -852,23 +1631,32 @@ document.getElementById('app');
 
 document
 .getElementById('menuToggle')
-.addEventListener('click',()=>{
+.addEventListener(
+  'click',
+  ()=>{
 
-  const n =
-  document.getElementById('navigation');
+    const navigation =
+    document.getElementById(
+      'navigation'
+    );
 
-  const b =
-  document.getElementById('menuToggle');
+    const button =
+    document.getElementById(
+      'menuToggle'
+    );
 
-  const open =
-  n.classList.toggle('mobile-open');
+    const open =
+    navigation.classList.toggle(
+      'mobile-open'
+    );
 
-  b.setAttribute(
-    'aria-expanded',
-    open ? 'true' : 'false'
-  );
+    button.setAttribute(
+      'aria-expanded',
+      open ? 'true' : 'false'
+    );
 
-});
+  }
+);
 
 
 /* =========================================================
@@ -883,9 +1671,13 @@ function esc(v){
     c=>({
 
       '&':'&amp;',
+
       '<':'&lt;',
+
       '>':'&gt;',
+
       '"':'&quot;',
+
       "'":'&#039;'
 
     }[c])
@@ -900,14 +1692,17 @@ function esc(v){
 
 function publicUrl(path){
 
-  return path
-    ?
-    sb.storage
-      .from('imoveis')
-      .getPublicUrl(path)
-      .data.publicUrl
-    :
-    '';
+  if(!path){
+
+    return '';
+
+  }
+
+  return sb.storage
+    .from('imoveis')
+    .getPublicUrl(path)
+    .data
+    .publicUrl || '';
 
 }
 
@@ -918,25 +1713,35 @@ function publicUrl(path){
 
 function candidates(photo){
 
-  const a=[];
+  const result=[];
 
-  if(photo?.url){
+  if(
+    photo &&
+    photo.url
+  ){
 
-    a.push(photo.url);
+    result.push(
+      photo.url
+    );
 
   }
 
-  if(photo?.storage_path){
+  if(
+    photo &&
+    photo.storage_path
+  ){
 
-    a.push(
-      publicUrl(photo.storage_path)
+    result.push(
+      publicUrl(
+        photo.storage_path
+      )
     );
 
   }
 
   return [
     ...new Set(
-      a.filter(Boolean)
+      result.filter(Boolean)
     )
   ];
 
@@ -956,15 +1761,22 @@ function imageHtml(
   const srcs =
   candidates(photo);
 
+  const first =
+  srcs[0] || '';
+
   return `
 
 <img
 class="property-image"
-data-sources="${esc(JSON.stringify(srcs))}"
-src="${esc(srcs[0]||'')}"
+data-sources="${esc(
+  JSON.stringify(srcs)
+)}"
+data-source-index="0"
+src="${esc(first)}"
 alt="${esc(title)} — fotografia ${i+1}"
-loading="${i?'lazy':'eager'}"
+loading="${i===0?'eager':'lazy'}"
 decoding="async"
+draggable="false"
 onerror="tryNextImage(this)"
 >
 
@@ -988,26 +1800,38 @@ function tryNextImage(img){
       img.dataset.sources || '[]'
     );
 
-  }catch(e){}
+  }catch(error){
 
-  const next =
+    sources=[];
+
+  }
+
+  const current =
   Number(
     img.dataset.sourceIndex || 0
-  ) + 1;
+  );
 
-  if(next < sources.length){
+  const next =
+    current + 1;
+
+  if(
+    next <
+    sources.length
+  ){
 
     img.dataset.sourceIndex =
-    next;
+      String(next);
 
     img.src =
-    sources[next];
+      sources[next];
 
     return;
 
   }
 
-  img.classList.add('broken');
+  img.classList.add(
+    'broken'
+  );
 
   img.removeAttribute(
     'onerror'
@@ -1044,7 +1868,7 @@ function mapUrl(address){
 
 
 /* =========================================================
-   LINK GOOGLE MAPS
+   GOOGLE MAPS
 ========================================================= */
 
 function googleMapsUrl(address){
@@ -1073,6 +1897,17 @@ function money(v){
 
   }
 
+  const number =
+    Number(v);
+
+  if(
+    Number.isNaN(number)
+  ){
+
+    return 'Preço sob consulta';
+
+  }
+
   return new Intl.NumberFormat(
     'pt-PT',
     {
@@ -1080,9 +1915,7 @@ function money(v){
       currency:'EUR',
       maximumFractionDigits:0
     }
-  ).format(
-    Number(v)
-  );
+  ).format(number);
 
 }
 
@@ -1114,10 +1947,11 @@ function safeNum(
 
 function energyHtml(e){
 
-  const x =
-  String(e||'').trim();
+  const value =
+    String(e || '')
+    .trim();
 
-  if(!x){
+  if(!value){
 
     return '';
 
@@ -1134,7 +1968,7 @@ Categoria Energética
 </div>
 
 <div class="energy-symbol">
-${esc(x)}
+${esc(value)}
 </div>
 
 </section>
@@ -1145,7 +1979,7 @@ ${esc(x)}
 
 
 /* =========================================================
-   SEO DINÂMICO
+   SEO
 ========================================================= */
 
 function updateSEO(
@@ -1157,67 +1991,72 @@ function updateSEO(
 ){
 
   const baseUrl =
-  'https://jotorresfnai.github.io/imovel.html';
+    'https://jotorresfnai.github.io/imovel.html';
 
   const canonicalUrl =
-  baseUrl +
-  '?id=' +
-  encodeURIComponent(p.id);
+    baseUrl +
+    '?id=' +
+    encodeURIComponent(p.id);
+
 
   const cleanDescription =
-  description
-  ?
-  String(description)
-    .replace(/\s+/g,' ')
-    .trim()
-    .substring(0,155)
-  :
-  (
-    title +
+    description
+    ?
+    String(description)
+      .replace(/\s+/g,' ')
+      .trim()
+      .substring(0,155)
+    :
     (
-      location
-      ?
-      ' em ' + location
-      :
-      ''
-    ) +
-    ' — imóvel disponível através de Jo Torres.'
-  );
+      title +
+      (
+        location
+        ?
+        ' em ' + location
+        :
+        ''
+      ) +
+      ' — imóvel disponível através de Jo Torres.'
+    );
+
 
   const seoTitle =
-  (
-    p.seo_titulo
-    ||
-    title +
     (
-      location
-      ?
-      ' em ' + location
-      :
-      ''
+      p.seo_titulo
+      ||
+      title +
+      (
+        location
+        ?
+        ' em ' + location
+        :
+        ''
+      )
     )
-  )
-  +
-  ' | Jo Torres';
+    +
+    ' | Jo Torres';
+
 
   document.title =
-  seoTitle;
+    seoTitle;
 
 
   /* DESCRIPTION */
 
   let descriptionTag =
-  document.querySelector(
-    'meta[name="description"]'
-  );
+    document.querySelector(
+      'meta[name="description"]'
+    );
 
   if(!descriptionTag){
 
     descriptionTag =
-    document.createElement('meta');
+      document.createElement(
+        'meta'
+      );
 
     descriptionTag.name =
-    'description';
+      'description';
 
     document.head.appendChild(
       descriptionTag
@@ -1226,90 +2065,90 @@ function updateSEO(
   }
 
   descriptionTag.content =
-  cleanDescription;
+    cleanDescription;
 
 
   /* ROBOTS */
 
-  let robotsTag =
-  document.querySelector(
-    'meta[name="robots"]'
-  );
+  const robotsTag =
+    document.querySelector(
+      'meta[name="robots"]'
+    );
 
   if(robotsTag){
 
     robotsTag.content =
-    'index, follow';
+      'index, follow';
 
   }
 
 
   /* CANONICAL */
 
-  let canonical =
-  document.getElementById(
-    'canonical'
-  );
+  const canonical =
+    document.getElementById(
+      'canonical'
+    );
 
   if(canonical){
 
     canonical.href =
-    canonicalUrl;
+      canonicalUrl;
 
   }
 
 
-  /* OPEN GRAPH URL */
+  /* OG URL */
 
   const ogUrl =
-  document.getElementById(
-    'ogUrl'
-  );
+    document.getElementById(
+      'ogUrl'
+    );
 
   if(ogUrl){
 
     ogUrl.content =
-    canonicalUrl;
+      canonicalUrl;
 
   }
 
 
-  /* OPEN GRAPH TITLE */
+  /* OG TITLE */
 
   const ogTitle =
-  document.getElementById(
-    'ogTitle'
-  );
+    document.getElementById(
+      'ogTitle'
+    );
 
   if(ogTitle){
 
     ogTitle.content =
-    seoTitle;
+      seoTitle;
 
   }
 
 
-  /* OPEN GRAPH DESCRIPTION */
+  /* OG DESCRIPTION */
 
   const ogDescription =
-  document.getElementById(
-    'ogDescription'
-  );
+    document.getElementById(
+      'ogDescription'
+    );
 
   if(ogDescription){
 
     ogDescription.content =
-    cleanDescription;
+      cleanDescription;
 
   }
 
 
-  /* OPEN GRAPH IMAGE */
+  /* OG IMAGE */
 
   const ogImage =
-  document.getElementById(
-    'ogImage'
-  );
+    document.getElementById(
+      'ogImage'
+    );
 
   if(
     ogImage &&
@@ -1317,43 +2156,47 @@ function updateSEO(
   ){
 
     ogImage.content =
-    image;
+      image;
 
   }
 
 
-  /* TWITTER */
+  /* TWITTER TITLE */
 
   const twitterTitle =
-  document.getElementById(
-    'twitterTitle'
-  );
+    document.getElementById(
+      'twitterTitle'
+    );
 
   if(twitterTitle){
 
     twitterTitle.content =
-    seoTitle;
+      seoTitle;
 
   }
 
 
+  /* TWITTER DESCRIPTION */
+
   const twitterDescription =
-  document.getElementById(
-    'twitterDescription'
-  );
+    document.getElementById(
+      'twitterDescription'
+    );
 
   if(twitterDescription){
 
     twitterDescription.content =
-    cleanDescription;
+      cleanDescription;
 
   }
 
 
+  /* TWITTER IMAGE */
+
   const twitterImage =
-  document.getElementById(
-    'twitterImage'
-  );
+    document.getElementById(
+      'twitterImage'
+    );
 
   if(
     twitterImage &&
@@ -1361,19 +2204,19 @@ function updateSEO(
   ){
 
     twitterImage.content =
-    image;
+      image;
 
   }
 
 
   /* =====================================================
-     DADOS ESTRUTURADOS
+     SCHEMA
   ===================================================== */
 
   const oldSchema =
-  document.getElementById(
-    'propertySchema'
-  );
+    document.getElementById(
+      'propertySchema'
+    );
 
   if(oldSchema){
 
@@ -1383,57 +2226,57 @@ function updateSEO(
 
 
   const schema =
-  document.createElement(
-    'script'
-  );
+    document.createElement(
+      'script'
+    );
 
   schema.type =
-  'application/ld+json';
+    'application/ld+json';
 
   schema.id =
-  'propertySchema';
+    'propertySchema';
 
 
   const schemaData = {
 
     "@context":
-    "https://schema.org",
+      "https://schema.org",
 
     "@type":
-    "RealEstateListing",
+      "RealEstateListing",
 
     "name":
-    title,
+      title,
 
     "url":
-    canonicalUrl,
+      canonicalUrl,
 
     "description":
-    cleanDescription,
+      cleanDescription,
 
     "image":
-    image
-    ?
-    [image]
-    :
-    [],
+      image
+      ?
+      [image]
+      :
+      [],
 
     "inLanguage":
-    "pt-PT",
+      "pt-PT",
 
     "provider":{
 
       "@type":
-      "Person",
+        "Person",
 
       "name":
-      "Jo Torres",
+        "Jo Torres",
 
       "jobTitle":
-      "Consultor Imobiliário",
+        "Consultor Imobiliário",
 
       "url":
-      "https://jotorresfnai.github.io/"
+        "https://jotorresfnai.github.io/"
 
     }
 
@@ -1445,13 +2288,13 @@ function updateSEO(
     schemaData.address = {
 
       "@type":
-      "PostalAddress",
+        "PostalAddress",
 
       "addressLocality":
-      location,
+        location,
 
       "addressCountry":
-      "PT"
+        "PT"
 
     };
 
@@ -1467,19 +2310,19 @@ function updateSEO(
     schemaData.offers = {
 
       "@type":
-      "Offer",
+        "Offer",
 
       "price":
-      Number(p.preco),
+        Number(p.preco),
 
       "priceCurrency":
-      "EUR",
+        "EUR",
 
       "availability":
-      "https://schema.org/InStock",
+        "https://schema.org/InStock",
 
       "url":
-      canonicalUrl
+        canonicalUrl
 
     };
 
@@ -1495,13 +2338,13 @@ function updateSEO(
     schemaData.floorSize = {
 
       "@type":
-      "QuantitativeValue",
+        "QuantitativeValue",
 
       "value":
-      Number(p.area),
+        Number(p.area),
 
       "unitCode":
-      "MTK"
+        "MTK"
 
     };
 
@@ -1515,16 +2358,15 @@ function updateSEO(
   ){
 
     schemaData.numberOfRooms =
-    Number(p.quartos);
+      Number(p.quartos);
 
   }
 
 
   schema.textContent =
-  JSON.stringify(
-    schemaData
-  );
-
+    JSON.stringify(
+      schemaData
+    );
 
   document.head.appendChild(
     schema
@@ -1539,12 +2381,14 @@ function updateSEO(
 
 async function load(){
 
-  /* SEM ID */
+  /* =====================================================
+     SEM ID
+  ===================================================== */
 
   if(!id){
 
     app.className =
-    'error';
+      'error';
 
     app.innerHTML = `
 
@@ -1572,23 +2416,24 @@ Falta o ID do imóvel no endereço.
     error
   } =
   await sb
-  .from('imoveis')
-  .select('*')
-  .eq('id',id)
-  .maybeSingle();
+    .from('imoveis')
+    .select('*')
+    .eq('id',id)
+    .maybeSingle();
 
-
-  /* ERRO */
 
   if(
     error ||
     !p
   ){
 
-    console.error(error);
+    console.error(
+      'Erro ao carregar imóvel:',
+      error
+    );
 
     app.className =
-    'error';
+      'error';
 
     app.innerHTML = `
 
@@ -1616,20 +2461,21 @@ Não foi possível carregar o imóvel selecionado.
     error:photoError
   } =
   await sb
-  .from('imovel_fotos')
-  .select('*')
-  .eq('imovel_id',id)
-  .order(
-    'ordem',
-    {
-      ascending:true
-    }
-  );
+    .from('imovel_fotos')
+    .select('*')
+    .eq('imovel_id',id)
+    .order(
+      'ordem',
+      {
+        ascending:true
+      }
+    );
 
 
   if(photoError){
 
     console.warn(
+      'Erro ao carregar fotografias:',
       photoError
     );
 
@@ -1637,15 +2483,20 @@ Não foi possível carregar o imóvel selecionado.
 
 
   const rows =
-  (photos||[])
-  .filter(
-    x =>
-      x.url ||
-      x.storage_path
-  );
+    (photos || [])
+    .filter(
+      photo =>
+        photo &&
+        (
+          photo.url ||
+          photo.storage_path
+        )
+    );
 
 
-  /* FOTO DE CAPA */
+  /* =====================================================
+     FOTO DE CAPA COMO FALLBACK
+  ===================================================== */
 
   if(
     !rows.length &&
@@ -1655,13 +2506,13 @@ Não foi possível carregar o imóvel selecionado.
     rows.push({
 
       url:
-      p.imagem_capa,
+        p.imagem_capa,
 
       storage_path:
-      null,
+        null,
 
       ordem:
-      0
+        0
 
     });
 
@@ -1673,26 +2524,26 @@ Não foi possível carregar o imóvel selecionado.
   ===================================================== */
 
   const title =
-  p.titulo ||
-  'Imóvel';
+    p.titulo ||
+    'Imóvel';
 
   const address =
-  p.endereco ||
-  '';
+    p.endereco ||
+    '';
 
   const loc =
-  p.localizacao ||
-  '';
+    p.localizacao ||
+    '';
 
   const energy =
-  String(
-    p.categoria_energetica ||
-    ''
-  ).trim();
+    String(
+      p.categoria_energetica ||
+      ''
+    ).trim();
 
   const description =
-  p.descricao ||
-  '';
+    p.descricao ||
+    '';
 
 
   /* =====================================================
@@ -1700,18 +2551,18 @@ Não foi possível carregar o imóvel selecionado.
   ===================================================== */
 
   let mainImage =
-  '';
+    '';
 
   if(rows.length){
 
     const firstSources =
-    candidates(
-      rows[0]
-    );
+      candidates(
+        rows[0]
+      );
 
     mainImage =
-    firstSources[0] ||
-    '';
+      firstSources[0] ||
+      '';
 
   }
 
@@ -1721,7 +2572,7 @@ Não foi possível carregar o imóvel selecionado.
   ){
 
     mainImage =
-    p.imagem_capa;
+      p.imagem_capa;
 
   }
 
@@ -1740,72 +2591,93 @@ Não foi possível carregar o imóvel selecionado.
 
 
   /* =====================================================
-     GALERIA
+     SLIDES
   ===================================================== */
 
   const slides =
-  rows
-  .map(
-    (photo,i)=>
+    rows
+      .map(
+        (photo,i)=>`
 
-      `<div
-        class="slide ${i===0?'active':''}"
-        data-index="${i}"
-      >
-        ${imageHtml(
-          photo,
-          i,
-          title
-        )}
-      </div>`
+<div
+class="slide ${i===0?'active':''}"
+data-index="${i}"
+>
 
-  )
-  .join('');
+${imageHtml(
+  photo,
+  i,
+  title
+)}
 
+</div>
 
-  const dots =
-  rows
-  .map(
-    (_,i)=>
-
-      `<span
-        class="dot ${i===0?'active':''}"
-        data-i="${i}"
-        aria-label="Fotografia ${i+1}"
-      ></span>`
-
-  )
-  .join('');
-
-
-  const thumbs =
-  rows
-  .map(
-    (photo,i)=>
-
-      `<div
-        class="thumb ${i===0?'active':''}"
-        data-i="${i}"
-      >
-        ${imageHtml(
-          photo,
-          i,
-          title
-        )}
-      </div>`
-
-  )
-  .join('');
+`
+      )
+      .join('');
 
 
   /* =====================================================
-     CONTEÚDO
+     DOTS
+  ===================================================== */
+
+  const dots =
+    rows
+      .map(
+        (_,i)=>`
+
+<button
+type="button"
+class="dot ${i===0?'active':''}"
+data-i="${i}"
+aria-label="Ir para fotografia ${i+1}"
+></button>
+
+`
+      )
+      .join('');
+
+
+  /* =====================================================
+     THUMBNAILS
+  ===================================================== */
+
+  const thumbs =
+    rows
+      .map(
+        (photo,i)=>`
+
+<button
+type="button"
+class="thumb ${i===0?'active':''}"
+data-i="${i}"
+aria-label="Ver fotografia ${i+1}"
+>
+
+${imageHtml(
+  photo,
+  i,
+  title
+)}
+
+</button>
+
+`
+      )
+      .join('');
+
+
+  /* =====================================================
+     HTML PRINCIPAL
   ===================================================== */
 
   app.className='';
 
-
   app.innerHTML = `
+
+<!-- =====================================================
+     SLIDESHOW
+===================================================== -->
 
 <section
 class="gallery"
@@ -1813,19 +2685,23 @@ id="gallery"
 >
 
 ${
-
   slides ||
-
-  '<div class="map-empty">Sem fotografias disponíveis.</div>'
-
+  `
+  <div class="map-empty">
+  Sem fotografias disponíveis.
+  </div>
+  `
 }
+
 
 ${
   rows.length > 1
   ?
 
   `
+
   <button
+  type="button"
   class="slide-btn prev"
   id="prev"
   aria-label="Fotografia anterior"
@@ -1835,7 +2711,9 @@ ${
 
   </button>
 
+
   <button
+  type="button"
   class="slide-btn next"
   id="next"
   aria-label="Fotografia seguinte"
@@ -1844,26 +2722,30 @@ ${
   <i class="fa-solid fa-chevron-right"></i>
 
   </button>
-  `
 
-  :
 
-  ''
+  <div
+  class="slide-counter"
+  id="slideCounter"
+  >
+  1 / ${rows.length}
+  </div>
 
-}
 
-${
-  rows.length > 1
-  ?
+  <div
+  class="dots"
+  id="dots"
+  >
 
-  `<div class="dots">
   ${dots}
-  </div>`
 
+  </div>
+
+  `
   :
-
   ''
 }
+
 
 <div class="fnai-watermark">
 FNAI
@@ -1872,19 +2754,34 @@ FNAI
 </section>
 
 
+<!-- =====================================================
+     MINIATURAS
+===================================================== -->
+
 ${
   rows.length > 1
   ?
 
-  `<div class="thumbs">
+  `
+
+  <div
+  class="thumbs"
+  id="thumbs"
+  >
+
   ${thumbs}
-  </div>`
 
+  </div>
+
+  `
   :
-
   ''
 }
 
+
+<!-- =====================================================
+     CONTEÚDO
+===================================================== -->
 
 <section
 class="content-grid"
@@ -1893,7 +2790,10 @@ class="content-grid"
 <div>
 
 <div class="eyebrow">
-${esc(p.estado || 'Disponível')}
+${esc(
+  p.estado ||
+  'Disponível'
+)}
 </div>
 
 
@@ -1921,6 +2821,7 @@ ${money(p.preco)}
 
 
 <div class="features">
+
 
 <div class="feature">
 
@@ -1996,16 +2897,19 @@ Piscina
 
 </div>
 
+
 </div>
 
 
 <div class="tags">
+
 
 ${
   p.garagem
   ?
 
   `
+
   <span class="tag">
 
   <i class="fa-solid fa-car"></i>
@@ -2013,10 +2917,9 @@ ${
   Garagem
 
   </span>
+
   `
-
   :
-
   ''
 }
 
@@ -2026,6 +2929,7 @@ ${
   ?
 
   `
+
   <span class="tag">
 
   <i class="fa-solid fa-person-swimming"></i>
@@ -2033,10 +2937,9 @@ ${
   Piscina
 
   </span>
+
   `
-
   :
-
   ''
 }
 
@@ -2046,6 +2949,7 @@ ${
   ?
 
   `
+
   <span class="tag">
 
   <i class="fa-solid fa-gem"></i>
@@ -2053,12 +2957,12 @@ ${
   Luxo
 
   </span>
+
   `
-
   :
-
   ''
 }
+
 
 </div>
 
@@ -2072,9 +2976,7 @@ Descrição
 </h2>
 
 <p>
-${esc(
-  description
-)}
+${esc(description)}
 </p>
 
 </section>
@@ -2088,6 +2990,7 @@ ${
   ?
 
   `
+
   <section
   class="address"
   >
@@ -2101,15 +3004,19 @@ ${
   </p>
 
   </section>
+
   `
-
   :
-
   ''
 }
 
+
 </div>
 
+
+<!-- =====================================================
+     CARD CONTACTO
+===================================================== -->
 
 <aside class="card">
 
@@ -2157,6 +3064,7 @@ ${
   ?
 
   `
+
   <a
   class="fnai-link"
   href="${esc(p.fnai_url)}"
@@ -2169,23 +3077,29 @@ ${
   Ver anúncio na FNAI
 
   </a>
+
   `
-
   :
-
   ''
 }
 
+
 </aside>
+
 
 </section>
 
+
+<!-- =====================================================
+     MAPA
+===================================================== -->
 
 ${
   address
   ?
 
   `
+
   <section
   class="map-section"
   >
@@ -2193,6 +3107,7 @@ ${
   <h2>
   Localização
   </h2>
+
 
   <div class="map">
 
@@ -2206,6 +3121,7 @@ ${
   ></iframe>
 
   </div>
+
 
   <a
   class="map-open"
@@ -2221,10 +3137,9 @@ ${
   </a>
 
   </section>
+
   `
-
   :
-
   ''
 }
 
@@ -2232,36 +3147,55 @@ ${
 
 
   /* =====================================================
-     GALERIA — CONTROLOS
+     CONTROLOS DO SLIDESHOW
   ===================================================== */
 
   let current =
-  0;
+    0;
+
+  let autoplay =
+    null;
 
 
   const slideEls =
-  [
-    ...document.querySelectorAll(
-      '.slide'
-    )
-  ];
+    [
+      ...document.querySelectorAll(
+        '#gallery .slide'
+      )
+    ];
 
 
   const dotEls =
-  [
-    ...document.querySelectorAll(
-      '.dot'
-    )
-  ];
+    [
+      ...document.querySelectorAll(
+        '#gallery .dot'
+      )
+    ];
 
 
   const thumbEls =
-  [
-    ...document.querySelectorAll(
-      '.thumb'
-    )
-  ];
+    [
+      ...document.querySelectorAll(
+        '#thumbs .thumb'
+      )
+    ];
 
+
+  const counter =
+    document.getElementById(
+      'slideCounter'
+    );
+
+
+  const gallery =
+    document.getElementById(
+      'gallery'
+    );
+
+
+  /* =====================================================
+     MOSTRAR SLIDE
+  ===================================================== */
 
   function show(n){
 
@@ -2275,94 +3209,422 @@ ${
 
 
     current =
-    (
-      n +
-      slideEls.length
-    )
-    %
-    slideEls.length;
+      (
+        n +
+        slideEls.length
+      )
+      %
+      slideEls.length;
 
 
     slideEls.forEach(
-      (s,i)=>
+      (slide,i)=>{
 
-        s.classList.toggle(
+        slide.classList.toggle(
           'active',
-          i===current
-        )
+          i === current
+        );
+
+      }
     );
 
 
     dotEls.forEach(
-      (d,i)=>
+      (dot,i)=>{
 
-        d.classList.toggle(
+        dot.classList.toggle(
           'active',
-          i===current
-        )
+          i === current
+        );
+
+      }
     );
 
 
     thumbEls.forEach(
-      (t,i)=>
+      (thumb,i)=>{
 
-        t.classList.toggle(
+        thumb.classList.toggle(
           'active',
-          i===current
-        )
+          i === current
+        );
+
+      }
+    );
+
+
+    if(counter){
+
+      counter.textContent =
+        `${current + 1} / ${slideEls.length}`;
+
+    }
+
+
+    /* manter thumbnail atual visível */
+
+    if(
+      thumbEls[current]
+    ){
+
+      thumbEls[current]
+        .scrollIntoView({
+          behavior:'smooth',
+          block:'nearest',
+          inline:'center'
+        });
+
+    }
+
+  }
+
+
+  /* =====================================================
+     PRÓXIMA
+  ===================================================== */
+
+  function nextSlide(){
+
+    show(
+      current + 1
     );
 
   }
 
 
+  /* =====================================================
+     ANTERIOR
+  ===================================================== */
+
+  function previousSlide(){
+
+    show(
+      current - 1
+    );
+
+  }
+
+
+  /* =====================================================
+     BOTÕES
+  ===================================================== */
+
   document
-  .getElementById('prev')
-  ?.addEventListener(
-    'click',
-    ()=>show(current-1)
-  );
+    .getElementById('prev')
+    ?.addEventListener(
+      'click',
+      ()=>{
+
+        previousSlide();
+
+        restartAutoplay();
+
+      }
+    );
 
 
   document
-  .getElementById('next')
-  ?.addEventListener(
-    'click',
-    ()=>show(current+1)
-  );
+    .getElementById('next')
+    ?.addEventListener(
+      'click',
+      ()=>{
 
+        nextSlide();
+
+        restartAutoplay();
+
+      }
+    );
+
+
+  /* =====================================================
+     DOTS
+  ===================================================== */
 
   dotEls.forEach(
-    d =>
+    dot=>{
 
-      d.addEventListener(
+      dot.addEventListener(
         'click',
-        ()=>show(
-          Number(
-            d.dataset.i
-          )
-        )
-      )
+        ()=>{
+
+          show(
+            Number(
+              dot.dataset.i
+            )
+          );
+
+          restartAutoplay();
+
+        }
+      );
+
+    }
   );
 
+
+  /* =====================================================
+     THUMBNAILS
+  ===================================================== */
 
   thumbEls.forEach(
-    t =>
+    thumb=>{
 
-      t.addEventListener(
+      thumb.addEventListener(
         'click',
-        ()=>show(
-          Number(
-            t.dataset.i
-          )
-        )
-      )
+        ()=>{
+
+          show(
+            Number(
+              thumb.dataset.i
+            )
+          );
+
+          restartAutoplay();
+
+        }
+      );
+
+    }
   );
+
+
+  /* =====================================================
+     AUTOPLAY
+  ===================================================== */
+
+  function startAutoplay(){
+
+    if(
+      slideEls.length <= 1
+    ){
+
+      return;
+
+    }
+
+
+    clearInterval(
+      autoplay
+    );
+
+
+    autoplay =
+      setInterval(
+        ()=>{
+
+          nextSlide();
+
+        },
+        5000
+      );
+
+  }
+
+
+  function stopAutoplay(){
+
+    clearInterval(
+      autoplay
+    );
+
+    autoplay =
+      null;
+
+  }
+
+
+  function restartAutoplay(){
+
+    stopAutoplay();
+
+    startAutoplay();
+
+  }
+
+
+  /* =====================================================
+     PAUSA COM RATO
+  ===================================================== */
+
+  if(gallery){
+
+    gallery.addEventListener(
+      'mouseenter',
+      stopAutoplay
+    );
+
+
+    gallery.addEventListener(
+      'mouseleave',
+      startAutoplay
+    );
+
+  }
+
+
+  /* =====================================================
+     SWIPE MOBILE
+  ===================================================== */
+
+  let touchStartX =
+    0;
+
+  let touchStartY =
+    0;
+
+  let touchEndX =
+    0;
+
+  let touchEndY =
+    0;
+
+
+  if(gallery){
+
+    gallery.addEventListener(
+      'touchstart',
+      event=>{
+
+        const touch =
+          event.changedTouches[0];
+
+        touchStartX =
+          touch.clientX;
+
+        touchStartY =
+          touch.clientY;
+
+      },
+      {
+        passive:true
+      }
+    );
+
+
+    gallery.addEventListener(
+      'touchend',
+      event=>{
+
+        const touch =
+          event.changedTouches[0];
+
+        touchEndX =
+          touch.clientX;
+
+        touchEndY =
+          touch.clientY;
+
+
+        const diffX =
+          touchEndX -
+          touchStartX;
+
+        const diffY =
+          touchEndY -
+          touchStartY;
+
+
+        /*
+           Só considerar swipe horizontal
+           se o movimento horizontal for
+           maior que o vertical.
+        */
+
+        if(
+          Math.abs(diffX) > 50 &&
+          Math.abs(diffX) >
+          Math.abs(diffY)
+        ){
+
+          if(diffX < 0){
+
+            nextSlide();
+
+          }else{
+
+            previousSlide();
+
+          }
+
+          restartAutoplay();
+
+        }
+
+      },
+      {
+        passive:true
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     TECLADO
+  ===================================================== */
+
+  document.addEventListener(
+    'keydown',
+    event=>{
+
+      /*
+         Não interferir se o utilizador
+         estiver a escrever num campo.
+      */
+
+      const tag =
+        document.activeElement?.tagName;
+
+      if(
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        tag === 'SELECT'
+      ){
+
+        return;
+
+      }
+
+
+      if(
+        event.key === 'ArrowLeft'
+      ){
+
+        previousSlide();
+
+        restartAutoplay();
+
+      }
+
+
+      if(
+        event.key === 'ArrowRight'
+      ){
+
+        nextSlide();
+
+        restartAutoplay();
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     INICIAR
+  ===================================================== */
+
+  show(0);
+
+  startAutoplay();
 
 }
 
 
 /* =========================================================
-   INICIAR
+   INICIAR PÁGINA
 ========================================================= */
 
 load();
