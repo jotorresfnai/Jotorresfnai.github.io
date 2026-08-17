@@ -495,12 +495,16 @@ a{
   border-radius:18px;
   overflow:hidden;
   background:#e8ebec;
-  border:1px solid #dfe4e5
+  border:1px solid #dfe4e5;
+  position:relative;
+  display:block
 }
 
 .map iframe{
+  display:block;
   width:100%;
   height:100%;
+  min-height:520px;
   border:0
 }
 
@@ -655,8 +659,28 @@ a{
     border-right:0
   }
 
+  /* MAPA — CORREÇÃO PARA TELEMÓVEL */
+
+  .map-section{
+    margin-top:45px
+  }
+
   .map{
-    height:380px
+    height:380px;
+    min-height:380px;
+    width:100%;
+    position:relative;
+    display:block;
+    overflow:hidden;
+    border-radius:14px
+  }
+
+  .map iframe{
+    display:block;
+    width:100%;
+    height:380px;
+    min-height:380px;
+    border:0
   }
 
 }
@@ -2120,7 +2144,7 @@ ${
 
   <iframe
   src="${esc(mapUrl(address))}"
-  loading="lazy"
+  loading="eager"
   referrerpolicy="no-referrer-when-downgrade"
   allowfullscreen
   title="Localização do imóvel ${esc(title)}"
