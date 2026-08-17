@@ -14,20 +14,31 @@ permissions:
   contents: write
 
 jobs:
-
   generate:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Obter código
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Verificar scripts
+        run: |
+          echo "Branch atual:"
+          git branch --show-current
+          echo "Commit atual:"
+          git rev-parse HEAD
+          echo "Scripts disponíveis:"
+          ls -la scripts
+          test -f scripts/generate-properties.mjs
+          test -f scripts/add-gallery-slideshow.mjs
 
       - name: Gerar páginas dos imóveis
         env:
@@ -38,9 +49,7 @@ jobs:
 
       - name: Guardar páginas geradas
         run: |
-
           git config user.name "github-actions[bot]"
-
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add imoveis sitemap.xml
@@ -51,5 +60,4 @@ jobs:
           fi
 
           git commit -m "Atualizar páginas e sitemap dos imóveis"
-
           git push
