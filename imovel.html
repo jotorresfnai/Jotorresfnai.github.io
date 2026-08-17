@@ -123,6 +123,10 @@ a{
   color:inherit
 }
 
+/* =========================================================
+   HEADER
+========================================================= */
+
 .header{
   height:82px;
   background:var(--dark);
@@ -195,8 +199,13 @@ a{
   color:#fff;
   font-size:30px;
   width:46px;
-  height:46px
+  height:46px;
+  cursor:pointer
 }
+
+/* =========================================================
+   PÁGINA
+========================================================= */
 
 .page{
   width:min(1380px,92%);
@@ -212,6 +221,10 @@ a{
   font-weight:700;
   margin-bottom:20px
 }
+
+/* =========================================================
+   GALERIA
+========================================================= */
 
 .gallery{
   position:relative;
@@ -304,6 +317,10 @@ a{
   text-shadow:0 2px 5px rgba(0,0,0,.6);
   letter-spacing:1px
 }
+
+/* =========================================================
+   CONTEUDO
+========================================================= */
 
 .content-grid{
   display:grid;
@@ -423,6 +440,10 @@ a{
   margin:0
 }
 
+/* =========================================================
+   CARD
+========================================================= */
+
 .card{
   background:#fff;
   border-radius:16px;
@@ -461,6 +482,10 @@ a{
   margin-top:16px
 }
 
+/* =========================================================
+   ENERGIA
+========================================================= */
+
 .energy{
   border-top:1px solid #e7e9ea;
   margin-top:22px;
@@ -485,37 +510,61 @@ a{
   border-radius:2px
 }
 
+/* =========================================================
+   MAPA
+========================================================= */
+
+/*
+  IMPORTANTE:
+  O mapa deixa de depender de altura implícita.
+  Isto evita o problema de o iframe aparecer no PC
+  mas ficar invisível/sem altura em determinados
+  browsers móveis.
+*/
+
 .map-section{
-  margin-top:60px
+  margin-top:60px;
+  width:100%
 }
 
 .map{
-  height:520px;
+  position:relative;
   width:100%;
+  height:520px;
+  min-height:520px;
   border-radius:18px;
   overflow:hidden;
   background:#e8ebec;
   border:1px solid #dfe4e5;
-  position:relative;
-  display:block
+  isolation:isolate
 }
 
 .map iframe{
+  position:absolute;
+  inset:0;
   display:block;
   width:100%;
   height:100%;
-  min-height:520px;
-  border:0
+  min-width:100%;
+  min-height:100%;
+  border:0;
+  margin:0;
+  padding:0
 }
 
 .map-empty{
   height:100%;
+  min-height:300px;
   display:grid;
   place-items:center;
   color:var(--muted);
   padding:30px;
   text-align:center
 }
+
+/* =========================================================
+   MINIATURAS
+========================================================= */
 
 .thumbs{
   display:flex;
@@ -552,6 +601,10 @@ a{
   background:#fff;
   border-radius:16px
 }
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media(max-width:760px){
 
@@ -659,28 +712,69 @@ a{
     border-right:0
   }
 
-  /* MAPA — CORREÇÃO PARA TELEMÓVEL */
+  /* =====================================================
+     MAPA MOBILE
+  ===================================================== */
 
   .map-section{
-    margin-top:45px
+    margin-top:45px;
+    width:100%;
+    display:block
+  }
+
+  .map-section h2{
+    font-size:30px
   }
 
   .map{
+    width:100%;
     height:380px;
     min-height:380px;
-    width:100%;
-    position:relative;
+    max-height:380px;
     display:block;
+    position:relative;
     overflow:hidden;
-    border-radius:14px
+    border-radius:14px;
+    transform:translateZ(0);
+    -webkit-transform:translateZ(0)
   }
 
   .map iframe{
-    display:block;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
     width:100%;
     height:380px;
+    min-width:100%;
     min-height:380px;
-    border:0
+    max-width:none;
+    border:0;
+    display:block
+  }
+
+}
+
+/* =========================================================
+   ECRÃS MUITO PEQUENOS
+========================================================= */
+
+@media(max-width:380px){
+
+  .title{
+    font-size:36px
+  }
+
+  .map{
+    height:350px;
+    min-height:350px;
+    max-height:350px
+  }
+
+  .map iframe{
+    height:350px;
+    min-height:350px
   }
 
 }
@@ -718,6 +812,7 @@ class="mobile-menu-toggle"
 id="menuToggle"
 aria-label="Abrir menu"
 aria-expanded="false"
+type="button"
 >
 
 <i class="fa-solid fa-bars"></i>
@@ -786,7 +881,6 @@ A carregar imóvel...
 
 </main>
 
-
 <script>
 
 /* =========================================================
@@ -801,8 +895,8 @@ const SUPABASE_KEY =
 
 const sb =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
@@ -1471,7 +1565,6 @@ function updateSEO(
     schemaData
   );
 
-
   document.head.appendChild(
     schema
   );
@@ -1775,6 +1868,7 @@ ${
   class="slide-btn prev"
   id="prev"
   aria-label="Fotografia anterior"
+  type="button"
   >
 
   <i class="fa-solid fa-chevron-left"></i>
@@ -1785,6 +1879,7 @@ ${
   class="slide-btn next"
   id="next"
   aria-label="Fotografia seguinte"
+  type="button"
   >
 
   <i class="fa-solid fa-chevron-right"></i>
@@ -2018,9 +2113,7 @@ Descrição
 </h2>
 
 <p>
-${esc(
-  description
-)}
+${esc(description)}
 </p>
 
 </section>
@@ -2144,7 +2237,7 @@ ${
 
   <iframe
   src="${esc(mapUrl(address))}"
-  loading="eager"
+  loading="lazy"
   referrerpolicy="no-referrer-when-downgrade"
   allowfullscreen
   title="Localização do imóvel ${esc(title)}"
@@ -2287,7 +2380,6 @@ ${
             t.dataset.i
           )
         )
-      )
   );
 
 }
