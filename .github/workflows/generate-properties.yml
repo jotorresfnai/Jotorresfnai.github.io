@@ -28,6 +28,59 @@ jobs:
           ref: main
           fetch-depth: 1
 
+      - name: Normalizar painel de imóveis
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("painel.html")
+          text = path.read_text(encoding="utf-8")
+          original = text
+
+          # Remove duplicações introduzidas pelo antigo workflow.
+          text = re.sub(r'(autoSlug=true;\s*){2,}', 'autoSlug=true;\n', text)
+          text = re.sub(r'(autoSlug=false;\s*){2,}', 'autoSlug=false;\n', text)
+
+          # Corrige o pequeno erro de markup no campo do endereço.
+          text = text.replace('\\small style="display:block;margin-top:7px;color:#6b7280">', '<small style="display:block;margin-top:7px;color:#6b7280">')
+
+          # O preview deve apontar para o mesmo caminho real das páginas geradas.
+          text = text.replace("jotorresfnai.github.io/imovel/'+(slug||'...')", "jotorresfnai.github.io/imoveis/'+(slug||'...')")
+
+          # Garante que os quatro campos de área fazem parte do payload guardado.
+          required = [
+              "area:Number($('area').value)||null,",
+              "area_util:Number($('area_util').value)||null,",
+              "area_bruta:Number($('area_bruta').value)||null,",
+              "area_terreno:Number($('area_terreno').value)||null,",
+          ]
+          if not all(x in text for x in required):
+              raise SystemExit("O painel não contém todos os campos de área no payload.")
+
+          # O slug nunca deve depender de preenchimento manual.
+          if "slug:slugify($('slug').value.trim() || $('titulo').value.trim()) || null" not in text:
+              raise SystemExit("O painel não contém fallback automático do slug.")
+
+          if text != original:
+              path.write_text(text, encoding="utf-8")
+              print("Painel normalizado.")
+          else:
+              print("Painel já estava normalizado.")
+          PY
+
+      - name: Guardar normalização do painel
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add painel.html
+          if git diff --cached --quiet; then
+            echo "Sem alterações no painel."
+          else
+            git commit -m "Normalize property panel fields and slug"
+            git push
+          fi
+
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
