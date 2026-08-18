@@ -28,202 +28,17 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Corrigir painel, homepage e gerador
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          # ---------- painel ----------
-          path = Path("painel.html")
-          text = path.read_text(encoding="utf-8")
-          original = text
-
-          if "let autoSlug=true;" not in text:
-              marker = "function openNew(){"
-              if marker not in text:
-                  raise SystemExit("Não encontrei openNew() no painel.")
-              text = text.replace(marker, "let autoSlug=true;\n\n" + marker, 1)
-
-          text = text.replace(
-              "function openNew(){\n\n$('propertyForm').reset();",
-              "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
-              1,
-          )
-          text = text.replace(
-              "$('propertyId').value='';\n\n$('modalTitle').textContent=",
-              "$('propertyId').value='';\n\n$('publicado').checked=true;\n\n$('modalTitle').textContent=",
-              1,
-          )
-          text = text.replace(
-              "async function editProperty(id){\n\nconst result =",
-              "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
-              1,
-          )
-          text = text.replace(
-              "$('slug').value=p.slug || '';",
-              "$('slug').value=p.slug || slugify(p.titulo || '');",
-              1,
-          )
-
-          pattern = re.compile(
-              r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
-              re.S,
-          )
-          replacement = """$('titulo').addEventListener('input',()=>{
-            if(autoSlug) $('slug').value=slugify($('titulo').value);
-            if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
-            updateSeoPreview();
-          });
-
-          $('slug').addEventListener('input',()=>{
-            autoSlug=false;
-            updateSeoPreview();
-          });
-
-          ['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
-          text, count = pattern.subn(replacement, text, count=1)
-          if count == 0 and "$('titulo').addEventListener('input'" not in text:
-              raise SystemExit("Não encontrei o listener antigo do slug.")
-
-          if text != original:
-              path.write_text(text, encoding="utf-8")
-
-          # ---------- homepage ----------
-          index = Path("index.html")
-          index_text = index.read_text(encoding="utf-8")
-          index_original = index_text
-
-          index_text = re.sub(r"\.limit\(\d+\);", ".limit(12);", index_text, count=1)
-          index_text = re.sub(
-              r'(fa-bed[\s\S]{0,1200}?<span>)pessoas(</span>)',
-              r'\1Quartos\2',
-              index_text,
-              count=1,
-              flags=re.I,
-          )
-
-          if index_text != index_original:
-              index.write_text(index_text, encoding="utf-8")
-
-          # ---------- gerador ----------
-          generator = Path("scripts/generate-properties.mjs")
-          g = generator.read_text(encoding="utf-8")
-          g_original = g
-
-          old_slug = '''function cleanSlug(slug, id) {
-  const value = String(slug || "")
-    .trim()
-    .toLowerCase()
-    .replace(/^\\/+|\\/+$/g, "");
-
-  if (value) {
-    return value
-      .replace(/[^a-z0-9À-ÿ_-]+/gi, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
-
-  return `imovel-${id}`;
-}'''
-
-          new_slug = '''function slugify(value) {
-  return String(value ?? "")
-    .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
-    .toLowerCase()
-    .replace(/&/g, " e ")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function cleanSlug(slug, title, id) {
-  const supplied = String(slug || "").trim();
-  const candidate = supplied || String(title || "").trim();
-  const cleaned = slugify(candidate);
-
-  return cleaned || `imovel-${id}`;
-}'''
-
-          if old_slug in g:
-              g = g.replace(old_slug, new_slug, 1)
-          else:
-              # Também aceita a versão já parcialmente corrigida.
-              g = re.sub(
-                  r"function cleanSlug\(slug, id\) \{.*?\n\}",
-                  new_slug,
-                  g,
-                  count=1,
-                  flags=re.S,
-              )
-
-          g = g.replace(
-              "cleanSlug(property.slug, property.id)",
-              "cleanSlug(property.slug, property.titulo, property.id)",
-              1,
-          )
-
-          # O gerador é a fonte da verdade para /imoveis/: apaga páginas antigas
-          # para que um slug alterado/removido não fique publicado por engano.
-          old_root = '''  const outputRoot =
-    path.join(process.cwd(), "imoveis");
-
-  fs.mkdirSync(outputRoot, {
-    recursive: true
-  });'''
-
-          new_root = '''  const outputRoot =
-    path.join(process.cwd(), "imoveis");
-
-  fs.mkdirSync(outputRoot, {
-    recursive: true
-  });
-
-  // Todas as pastas dentro de /imoveis são geradas automaticamente.
-  // Remove páginas antigas antes de regenerar, evitando slugs órfãos.
-  for (const entry of fs.readdirSync(outputRoot, { withFileTypes: true })) {
-    if (entry.isDirectory()) {
-      fs.rmSync(path.join(outputRoot, entry.name), {
-        recursive: true,
-        force: true
-      });
-    }
-  }'''
-
-          if old_root in g:
-              g = g.replace(old_root, new_root, 1)
-
-          if g != g_original:
-              generator.write_text(g, encoding="utf-8")
-
-          print("Gerador corrigido:", g != g_original)
-          PY
-
-      - name: Guardar correções
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add painel.html index.html scripts/generate-properties.mjs
-          if git diff --cached --quiet; then
-            echo "Sem alterações."
-          else
-            git commit -m "Fix automatic property slugs and stale pages"
-            git push
-          fi
-
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Verificar scripts
+      - name: Verificar geradores
         run: |
-          echo "Commit atual:"
-          git rev-parse HEAD
-          ls -la scripts
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
+          node --check scripts/generate-properties.mjs
+          node --check scripts/add-gallery-slideshow.mjs
 
       - name: Gerar páginas dos imóveis
         env:
@@ -231,6 +46,13 @@ function cleanSlug(slug, title, id) {
         run: |
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
+
+      - name: Validar páginas geradas
+        run: |
+          test -f sitemap.xml
+          test -f imoveis.html
+          echo "Páginas geradas:"
+          find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
       - name: Corrigir fundo das miniaturas
         run: |
