@@ -1,0 +1,98 @@
+name: Fix panel slug and publication
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-panel-slug-publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch painel.html
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('painel.html')
+          text = path.read_text(encoding='utf-8')
+          original = text
+
+          old_open = """function openNew(){
+
+$('propertyForm').reset();
+
+$('propertyId').value='';"""
+          new_open = """function openNew(){
+
+autoSlug=true;
+
+$('propertyForm').reset();
+
+$('propertyId').value='';
+
+$('publicado').checked=true;"""
+          if old_open not in text:
+              raise SystemExit('Não encontrei o bloco openNew esperado.')
+          text = text.replace(old_open, new_open, 1)
+
+          old_edit = """async function editProperty(id){
+
+const result ="""
+          new_edit = """async function editProperty(id){
+
+autoSlug=false;
+
+const result ="""
+          if old_edit not in text:
+              raise SystemExit('Não encontrei o bloco editProperty esperado.')
+          text = text.replace(old_edit, new_edit, 1)
+
+          old_listeners = """['titulo','localizacao','seo_titulo','seo_descricao','slug'].forEach(id=>$(id).addEventListener('input',()=>{
+  if(id==='titulo' && !$('slug').value.trim()) $('slug').value=slugify($('titulo').value);
+  if(id==='titulo' && !$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
+  updateSeoPreview();
+}));"""
+          new_listeners = """let autoSlug=true;
+
+$('titulo').addEventListener('input',()=>{
+  if(autoSlug){
+    $('slug').value=slugify($('titulo').value);
+  }
+  if(!$('seo_titulo').value.trim()){
+    $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
+  }
+  updateSeoPreview();
+});
+
+$('slug').addEventListener('input',()=>{
+  autoSlug=false;
+  updateSeoPreview();
+});
+
+['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
+          if old_listeners not in text:
+              raise SystemExit('Não encontrei o bloco de listeners esperado.')
+          text = text.replace(old_listeners, new_listeners, 1)
+
+          if text == original:
+              raise SystemExit('Nenhuma alteração foi feita.')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add painel.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix automatic property slug and publish default"
+          git push
