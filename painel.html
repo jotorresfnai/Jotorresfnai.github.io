@@ -1356,9 +1356,13 @@ return `<article class="card"><div class="thumb">${image?`<img src="${esc(image)
 
 function openNew(){
 
+autoSlug=true;
+
 $('propertyForm').reset();
 
 $('propertyId').value='';
+
+$('publicado').checked=true;
 
 $('modalTitle').textContent=
 'Novo imóvel';
@@ -1388,6 +1392,8 @@ $('modal').style.display='none';
 
 
 async function editProperty(id){
+
+autoSlug=false;
 
 const result =
 await sb
@@ -1461,7 +1467,7 @@ p.fnai_url || '';
 
 $('seo_titulo').value=p.seo_titulo || '';
 $('seo_descricao').value=p.seo_descricao || '';
-$('slug').value=p.slug || '';
+$('slug').value=p.slug || slugify(p.titulo || '');
 updateSeoPreview();
 
 if(p.endereco){
@@ -1724,6 +1730,7 @@ async function compressImage(file){
   }
 }
 
+let autoSlug=true;
 function slugify(text){
   return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,120);
 }
@@ -1739,11 +1746,18 @@ function updateSeoPreview(){
   $('seoScore').textContent='SEO: '+(score>=75?'🟢 Bom':score>=50?'🟠 Melhorável':'🔴 Precisa de atenção');
   $('seoMeter').style.width=score+'%';
 }
-['titulo','localizacao','seo_titulo','seo_descricao','slug'].forEach(id=>$(id).addEventListener('input',()=>{
-  if(id==='titulo' && !$('slug').value.trim()) $('slug').value=slugify($('titulo').value);
-  if(id==='titulo' && !$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
+$('titulo').addEventListener('input',()=>{
+  if(autoSlug) $('slug').value=slugify($('titulo').value);
+  if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
   updateSeoPreview();
-}));
+});
+
+$('slug').addEventListener('input',()=>{
+  autoSlug=false;
+  updateSeoPreview();
+});
+
+['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));
 
 $('propertyForm').onsubmit =
 async function(e){
