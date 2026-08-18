@@ -11,7 +11,7 @@ on:
     - cron: "0 */6 * * *"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -29,6 +29,75 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+
+      - name: Corrigir painel de gestão
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("painel.html")
+          text = path.read_text(encoding="utf-8")
+          original = text
+
+          # Novo imóvel: slug automático e publicação ativa por defeito.
+          if "function openNew(){" in text:
+              text = text.replace(
+                  "function openNew(){\n\n$('propertyForm').reset();",
+                  "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
+                  1,
+              )
+              text = text.replace(
+                  "$('propertyId').value='';\n\n$('modalTitle').textContent=",
+                  "$('propertyId').value='';\n\n$('publicado').checked=true;\n\n$('modalTitle').textContent=",
+                  1,
+              )
+
+          # Ao editar, manter o slug existente.
+          text = text.replace(
+              "async function editProperty(id){\n\nconst result =",
+              "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
+              1,
+          )
+
+          # Listener robusto: o título preenche sempre o slug enquanto o utilizador não o editar manualmente.
+          pattern = re.compile(
+              r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
+              re.S,
+          )
+          replacement = """let autoSlug=true;
+
+$('titulo').addEventListener('input',()=>{
+  if(autoSlug) $('slug').value=slugify($('titulo').value);
+  if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
+  updateSeoPreview();
+});
+
+$('slug').addEventListener('input',()=>{
+  autoSlug=false;
+  updateSeoPreview();
+});
+
+['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
+          text, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit("Não encontrei o listener de slug do painel.")
+
+          path.write_text(text, encoding="utf-8")
+          print("Painel corrigido." if text != original else "Painel já estava corrigido.")
+          PY
+
+      - name: Guardar correção do painel
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add painel.html
+          if git diff --cached --quiet; then
+            echo "Sem alterações no painel."
+          else
+            git commit -m "Fix automatic property slug and publish default"
+            git push
+          fi
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
