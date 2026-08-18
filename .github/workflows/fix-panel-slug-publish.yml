@@ -2,8 +2,6 @@ name: Fix panel slug and publication
 
 on:
   push:
-    paths:
-      - '.github/workflows/fix-panel-slug-publish.yml'
   workflow_dispatch:
 
 permissions:
