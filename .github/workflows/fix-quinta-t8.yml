@@ -1,0 +1,31 @@
+name: Fix Quinta T8 HTML
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix malformed main-grid tag
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('imoveis/quinta-t8-deocriste/index.html')
+          s = p.read_text(encoding='utf-8')
+          s2 = s.replace('div class="main-grid">', '<div class="main-grid">')
+          if s2 != s:
+              p.write_text(s2, encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imoveis/quinta-t8-deocriste/index.html
+          git diff --cached --quiet || git commit -m "Fix Quinta T8 gallery HTML"
+          git push
