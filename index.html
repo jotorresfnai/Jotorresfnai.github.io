@@ -1118,6 +1118,31 @@ ${label ? ' '+label : ''}
 
 }
 
+function cleanSlug(value){
+
+return String(value || '')
+.trim()
+.toLowerCase()
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/[^a-z0-9_-]+/g,'-')
+.replace(/-+/g,'-')
+.replace(/^-|-$/g,'');
+
+}
+
+function propertyUrl(property){
+
+const slug = cleanSlug(property.slug);
+
+if(!slug){
+return '#';
+}
+
+return 'https://jotorresfnai.github.io/imoveis/' + encodeURIComponent(slug) + '/';
+
+}
+
 async function loadProperties(){
 
 const container =
@@ -1176,11 +1201,13 @@ propertyPhotos[0]?.url ||
 p.imagem_capa ||
 '';
 
+const propertyLink = propertyUrl(p);
+
 return `
 
 <article class="property-card">
 
-<a href="imoveis/${encodeURIComponent(p.slug)}/">
+<a href="${esc(propertyLink)}">
 
 <div class="property-image">
 
