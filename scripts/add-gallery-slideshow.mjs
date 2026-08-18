@@ -4,7 +4,7 @@ import path from "path";
 const ROOT = path.resolve("imoveis");
 
 const CSS = `
-.gallery-slider{position:relative;width:100%;background:#07171b;border-radius:10px;overflow:hidden}
+.gallery-slider{position:relative;width:100%;background:#fff;border-radius:10px;overflow:hidden}
 .gallery-stage{position:relative;width:100%;height:600px;overflow:hidden;background:#07171b}
 .gallery-slide{position:absolute;inset:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:opacity .35s ease;pointer-events:none}
 .gallery-slide.is-active{opacity:1;visibility:visible;pointer-events:auto}
@@ -13,9 +13,9 @@ const CSS = `
 .gallery-arrow:hover{background:rgba(7,23,27,.94)}
 .gallery-arrow.prev{left:14px}.gallery-arrow.next{right:14px}
 .gallery-counter{position:absolute;right:14px;top:14px;z-index:5;padding:6px 10px;border-radius:20px;background:rgba(7,23,27,.72);color:#fff;font-size:12px;font-weight:700}
-.gallery-thumbs-wrap{position:relative;display:flex;align-items:center;gap:8px;padding:10px 42px;background:#07171b}
+.gallery-thumbs-wrap{position:relative;display:flex;align-items:center;gap:8px;padding:10px 42px;background:#fff}
 .gallery-thumbs{display:flex;gap:8px;width:100%;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#c9a34a transparent;padding:1px 0 5px}
-.gallery-thumb{flex:0 0 92px;width:92px;height:64px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#172126;cursor:pointer;opacity:.72}
+.gallery-thumb{flex:0 0 92px;width:92px;height:64px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;opacity:.72}
 .gallery-thumb:hover{opacity:1}.gallery-thumb.is-active{border-color:#c9a34a;opacity:1}
 .gallery-thumb img{display:block;width:100%;height:100%;object-fit:cover}
 .gallery-thumb-arrow{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#07171b;display:grid;place-items:center;cursor:pointer}
