@@ -942,6 +942,55 @@ type="number"
 min="0"
 step="0.01"
 >
+<div>
+
+<label>
+Área útil (m²)
+</label>
+
+<input
+id="area_util"
+type="number"
+min="0"
+step="0.01"
+placeholder="Ex.: 180"
+>
+
+</div>
+
+
+<div>
+
+<label>
+Área Bruta (m²)
+</label>
+
+<input
+id="area_bruta"
+type="number"
+min="0"
+step="0.01"
+placeholder="Ex.: 220"
+>
+
+</div>
+
+
+<div>
+
+<label>
+Área do terreno (m²)
+</label>
+
+<input
+id="area_terreno"
+type="number"
+min="0"
+step="0.01"
+placeholder="Ex.: 750"
+>
+
+</div>
 
 </div>
 
@@ -1435,6 +1484,15 @@ p.preco ?? '';
 $('area').value=
 p.area ?? '';
 
+$('area_util').value=
+p.area_util ?? '';
+
+$('area_bruta').value=
+p.area_bruta ?? '';
+
+$('area_terreno').value=
+p.area_terreno ?? '';
+
 $('quartos').value=
 p.quartos ?? 0;
 
@@ -1781,6 +1839,9 @@ const payload={
   endereco:$('endereco').value.trim()||null,
   preco:Number($('preco').value)||null,
   area:Number($('area').value)||null,
+  area_util:Number($('area_util').value)||null,
+  area_bruta:Number($('area_bruta').value)||null,
+  area_terreno:Number($('area_terreno').value)||null,
   quartos:Number($('quartos').value)||0,
   casas_banho:Number($('casas_banho').value)||0,
   estado:$('estado').value,
