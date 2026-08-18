@@ -101,6 +101,16 @@ jobs:
               count=1,
           )
 
+          # Corrige apenas a legenda do campo quartos no cartão da homepage.
+          # O valor continua a vir de p.quartos; apenas a etiqueta deixa de dizer "pessoas".
+          index_text = re.sub(
+              r'(fa-bed[\\s\\S]{0,1200}?<span>)pessoas(</span>)',
+              r'\1Quartos\2',
+              index_text,
+              count=1,
+              flags=re.I,
+          )
+
           if index_text != index_original:
               index.write_text(index_text, encoding="utf-8")
           PY
@@ -113,7 +123,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Sem alterações."
           else
-            git commit -m "Fix homepage property listing limit"
+            git commit -m "Fix homepage bedroom label"
             git push
           fi
 
