@@ -11,7 +11,13 @@ on:
     - cron: "0 */6 * * *"
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   generate:
@@ -22,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
@@ -31,8 +37,6 @@ jobs:
 
       - name: Verificar scripts
         run: |
-          echo "Branch atual:"
-          git branch --show-current
           echo "Commit atual:"
           git rev-parse HEAD
           echo "Scripts disponíveis:"
@@ -47,17 +51,22 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
-      - name: Guardar páginas geradas
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
 
-          git add imoveis sitemap.xml
+      - name: Preparar site para publicação
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
 
-          if git diff --cached --quiet; then
-            echo "Nenhuma alteração."
-            exit 0
-          fi
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-          git commit -m "Atualizar páginas e sitemap dos imóveis"
-          git push
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
