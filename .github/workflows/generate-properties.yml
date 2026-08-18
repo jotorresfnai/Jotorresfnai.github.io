@@ -28,24 +28,25 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Corrigir painel de gestão
+      - name: Corrigir painel e listagem da homepage
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
 
+          # ------------------------------------------------------------
+          # Painel: garantir slug automático e publicação ativa em novos imóveis.
+          # ------------------------------------------------------------
           path = Path("painel.html")
           text = path.read_text(encoding="utf-8")
           original = text
 
-          # Estado usado para distinguir criação de edição.
           if "let autoSlug=true;" not in text:
               marker = "function openNew(){"
               if marker not in text:
                   raise SystemExit("Não encontrei openNew() no painel.")
               text = text.replace(marker, "let autoSlug=true;\n\n" + marker, 1)
 
-          # Novo imóvel: slug automático e publicação ativa por defeito.
           text = text.replace(
               "function openNew(){\n\n$('propertyForm').reset();",
               "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
@@ -57,7 +58,6 @@ jobs:
               1,
           )
 
-          # Edição: conservar slug existente; se estiver vazio, gerar pelo título.
           text = text.replace(
               "async function editProperty(id){\n\nconst result =",
               "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
@@ -69,7 +69,6 @@ jobs:
               1,
           )
 
-          # Substituir qualquer listener antigo pelo listener determinístico.
           pattern = re.compile(
               r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
               re.S,
@@ -92,20 +91,34 @@ jobs:
 
           if text != original:
               path.write_text(text, encoding="utf-8")
-              print("Painel corrigido.")
-          else:
-              print("Painel já estava corrigido.")
+
+          # ------------------------------------------------------------
+          # Homepage: não limitar artificialmente a 3 imóveis.
+          # A página de imóveis já mostra todos os publicados.
+          # ------------------------------------------------------------
+          index = Path("index.html")
+          index_text = index.read_text(encoding="utf-8")
+          index_original = index_text
+
+          index_text = index_text.replace(
+              ".limit(3);",
+              ".limit(12);",
+              1,
+          )
+
+          if index_text != index_original:
+              index.write_text(index_text, encoding="utf-8")
           PY
 
-      - name: Guardar correção do painel
+      - name: Guardar correções
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add painel.html
+          git add painel.html index.html
           if git diff --cached --quiet; then
-            echo "Sem alterações no painel."
+            echo "Sem alterações."
           else
-            git commit -m "Fix automatic property slug and publish default"
+            git commit -m "Fix property listing limit and publish defaults"
             git push
           fi
 
