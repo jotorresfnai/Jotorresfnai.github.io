@@ -1,0 +1,32 @@
+name: Upgrade property galleries
+
+on:
+  push:
+    paths:
+      - 'scripts/upgrade-galleries.py'
+      - 'imoveis/**/index.html'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upgrade galleries
+        run: python3 scripts/upgrade-galleries.py
+
+      - name: Commit gallery changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imoveis/*/index.html
+          if git diff --cached --quiet; then
+            echo "No gallery changes needed"
+          else
+            git commit -m "Upgrade property galleries to slideshow with thumbnails"
+            git push
+          fi
