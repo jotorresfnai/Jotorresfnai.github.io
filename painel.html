@@ -880,7 +880,7 @@ id="endereco"
 type="text"
 placeholder="Ex.: Rua de São José, 123, 8000-000 Faro, Portugal"
 >
-\small style="display:block;margin-top:7px;color:#6b7280">Escreva a morada/endereço exato. É este campo que será usado para localizar o imóvel no Google Maps.</small>
+<small style="display:block;margin-top:7px;color:#6b7280">Escreva a morada/endereço exato. É este campo que será usado para localizar o imóvel no Google Maps.</small>
 
 </div>
 
@@ -1406,9 +1406,6 @@ return `<article class="card"><div class="thumb">${image?`<img src="${esc(image)
 function openNew(){
 
 autoSlug=true;
-
-autoSlug=true;
-
 $('propertyForm').reset();
 
 $('propertyId').value='';
@@ -1445,9 +1442,6 @@ $('modal').style.display='none';
 async function editProperty(id){
 
 autoSlug=false;
-
-autoSlug=false;
-
 const result =
 await sb
 .from('imoveis')
@@ -1801,7 +1795,7 @@ function updateSeoPreview(){
   const desc=$('seo_descricao').value.trim() || $('descricao').value.trim().slice(0,160) || 'Descrição do imóvel.';
   const slug=slugify($('slug').value.trim() || $('titulo').value.trim());
   $('seoPreviewTitle').textContent=title;
-  $('seoPreviewUrl').textContent='jotorresfnai.github.io/imovel/'+(slug||'...');
+  $('seoPreviewUrl').textContent='jotorresfnai.github.io/imoveis/'+(slug||'...');
   $('seoPreviewDesc').textContent=desc;
   const checks=[title.length>=35&&title.length<=65,desc.length>=80&&desc.length<=160,!!slug,title.toLowerCase().includes(($('localizacao').value||'').trim().toLowerCase())||!$('localizacao').value.trim()];
   const score=Math.round(checks.filter(Boolean).length/checks.length*100);
