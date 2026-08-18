@@ -51,6 +51,33 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
+      - name: Corrigir fundo das miniaturas
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          for path in Path("imoveis").glob("*/index.html"):
+              html = path.read_text(encoding="utf-8")
+
+              html = re.sub(
+                  r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})',
+                  r'\1#ffffff\2',
+                  html,
+                  flags=re.S,
+              )
+
+              html = re.sub(
+                  r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})',
+                  r'\1#ffffff\2',
+                  html,
+                  flags=re.S,
+              )
+
+              path.write_text(html, encoding="utf-8")
+              print(f"Miniaturas corrigidas: {path}")
+          PY
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
