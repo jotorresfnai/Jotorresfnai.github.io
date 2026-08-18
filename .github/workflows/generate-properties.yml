@@ -38,17 +38,11 @@ jobs:
           text = path.read_text(encoding="utf-8")
           original = text
 
-          # Remove duplicações introduzidas pelo antigo workflow.
           text = re.sub(r'(autoSlug=true;\s*){2,}', 'autoSlug=true;\n', text)
           text = re.sub(r'(autoSlug=false;\s*){2,}', 'autoSlug=false;\n', text)
-
-          # Corrige o pequeno erro de markup no campo do endereço.
           text = text.replace('\\small style="display:block;margin-top:7px;color:#6b7280">', '<small style="display:block;margin-top:7px;color:#6b7280">')
-
-          # O preview deve apontar para o mesmo caminho real das páginas geradas.
           text = text.replace("jotorresfnai.github.io/imovel/'+(slug||'...')", "jotorresfnai.github.io/imoveis/'+(slug||'...')")
 
-          # Garante que os quatro campos de área fazem parte do payload guardado.
           required = [
               "area:Number($('area').value)||null,",
               "area_util:Number($('area_util').value)||null,",
@@ -58,26 +52,91 @@ jobs:
           if not all(x in text for x in required):
               raise SystemExit("O painel não contém todos os campos de área no payload.")
 
-          # O slug nunca deve depender de preenchimento manual.
-          if "slug:slugify($('slug').value.trim() || $('titulo').value.trim()) || null" not in text:
-              raise SystemExit("O painel não contém fallback automático do slug.")
+          # O slug é criado automaticamente apenas para imóveis novos.
+          # Num imóvel existente, o slug original fica bloqueado/preservado.
+          text = text.replace("let autoSlug=true;", "let autoSlug=true;\nlet originalSlug=null;")
+          text = text.replace("autoSlug=true;\n$('propertyForm').reset();", "autoSlug=true;\noriginalSlug=null;\n$('slug').disabled=false;\n$('propertyForm').reset();")
+          text = text.replace("autoSlug=false;\nconst result =", "autoSlug=false;\nconst result =")
+          text = text.replace("$('propertyId').value=id;\n\n$('modalTitle')", "$('propertyId').value=id;\n\noriginalSlug=p.slug || slugify(p.titulo || '');\n$('slug').disabled=true;\n\n$('modalTitle')")
+          text = text.replace("slug:slugify($('slug').value.trim() || $('titulo').value.trim()) || null", "slug: id ? (originalSlug || slugify($('slug').value.trim() || $('titulo').value.trim()) || null) : (slugify($('slug').value.trim() || $('titulo').value.trim()) || null)")
 
           if text != original:
               path.write_text(text, encoding="utf-8")
-              print("Painel normalizado.")
+              print("Painel normalizado com slug persistente.")
           else:
               print("Painel já estava normalizado.")
           PY
 
-      - name: Guardar normalização do painel
+      - name: Corrigir gerador de slugs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/generate-properties.mjs")
+          text = path.read_text(encoding="utf-8")
+          original = text
+
+          old_choose = 'function chooseSlug(property, used){ const base=slugify(property.slug)||slugify(property.titulo)||`imovel-${property.id}`; let slug=base,n=2; while(used.has(slug)) slug=`${base}-${n++}`; used.add(slug); return slug; }'
+          new_choose = '''function legacySlugs(root){
+            const map = new Map();
+            if(!fs.existsSync(root)) return map;
+            for(const entry of fs.readdirSync(root,{withFileTypes:true})){
+              if(!entry.isDirectory()) continue;
+              const file=path.join(root,entry.name,"index.html");
+              if(!fs.existsSync(file)) continue;
+              try{
+                const html=fs.readFileSync(file,"utf8");
+                const match=html.match(/<h1>([\\s\\S]*?)<\\/h1>/i);
+                if(!match) continue;
+                const title=match[1].replace(/<[^>]+>/g,"").trim();
+                if(title) map.set(slugify(title),entry.name);
+              }catch{}
+            }
+            return map;
+          }
+          function chooseSlug(property, used, legacy){
+            const legacySlug=legacy.get(slugify(property.titulo));
+            const base=legacySlug || slugify(property.slug) || slugify(property.titulo) || `imovel-${property.id}`;
+            let slug=base,n=2;
+            while(used.has(slug)) slug=`${base}-${n++}`;
+            used.add(slug);
+            return slug;
+          }'''
+          if old_choose not in text:
+              raise SystemExit("Não encontrei a função chooseSlug esperada.")
+          text=text.replace(old_choose,new_choose)
+
+          old_main = '''  const root=path.join(process.cwd(),"imoveis"); fs.mkdirSync(root,{recursive:true});
+  for(const e of fs.readdirSync(root,{withFileTypes:true})) if(e.isDirectory()) fs.rmSync(path.join(root,e.name),{recursive:true,force:true});
+  const used=new Set(); const urls=[`${SITE_URL}/`,`${SITE_URL}/imoveis.html`];
+  for(const p of properties){ const slug=chooseSlug(p,used); const ps=photos.filter(x=>String(x.imovel_id)===String(p.id)); const dir=path.join(root,slug); fs.mkdirSync(dir,{recursive:true}); fs.writeFileSync(path.join(dir,"index.html"),page(p,ps,slug),"utf8"); urls.push(propertyUrl(slug)); console.log(`Gerado: /imoveis/${slug}/`); }'''
+          new_main = '''  const root=path.join(process.cwd(),"imoveis"); fs.mkdirSync(root,{recursive:true});
+  // Antes de limpar as páginas antigas, recolhe os slugs já publicados.
+  // Isto permite recuperar URLs antigas mesmo que o painel tenha gravado um slug errado.
+  const legacy=legacySlugs(root);
+  for(const e of fs.readdirSync(root,{withFileTypes:true})) if(e.isDirectory()) fs.rmSync(path.join(root,e.name),{recursive:true,force:true});
+  const used=new Set(); const urls=[`${SITE_URL}/`,`${SITE_URL}/imoveis.html`];
+  for(const p of properties){ const slug=chooseSlug(p,used,legacy); const ps=photos.filter(x=>String(x.imovel_id)===String(p.id)); const dir=path.join(root,slug); fs.mkdirSync(dir,{recursive:true}); fs.writeFileSync(path.join(dir,"index.html"),page(p,ps,slug),"utf8"); urls.push(propertyUrl(slug)); console.log(`Gerado: /imoveis/${slug}/`); }'''
+          if old_main not in text:
+              raise SystemExit("Não encontrei o bloco principal esperado do gerador.")
+          text=text.replace(old_main,new_main)
+
+          if text != original:
+              path.write_text(text,encoding="utf-8")
+              print("Gerador corrigido: slugs antigos ficam estáveis.")
+          else:
+              print("Gerador já estava corrigido.")
+          PY
+
+      - name: Guardar correções do painel e gerador
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add painel.html
+          git add painel.html scripts/generate-properties.mjs
           if git diff --cached --quiet; then
-            echo "Sem alterações no painel."
+            echo "Sem alterações para guardar."
           else
-            git commit -m "Normalize property panel fields and slug"
+            git commit -m "Fix persistent property slugs"
             git push
           fi
 
