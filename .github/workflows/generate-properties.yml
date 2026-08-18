@@ -38,10 +38,9 @@ jobs:
 
           path = Path("painel.html")
           text = path.read_text(encoding="utf-8")
-          original = text
 
-          # Novo imóvel: slug automático e publicação ativa por defeito.
-          if "function openNew(){" in text:
+          # Idempotente: depois de corrigido, não tenta aplicar a mesma alteração outra vez.
+          if "let autoSlug=true;" not in text:
               text = text.replace(
                   "function openNew(){\n\n$('propertyForm').reset();",
                   "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
@@ -53,19 +52,18 @@ jobs:
                   1,
               )
 
-          # Ao editar, manter o slug existente.
-          text = text.replace(
-              "async function editProperty(id){\n\nconst result =",
-              "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
-              1,
-          )
+              text = text.replace(
+                  "async function editProperty(id){\n\nconst result =",
+                  "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
+                  1,
+              )
 
-          # Listener robusto: o título preenche sempre o slug enquanto o utilizador não o editar manualmente.
-          pattern = re.compile(
-              r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
-              re.S,
-          )
-          replacement = """let autoSlug=true;
+              # O listener antigo termina em })); — há dois parênteses de fecho.
+              pattern = re.compile(
+                  r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
+                  re.S,
+              )
+              replacement = """let autoSlug=true;
 
 $('titulo').addEventListener('input',()=>{
   if(autoSlug) $('slug').value=slugify($('titulo').value);
@@ -79,12 +77,14 @@ $('slug').addEventListener('input',()=>{
 });
 
 ['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
-          text, count = pattern.subn(replacement, text, count=1)
-          if count != 1:
-              raise SystemExit("Não encontrei o listener de slug do painel.")
+              text, count = pattern.subn(replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit("Não encontrei o listener antigo de slug do painel.")
 
-          path.write_text(text, encoding="utf-8")
-          print("Painel corrigido." if text != original else "Painel já estava corrigido.")
+              path.write_text(text, encoding="utf-8")
+              print("Painel corrigido.")
+          else:
+              print("Painel já estava corrigido; sem alterações.")
           PY
 
       - name: Guardar correção do painel
