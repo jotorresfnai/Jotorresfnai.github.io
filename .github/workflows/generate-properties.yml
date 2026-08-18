@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-
   workflow_dispatch:
-
   schedule:
     - cron: "0 */6 * * *"
 
@@ -38,53 +36,65 @@ jobs:
 
           path = Path("painel.html")
           text = path.read_text(encoding="utf-8")
+          original = text
 
-          # Idempotente: depois de corrigido, não tenta aplicar a mesma alteração outra vez.
+          # Estado usado para distinguir criação de edição.
           if "let autoSlug=true;" not in text:
-              text = text.replace(
-                  "function openNew(){\n\n$('propertyForm').reset();",
-                  "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
-                  1,
-              )
-              text = text.replace(
-                  "$('propertyId').value='';\n\n$('modalTitle').textContent=",
-                  "$('propertyId').value='';\n\n$('publicado').checked=true;\n\n$('modalTitle').textContent=",
-                  1,
-              )
+              marker = "function openNew(){"
+              if marker not in text:
+                  raise SystemExit("Não encontrei openNew() no painel.")
+              text = text.replace(marker, "let autoSlug=true;\n\n" + marker, 1)
 
-              text = text.replace(
-                  "async function editProperty(id){\n\nconst result =",
-                  "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
-                  1,
-              )
+          # Novo imóvel: slug automático e publicação ativa por defeito.
+          text = text.replace(
+              "function openNew(){\n\n$('propertyForm').reset();",
+              "function openNew(){\n\nautoSlug=true;\n\n$('propertyForm').reset();",
+              1,
+          )
+          text = text.replace(
+              "$('propertyId').value='';\n\n$('modalTitle').textContent=",
+              "$('propertyId').value='';\n\n$('publicado').checked=true;\n\n$('modalTitle').textContent=",
+              1,
+          )
 
-              # O listener antigo termina em })); — há dois parênteses de fecho.
-              pattern = re.compile(
-                  r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
-                  re.S,
-              )
-              replacement = """let autoSlug=true;
+          # Edição: conservar slug existente; se estiver vazio, gerar pelo título.
+          text = text.replace(
+              "async function editProperty(id){\n\nconst result =",
+              "async function editProperty(id){\n\nautoSlug=false;\n\nconst result =",
+              1,
+          )
+          text = text.replace(
+              "$('slug').value=p.slug || '';",
+              "$('slug').value=p.slug || slugify(p.titulo || '');",
+              1,
+          )
 
-$('titulo').addEventListener('input',()=>{
-  if(autoSlug) $('slug').value=slugify($('titulo').value);
-  if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
-  updateSeoPreview();
-});
+          # Substituir qualquer listener antigo pelo listener determinístico.
+          pattern = re.compile(
+              r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
+              re.S,
+          )
+          replacement = """$('titulo').addEventListener('input',()=>{
+            if(autoSlug) $('slug').value=slugify($('titulo').value);
+            if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
+            updateSeoPreview();
+          });
 
-$('slug').addEventListener('input',()=>{
-  autoSlug=false;
-  updateSeoPreview();
-});
+          $('slug').addEventListener('input',()=>{
+            autoSlug=false;
+            updateSeoPreview();
+          });
 
-['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
-              text, count = pattern.subn(replacement, text, count=1)
-              if count != 1:
-                  raise SystemExit("Não encontrei o listener antigo de slug do painel.")
+          ['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
+          text, count = pattern.subn(replacement, text, count=1)
+          if count == 0 and "$('titulo').addEventListener('input'" not in text:
+              raise SystemExit("Não encontrei o listener antigo do slug.")
 
+          if text != original:
               path.write_text(text, encoding="utf-8")
               print("Painel corrigido.")
           else:
-              print("Painel já estava corrigido; sem alterações.")
+              print("Painel já estava corrigido.")
           PY
 
       - name: Guardar correção do painel
@@ -108,7 +118,6 @@ $('slug').addEventListener('input',()=>{
         run: |
           echo "Commit atual:"
           git rev-parse HEAD
-          echo "Scripts disponíveis:"
           ls -la scripts
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
@@ -125,26 +134,11 @@ $('slug').addEventListener('input',()=>{
           python3 - <<'PY'
           from pathlib import Path
           import re
-
           for path in Path("imoveis").glob("*/index.html"):
               html = path.read_text(encoding="utf-8")
-
-              html = re.sub(
-                  r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})',
-                  r'\1#ffffff\2',
-                  html,
-                  flags=re.S,
-              )
-
-              html = re.sub(
-                  r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})',
-                  r'\1#ffffff\2',
-                  html,
-                  flags=re.S,
-              )
-
+              html = re.sub(r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
+              html = re.sub(r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
               path.write_text(html, encoding="utf-8")
-              print(f"Miniaturas corrigidas: {path}")
           PY
 
       - name: Configurar GitHub Pages
@@ -161,7 +155,6 @@ $('slug').addEventListener('input',()=>{
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Publicar no GitHub Pages
         id: deployment
