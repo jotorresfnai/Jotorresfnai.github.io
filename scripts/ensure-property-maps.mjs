@@ -34,17 +34,27 @@ for(const p of properties){
   let html=fs.readFileSync(file,"utf8");
   const address=String(p.endereco||p.localizacao||"").trim();
   if(!address){missingAddress++;console.warn(`Sem endereço/localização: ${p.titulo}`);continue;}
+
   const section=mapSection(address);
   const mapRe=/\s*<section class="map-section">[\s\S]*?<\/section>/i;
+
+  /*
+   * IMPORTANTE: substituir SEMPRE a secção do mapa.
+   * Antes apenas corrigíamos a secção quando faltavam determinados
+   * elementos. Assim, se a morada fosse editada no Supabase, o iframe
+   * continuava a apontar para a morada antiga porque o HTML do mapa
+   * ainda era considerado "válido".
+   */
   if(mapRe.test(html)){
-    const current=html.match(mapRe)?.[0]||"";
-    if(!current.includes("google.com/maps?q=") || !current.includes('class="map"') || !current.includes("Localização no mapa")){
-      html=html.replace(mapRe,`\n  ${section}`);
-      fs.writeFileSync(file,html,"utf8");changed++;console.log(`Mapa normalizado: /imoveis/${slug}/`);
-    }
+    html=html.replace(mapRe,`\n  ${section}`);
+    fs.writeFileSync(file,html,"utf8");
+    changed++;
+    console.log(`Mapa atualizado: /imoveis/${slug}/ -> ${address}`);
   }else if(html.includes("</main>")){
     html=html.replace("</main>",`\n  ${section}\n</main>`);
-    fs.writeFileSync(file,html,"utf8");changed++;console.log(`Mapa garantido: /imoveis/${slug}/`);
+    fs.writeFileSync(file,html,"utf8");
+    changed++;
+    console.log(`Mapa garantido: /imoveis/${slug}/ -> ${address}`);
   }else{
     console.warn(`Não foi possível inserir mapa em ${file}`);
   }
@@ -58,4 +68,4 @@ for(const dir of fs.readdirSync(ROOT,{withFileTypes:true}).filter(x=>x.isDirecto
     throw new Error(`MAPA EM FALTA: ${file}`);
   }
 }
-console.log(`Mapas verificados: ${properties.length} imóveis publicados; ${changed} página(s) alterada(s); ${missingAddress} sem endereço/localização.`);
+console.log(`Mapas verificados: ${properties.length} imóveis publicados; ${changed} página(s) atualizada(s); ${missingAddress} sem endereço/localização.`);
