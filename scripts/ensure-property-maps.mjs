@@ -18,26 +18,44 @@ async function getProperties(){
 
 function mapSection(address){
   const map=`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
-  return `<section class="map-section"><h2>Localização no mapa</h2><div class="map"><iframe src="${esc(map)}" loading="lazy" title="Mapa da localização do imóvel"></iframe></div></section>`;
+  const open=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  return `<section class="map-section"><h2>Localização no mapa</h2><div class="map"><iframe src="${esc(map)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Mapa da localização do imóvel"></iframe></div><a href="${esc(open)}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:10px;align-items:center;gap:8px;font-weight:800;color:#8a6a18">Abrir localização no Google Maps</a></section>`;
 }
 
 const properties=await getProperties();
-if(!fs.existsSync(ROOT))process.exit(0);
+if(!fs.existsSync(ROOT))throw new Error("Diretório imoveis não existe.");
 const used=new Set();
 let changed=0;
+let missingAddress=0;
 for(const p of properties){
   const slug=chooseSlug(p,used);
   const file=path.join(ROOT,slug,"index.html");
-  if(!fs.existsSync(file))continue;
+  if(!fs.existsSync(file)){console.warn(`Página não encontrada para ${p.titulo} (${slug})`);continue;}
   let html=fs.readFileSync(file,"utf8");
-  if(html.includes('class="map-section"') && html.includes('google.com/maps?q='))continue;
   const address=String(p.endereco||p.localizacao||"").trim();
-  if(!address)continue;
+  if(!address){missingAddress++;console.warn(`Sem endereço/localização: ${p.titulo}`);continue;}
   const section=mapSection(address);
-  if(html.includes("</main>"))html=html.replace("</main>",`${section}</main>`);
-  else continue;
-  fs.writeFileSync(file,html,"utf8");
-  changed++;
-  console.log(`Mapa garantido: /imoveis/${slug}/`);
+  const mapRe=/\s*<section class="map-section">[\s\S]*?<\/section>/i;
+  if(mapRe.test(html)){
+    const current=html.match(mapRe)?.[0]||"";
+    if(!current.includes("google.com/maps?q=") || !current.includes('class="map"') || !current.includes("Localização no mapa")){
+      html=html.replace(mapRe,`\n  ${section}`);
+      fs.writeFileSync(file,html,"utf8");changed++;console.log(`Mapa normalizado: /imoveis/${slug}/`);
+    }
+  }else if(html.includes("</main>")){
+    html=html.replace("</main>",`\n  ${section}\n</main>`);
+    fs.writeFileSync(file,html,"utf8");changed++;console.log(`Mapa garantido: /imoveis/${slug}/`);
+  }else{
+    console.warn(`Não foi possível inserir mapa em ${file}`);
+  }
 }
-console.log(`Mapas corrigidos: ${changed} página(s).`);
+
+for(const dir of fs.readdirSync(ROOT,{withFileTypes:true}).filter(x=>x.isDirectory())){
+  const file=path.join(ROOT,dir.name,"index.html");
+  if(!fs.existsSync(file))continue;
+  const html=fs.readFileSync(file,"utf8");
+  if(!html.includes('class="map-section"') || !html.includes('class="map"') || !html.includes('google.com/maps?q=')){
+    throw new Error(`MAPA EM FALTA: ${file}`);
+  }
+}
+console.log(`Mapas verificados: ${properties.length} imóveis publicados; ${changed} página(s) alterada(s); ${missingAddress} sem endereço/localização.`);
