@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 
 const SUPABASE_URL = "https://scmorocdbdyvnxodpwyi.supabase.co";
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM";
+const SUPABASE_KEY = String(process.env.SUPABASE_ANON_KEY || "").trim();
+if (!SUPABASE_KEY) throw new Error("SUPABASE_ANON_KEY não está definida no ambiente de execução.");
 const SITE_URL = "https://jotorresfnai.github.io";
 const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" };
 
