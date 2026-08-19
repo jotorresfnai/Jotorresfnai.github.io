@@ -36,10 +36,8 @@ jobs:
         run: |
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
-          test -f scripts/ensure-property-maps.mjs
           node --check scripts/generate-properties.mjs
           node --check scripts/add-gallery-slideshow.mjs
-          node --check scripts/ensure-property-maps.mjs
 
       - name: Gerar páginas dos imóveis a partir do Supabase
         env:
@@ -47,7 +45,6 @@ jobs:
         run: |
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
-          node scripts/ensure-property-maps.mjs
 
       - name: Validar páginas geradas e mapas
         run: |
