@@ -6,7 +6,10 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"
+    # O Supabase não dispara diretamente este workflow.
+    # Verificamos frequentemente para que um novo imóvel publicado
+    # apareça no site sem depender de uma atualização manual do código.
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: read
@@ -54,6 +57,23 @@ jobs:
           test -d imoveis
           echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
+
+      - name: Validar mapas nas páginas geradas
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          pages=list(Path("imoveis").glob("*/index.html"))
+          if not pages:
+              raise SystemExit("Nenhuma página de imóvel foi gerada.")
+          missing=[]
+          for path in pages:
+              html=path.read_text(encoding="utf-8")
+              if "Localização no mapa" in html and "google.com/maps?q=" not in html:
+                  missing.append(str(path))
+          if missing:
+              raise SystemExit("Mapa inválido nas páginas: " + ", ".join(missing))
+          print(f"Mapas verificados em {len(pages)} páginas.")
+          PY
 
       - name: Corrigir apenas o fundo das miniaturas
         run: |
