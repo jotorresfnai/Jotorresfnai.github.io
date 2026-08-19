@@ -6,9 +6,6 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    # O Supabase não dispara diretamente este workflow.
-    # Verificamos frequentemente para que um novo imóvel publicado
-    # apareça no site sem depender de uma atualização manual do código.
     - cron: "*/5 * * * *"
 
 permissions:
@@ -23,7 +20,6 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Obter código
         uses: actions/checkout@v4
@@ -50,16 +46,11 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
-      - name: Validar páginas geradas
+      - name: Validar páginas geradas e mapas
         run: |
           test -f sitemap.xml
           test -f imoveis.html
           test -d imoveis
-          echo "Páginas geradas:"
-          find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
-
-      - name: Validar mapas nas páginas geradas
-        run: |
           python3 - <<'PY'
           from pathlib import Path
           pages=list(Path("imoveis").glob("*/index.html"))
@@ -68,11 +59,12 @@ jobs:
           missing=[]
           for path in pages:
               html=path.read_text(encoding="utf-8")
-              if "Localização no mapa" in html and "google.com/maps?q=" not in html:
+              required=["Localização no mapa","class=\"map\"","google.com/maps?q="]
+              if any(x not in html for x in required):
                   missing.append(str(path))
           if missing:
-              raise SystemExit("Mapa inválido nas páginas: " + ", ".join(missing))
-          print(f"Mapas verificados em {len(pages)} páginas.")
+              raise SystemExit("MAPA EM FALTA: " + ", ".join(missing))
+          print(f"Mapas válidos em {len(pages)} páginas.")
           PY
 
       - name: Corrigir apenas o fundo das miniaturas
