@@ -32,21 +32,17 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verificar geradores
+      - name: Verificar gerador único
         run: |
-          test -f scripts/generate-properties.mjs
-          test -f scripts/add-gallery-slideshow.mjs
-          node --check scripts/generate-properties.mjs
-          node --check scripts/add-gallery-slideshow.mjs
+          test -f scripts/generate-properties-v2.mjs
+          node --check scripts/generate-properties-v2.mjs
 
-      - name: Gerar páginas dos imóveis a partir do Supabase
+      - name: Gerar todas as páginas a partir do Supabase
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          node scripts/generate-properties.mjs
-          node scripts/add-gallery-slideshow.mjs
+        run: node scripts/generate-properties-v2.mjs
 
-      - name: Validar páginas geradas e mapas
+      - name: Validar integralmente antes de publicar
         run: |
           test -f sitemap.xml
           test -f imoveis.html
@@ -56,27 +52,21 @@ jobs:
           pages=list(Path("imoveis").glob("*/index.html"))
           if not pages:
               raise SystemExit("Nenhuma página de imóvel foi gerada.")
-          missing=[]
+          failures=[]
           for path in pages:
               html=path.read_text(encoding="utf-8")
-              required=["Localização no mapa","class=\"map\"","google.com/maps?q="]
-              if any(x not in html for x in required):
-                  missing.append(str(path))
-          if missing:
-              raise SystemExit("MAPA EM FALTA: " + ", ".join(missing))
-          print(f"Mapas válidos em {len(pages)} páginas.")
-          PY
-
-      - name: Corrigir apenas o fundo das miniaturas
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          for path in Path("imoveis").glob("*/index.html"):
-              html = path.read_text(encoding="utf-8")
-              html = re.sub(r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
-              html = re.sub(r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
-              path.write_text(html, encoding="utf-8")
+              checks={
+                "mapa":"data-map-section" in html and "google.com/maps?q=" in html and '<iframe' in html,
+                "slideshow":"gallery-slider" in html and "gallery-slide" in html,
+                "miniaturas":"gallery-thumbs" in html and "gallery-thumb" in html,
+                "main-grid":"class=\"main-grid\"" in html,
+                "sem marcador quebrado":"div class=\"main-grid\"" not in html.replace('<div class=\"main-grid\">',''),
+              }
+              missing=[k for k,v in checks.items() if not v]
+              if missing: failures.append(f"{path}: {', '.join(missing)}")
+          if failures:
+              raise SystemExit("VALIDAÇÃO FALHOU:\n"+"\n".join(failures))
+          print(f"Validação OK: {len(pages)} páginas com mapa, slideshow e miniaturas.")
           PY
 
       - name: Configurar GitHub Pages
