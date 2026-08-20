@@ -1,0 +1,146 @@
+# BACKUP — 2026-08-20
+# Exact GitHub Actions workflow before flow hardening.
+
+name: Gerar páginas dos imóveis
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verificar gerador único
+        run: |
+          test -f scripts/generate-properties-v2.mjs
+          node --check scripts/generate-properties-v2.mjs
+
+      - name: Contar imóveis publicados no Supabase
+        id: expected
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$SUPABASE_ANON_KEY"
+          COUNT=$(curl -fsS \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Prefer: count=exact" \
+            -o /tmp/imoveis.json \
+            -w '%{http_code}' \
+            "https://scmorocdbdyvnxodpwyi.supabase.co/rest/v1/imoveis?select=id&publicado=eq.true")
+          test "$COUNT" = "200"
+          EXPECTED=$(python3 - <<'PY'
+          import json
+          with open('/tmp/imoveis.json', encoding='utf-8') as f:
+              data=json.load(f)
+          if not isinstance(data, list):
+              raise SystemExit('Resposta inesperada do Supabase.')
+          print(len(data))
+          PY
+          )
+          test "$EXPECTED" -gt 0
+          echo "expected=$EXPECTED" >> "$GITHUB_OUTPUT"
+          echo "Imóveis publicados no Supabase: $EXPECTED"
+
+      - name: Gerar todas as páginas a partir do Supabase
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/generate-properties-v2.mjs
+
+      - name: Validar integralmente antes de publicar
+        env:
+          EXPECTED: ${{ steps.expected.outputs.expected }}
+        run: |
+          test -f sitemap.xml
+          test -f imoveis.html
+          test -d imoveis
+          python3 - <<'PY'
+          import re
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          import os
+
+          expected=int(os.environ['EXPECTED'])
+          pages=list(Path('imoveis').glob('*/index.html'))
+          if len(pages) != expected:
+              raise SystemExit(f'GERAÇÃO INCOMPLETA: Supabase indica {expected} imóveis publicados, mas foram geradas {len(pages)} páginas.')
+
+          try:
+              root=ET.parse('sitemap.xml').getroot()
+          except Exception as exc:
+              raise SystemExit(f'SITEMAP INVÁLIDO: {exc}')
+
+          ns={'sm':'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          locs=[(x.text or '').strip() for x in root.findall('sm:url/sm:loc', ns)]
+          expected_urls=expected+2
+          if len(locs) != expected_urls:
+              raise SystemExit(f'SITEMAP INCOMPLETO: esperados {expected_urls} URLs (homepage + imóveis.html + {expected} imóveis), encontrados {len(locs)}.')
+
+          required={'https://jotorresfnai.github.io/','https://jotorresfnai.github.io/imoveis.html'}
+          if not required.issubset(locs):
+              raise SystemExit('SITEMAP INCOMPLETO: faltam URLs base obrigatórias.')
+
+          if len(set(locs)) != len(locs):
+              raise SystemExit('SITEMAP INVÁLIDO: existem URLs duplicadas.')
+
+          failures=[]
+          for path in pages:
+              html=path.read_text(encoding='utf-8')
+              checks={
+                'mapa':'data-map-section' in html and 'google.com/maps?q=' in html and '<iframe' in html,
+                'slideshow':'gallery-slider' in html and 'gallery-slide' in html,
+                'miniaturas':'gallery-thumbs' in html and 'gallery-thumb' in html,
+                'main-grid':'class="main-grid"' in html,
+                'sem marcador quebrado':'div class="main-grid"' not in html.replace('<div class="main-grid">',''),
+              }
+              missing=[k for k,v in checks.items() if not v]
+              if missing:
+                  failures.append(f'{path}: {", ".join(missing)}')
+          if failures:
+              raise SystemExit('VALIDAÇÃO FALHOU:\n'+'\n'.join(failures))
+          print(f'Validação OK: {len(pages)} páginas de imóveis e {len(locs)} URLs no sitemap.')
+          PY
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar site para publicação
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
