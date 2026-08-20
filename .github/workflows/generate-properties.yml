@@ -36,17 +36,24 @@ jobs:
         run: |
           test -f scripts/generate-properties-v2.mjs
           node --check scripts/generate-properties-v2.mjs
+          node --check scripts/patch-imoveis-card.mjs
 
       - name: Gerar todas as páginas a partir do Supabase
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: node scripts/generate-properties-v2.mjs
 
+      - name: Corrigir layout dos cartões da página de imóveis
+        run: node scripts/patch-imoveis-card.mjs
+
       - name: Validar integralmente antes de publicar
         run: |
           test -f sitemap.xml
           test -f imoveis.html
           test -d imoveis
+          grep -q 'property-actions' imoveis.html
+          grep -q 'repeat(auto-fit, minmax(82px, 1fr))' imoveis.html
+          grep -q '${garage ?' imoveis.html
           python3 - <<'PY'
           from pathlib import Path
           pages=list(Path("imoveis").glob("*/index.html"))
