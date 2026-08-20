@@ -6,10 +6,10 @@
 
     nav.querySelectorAll('a').forEach((link) => {
       const label = link.textContent.trim().toLowerCase();
-      if (label.includes('início')) link.href = '/';
-      if (label.includes('imóveis') || label.includes('imoveis')) link.href = '/imoveis.html';
-      if (label.includes('sobre')) link.href = '/#sobre';
-      if (label.includes('contacto')) link.href = '/#contacto';
+      if (label.includes('início') || label.includes('inicio')) link.href = '/';
+      else if (label.includes('imóveis') || label.includes('imoveis')) link.href = '/imoveis.html';
+      else if (label.includes('sobre')) link.href = '/#sobre';
+      else if (label.includes('contacto') || label.includes('contato')) link.href = '/#contacto';
     });
 
     let toggle = header.querySelector('.menu-toggle');
@@ -59,7 +59,19 @@
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
     });
-    nav.addEventListener('click', (event) => { if (event.target.closest('a')) close(); });
+
+    nav.addEventListener('click', (event) => {
+      const link = event.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href) return;
+      close();
+      if (href.startsWith('/')) {
+        event.preventDefault();
+        window.location.assign(href);
+      }
+    });
+
     document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
   };
 
