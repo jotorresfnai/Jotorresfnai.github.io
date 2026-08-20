@@ -4,6 +4,21 @@
     const nav = header?.querySelector('.navigation');
     if (!header || !nav) return;
 
+    // Favicon links for pages that load the shared site-menu script.
+    const addIcon = (rel, href, sizes, type) => {
+      if (document.querySelector(`link[rel="${rel}"][href="${href}"]`)) return;
+      const link = document.createElement('link');
+      link.rel = rel;
+      link.href = href;
+      if (sizes) link.sizes = sizes;
+      if (type) link.type = type;
+      document.head.appendChild(link);
+    };
+    addIcon('icon', '/favicon.ico', '', 'image/x-icon');
+    addIcon('icon', '/favicon-16x16.png', '16x16', 'image/png');
+    addIcon('icon', '/favicon-32x32.png', '32x32', 'image/png');
+    addIcon('apple-touch-icon', '/apple-touch-icon.png', '180x180', 'image/png');
+
     nav.querySelectorAll('a').forEach((link) => {
       const label = link.textContent.trim().toLowerCase();
       if (label.includes('início') || label.includes('inicio')) link.href = '/';
