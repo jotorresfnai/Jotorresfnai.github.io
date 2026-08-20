@@ -34,6 +34,8 @@ jobs:
         run: |
           test -f scripts/generate-properties-v2.mjs
           node --check scripts/generate-properties-v2.mjs
+          test -f scripts/ensure-property-maps.mjs
+          node --check scripts/ensure-property-maps.mjs
 
       - name: Contar imóveis publicados no Supabase
         id: expected
@@ -67,6 +69,11 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: node scripts/generate-properties-v2.mjs
 
+      - name: Garantir mapas em todos os imóveis
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/ensure-property-maps.mjs
+
       - name: Validar integralmente antes de publicar
         env:
           EXPECTED: ${{ steps.expected.outputs.expected }}
@@ -75,7 +82,6 @@ jobs:
           test -f imoveis.html
           test -d imoveis
           python3 - <<'PY'
-          import re
           import xml.etree.ElementTree as ET
           from pathlib import Path
           import os
@@ -95,11 +101,9 @@ jobs:
           expected_urls=expected+2
           if len(locs) != expected_urls:
               raise SystemExit(f'SITEMAP INCOMPLETO: esperados {expected_urls} URLs (homepage + imóveis.html + {expected} imóveis), encontrados {len(locs)}.')
-
           required={'https://jotorresfnai.github.io/','https://jotorresfnai.github.io/imoveis.html'}
           if not required.issubset(locs):
               raise SystemExit('SITEMAP INCOMPLETO: faltam URLs base obrigatórias.')
-
           if len(set(locs)) != len(locs):
               raise SystemExit('SITEMAP INVÁLIDO: existem URLs duplicadas.')
 
