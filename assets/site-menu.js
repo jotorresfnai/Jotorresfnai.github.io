@@ -12,7 +12,7 @@
     .menu-open .menu-toggle span:nth-child(2){opacity:0}
     .menu-open .menu-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
     @media(max-width:850px){
-      .header{position:relative;min-height:70px}
+      .header{position:relative;min-height:70px;height:70px;flex-direction:row!important;align-items:center!important}
       .menu-toggle{display:grid}
       .navigation{position:absolute!important;top:calc(100% + 8px);right:18px;left:18px;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;padding:10px!important;background:rgba(7,23,27,.98);border:1px solid rgba(201,163,74,.35);border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(-8px);pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s;z-index:25}
       .menu-open .navigation{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
