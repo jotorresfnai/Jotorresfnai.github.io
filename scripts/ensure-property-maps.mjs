@@ -19,7 +19,7 @@ async function getProperties(){
 function mapSection(address){
   const map=`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
   const open=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  return `<section class="map-section"><h2>Localização no mapa</h2><div class="map"><iframe src="${esc(map)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Mapa da localização do imóvel"></iframe></div><a href="${esc(open)}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:10px;align-items:center;gap:8px;font-weight:800;color:#8a6a18">Abrir localização no Google Maps</a></section>`;
+  return `<section class="map-section" data-map-section><h2>Localização no mapa</h2><div class="map"><iframe src="${esc(map)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Mapa da localização do imóvel"></iframe></div><a href="${esc(open)}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:10px;align-items:center;gap:8px;font-weight:800;color:#8a6a18">Abrir localização no Google Maps</a></section>`;
 }
 
 const properties=await getProperties();
@@ -30,42 +30,30 @@ let missingAddress=0;
 for(const p of properties){
   const slug=chooseSlug(p,used);
   const file=path.join(ROOT,slug,"index.html");
-  if(!fs.existsSync(file)){console.warn(`Página não encontrada para ${p.titulo} (${slug})`);continue;}
+  if(!fs.existsSync(file))throw new Error(`Página não encontrada para ${p.titulo} (${slug})`);
   let html=fs.readFileSync(file,"utf8");
   const address=String(p.endereco||p.localizacao||"").trim();
-  if(!address){missingAddress++;console.warn(`Sem endereço/localização: ${p.titulo}`);continue;}
+  if(!address)throw new Error(`Sem endereço/localização: ${p.titulo}`);
 
   const section=mapSection(address);
-  const mapRe=/\s*<section class="map-section">[\s\S]*?<\/section>/i;
-
-  /*
-   * IMPORTANTE: substituir SEMPRE a secção do mapa.
-   * Antes apenas corrigíamos a secção quando faltavam determinados
-   * elementos. Assim, se a morada fosse editada no Supabase, o iframe
-   * continuava a apontar para a morada antiga porque o HTML do mapa
-   * ainda era considerado "válido".
-   */
+  const mapRe=/\s*<section class="map-section"[^>]*>[\s\S]*?<\/section>/i;
   if(mapRe.test(html)){
     html=html.replace(mapRe,`\n  ${section}`);
-    fs.writeFileSync(file,html,"utf8");
-    changed++;
-    console.log(`Mapa atualizado: /imoveis/${slug}/ -> ${address}`);
   }else if(html.includes("</main>")){
     html=html.replace("</main>",`\n  ${section}\n</main>`);
-    fs.writeFileSync(file,html,"utf8");
-    changed++;
-    console.log(`Mapa garantido: /imoveis/${slug}/ -> ${address}`);
   }else{
-    console.warn(`Não foi possível inserir mapa em ${file}`);
+    throw new Error(`Não foi possível inserir mapa em ${file}`);
   }
+  fs.writeFileSync(file,html,"utf8");
+  changed++;
 }
 
 for(const dir of fs.readdirSync(ROOT,{withFileTypes:true}).filter(x=>x.isDirectory())){
   const file=path.join(ROOT,dir.name,"index.html");
   if(!fs.existsSync(file))continue;
   const html=fs.readFileSync(file,"utf8");
-  if(!html.includes('class="map-section"') || !html.includes('class="map"') || !html.includes('google.com/maps?q=')){
+  if(!html.includes('data-map-section') || !html.includes('class="map-section"') || !html.includes('class="map"') || !html.includes('google.com/maps?q=') || !/<iframe[\s\S]*?google\.com\/maps/.test(html)){
     throw new Error(`MAPA EM FALTA: ${file}`);
   }
 }
-console.log(`Mapas verificados: ${properties.length} imóveis publicados; ${changed} página(s) atualizada(s); ${missingAddress} sem endereço/localização.`);
+console.log(`Mapas verificados: ${properties.length} imóveis publicados; ${changed} página(s) atualizada(s).`);
