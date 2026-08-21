@@ -349,16 +349,22 @@ a{
 ========================================================= */
 
 .fnai-watermark{
-  position:absolute;
-  right:25px;
-  bottom:18px;
-  z-index:10;
-  color:#fff;
-  font-weight:900;
-  font-size:28px;
-  text-shadow:0 2px 5px rgba(0,0,0,.6);
-  letter-spacing:1px;
-  pointer-events:none
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  transform:translate(-50%,-50%)!important;
+  width:100px!important;
+  height:66px!important;
+  background:url('/fnai_logo_transparente.png') center/contain no-repeat!important;
+  color:transparent!important;
+  font-size:0!important;
+  text-shadow:none!important;
+  letter-spacing:0!important;
+  opacity:.8!important;
+  z-index:5!important;
+  pointer-events:none!important;
 }
 
 /* =========================================================
@@ -1927,9 +1933,7 @@ ${
 }
 
 
-<div class="fnai-watermark">
-FNAI
-</div>
+<img class="fnai-watermark" src="/fnai_logo_transparente.png" alt="FNAI" width="100" height="66">
 
 </section>
 
