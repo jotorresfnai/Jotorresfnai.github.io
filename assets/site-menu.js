@@ -47,6 +47,7 @@
         .menu-open .menu-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
         .menu-open .menu-toggle span:nth-child(2){opacity:0}
         .menu-open .menu-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+        .fnai-watermark{left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;width:100px!important;height:66px!important;background:url('/fnai_logo_transparente.png') center/contain no-repeat!important;color:transparent!important;font-size:0!important;text-shadow:none!important;opacity:.8!important;z-index:5!important;}
         @media(max-width:850px){
           .header{position:relative;min-height:70px;height:70px;flex-direction:row!important;align-items:center!important}
           .menu-toggle{display:grid!important}
