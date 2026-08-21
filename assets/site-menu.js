@@ -55,6 +55,27 @@
           .navigation a{display:flex!important;width:100%!important;padding:13px 12px!important;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px!important;box-sizing:border-box}
           .navigation a:last-child{border-bottom:0}
         }
+
+        /* FNAI property watermark: centered on every property photo. */
+        .property-slideshow .fnai-watermark{
+          position:absolute!important;
+          left:50%!important;
+          top:50%!important;
+          right:auto!important;
+          bottom:auto!important;
+          width:230px!important;
+          height:152px!important;
+          transform:translate(-50%,-50%)!important;
+          margin:0!important;
+          padding:0!important;
+          background:url('/fnai_logo_transparente.png') center center / 230px 152px no-repeat!important;
+          color:transparent!important;
+          font-size:0!important;
+          letter-spacing:0!important;
+          text-shadow:none!important;
+          z-index:5!important;
+          pointer-events:none!important;
+        }
       `;
       document.head.appendChild(style);
     }
