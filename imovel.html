@@ -336,6 +336,12 @@ a{
 }
 
 
+
+/* GALERIA — MINIATURAS */
+.gallery-thumbnails{position:absolute;left:18px;right:18px;bottom:18px;z-index:35;display:flex;gap:8px;justify-content:center;overflow-x:auto;padding:8px;border-radius:12px;background:rgba(7,23,27,.45);backdrop-filter:blur(4px)}
+.gallery-thumb{width:72px;height:52px;flex:0 0 72px;padding:0;border:2px solid transparent;border-radius:7px;overflow:hidden;background:#07171b;cursor:pointer;opacity:.8}\.gallery-thumb.active{border-color:var(--gold);opacity:1}.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}.gallery-thumb:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:760px){.gallery-thumbnails{left:8px;right:8px;bottom:8px;justify-content:flex-start}.gallery-thumb{width:58px;height:44px;flex-basis:58px}}
+
 /* =========================================================
    PONTOS
 ========================================================= */
@@ -1984,6 +1990,14 @@ function initGallery(numberOfSlides){
     ];
 
 
+  const thumbs =
+    [
+      ...document.querySelectorAll(
+        '.gallery-thumb'
+      )
+    ];
+
+
   let current = 0;
 
   let timer = null;
@@ -2015,6 +2029,18 @@ function initGallery(numberOfSlides){
       (dot,index) => {
 
         dot.classList.toggle(
+          'active',
+          index === current
+        );
+
+      }
+    );
+
+
+    thumbs.forEach(
+      (thumb,index) => {
+
+        thumb.classList.toggle(
           'active',
           index === current
         );
@@ -2102,6 +2128,26 @@ function initGallery(numberOfSlides){
         show(
           Number(
             dot.dataset.i
+          )
+        );
+
+        restart();
+
+      };
+
+    }
+  );
+
+
+  thumbs.forEach(
+    thumb => {
+
+      thumb.onclick =
+      () => {
+
+        show(
+          Number(
+            thumb.dataset.thumb
           )
         );
 
