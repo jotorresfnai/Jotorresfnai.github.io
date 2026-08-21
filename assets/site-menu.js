@@ -4,7 +4,6 @@
     const nav = header?.querySelector('.navigation');
     if (!header || !nav) return;
 
-    // Favicon links for pages that load the shared site-menu script.
     const addIcon = (rel, href, sizes, type) => {
       if (document.querySelector(`link[rel="${rel}"][href="${href}"]`)) return;
       const link = document.createElement('link');
@@ -57,7 +56,9 @@
         }
 
         /* FNAI property watermark: centered on every property photo. */
-        .property-slideshow .fnai-watermark{
+        .property-slideshow .fnai-watermark,
+        .property-image .fnai-watermark,
+        .property-card .fnai-watermark{
           position:absolute!important;
           left:50%!important;
           top:50%!important;
@@ -75,6 +76,7 @@
           text-shadow:none!important;
           z-index:5!important;
           pointer-events:none!important;
+          display:block!important;
         }
       `;
       document.head.appendChild(style);
