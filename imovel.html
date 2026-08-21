@@ -1567,13 +1567,19 @@ function render(
   APP.className = '';
 
 
-  APP.innerHTML =
-
+ APP.innerHTML =
 
   '<section class="gallery">' +
 
-  slides +
+  '<img ' +
+  'class="gallery-watermark" ' +
+  'src="https://jotorresfnai.github.io/fnai_logo_transparente.png" ' +
+  'alt="" ' +
+  'aria-hidden="true" ' +
+  'draggable="false" ' +
+  '>' +
 
+  slides +
   /*
      WATERMARK ESTÁTICA.
      NÃO É CRIADA NEM ALTERADA PELO JAVASCRIPT.
