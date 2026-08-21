@@ -77,10 +77,32 @@
           z-index:5!important;
           pointer-events:none!important;
           display:block!important;
+          opacity:1!important;
+        }
+        .fnai-watermark img{
+          display:block!important;
+          width:230px!important;
+          height:152px!important;
+          max-width:none!important;
+          max-height:none!important;
+          object-fit:contain!important;
+          opacity:1!important;
         }
       `;
       document.head.appendChild(style);
     }
+
+    // Make the watermark an explicit image element as well as a CSS background.
+    // This avoids browser/cache issues with background-image loading on preview hosts.
+    document.querySelectorAll('.fnai-watermark').forEach((watermark) => {
+      if (!watermark.querySelector('img')) {
+        const img = document.createElement('img');
+        img.src = '/fnai_logo_transparente.png?v=20260821';
+        img.alt = '';
+        img.setAttribute('aria-hidden', 'true');
+        watermark.appendChild(img);
+      }
+    });
 
     const close = () => {
       header.classList.remove('menu-open');
