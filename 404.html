@@ -1,79 +1,303 @@
 <!doctype html>
 <html lang="pt-PT">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,follow">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<meta
+  name="robots"
+  content="noindex,follow"
+>
+
 <title>A carregar imóvel | Jo Torres</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--dark:#07171b;--gold:#c9a34a;--muted:#687277}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f5f6f6;color:var(--dark);font-family:Arial,Helvetica,sans-serif;text-align:center}.box{padding:32px}.spinner{width:36px;height:36px;margin:0 auto 16px;border:3px solid #dfe4e5;border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}p{color:var(--muted)}a{color:#8a6a18;font-weight:700}
+
+:root{
+  --dark:#07171b;
+  --gold:#c9a34a;
+  --muted:#687277;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:#f5f6f6;
+  color:var(--dark);
+  font-family:Arial,Helvetica,sans-serif;
+  text-align:center;
+}
+
+.box{
+  padding:32px;
+}
+
+.spinner{
+  width:36px;
+  height:36px;
+  margin:0 auto 16px;
+  border:3px solid #dfe4e5;
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+p{
+  color:var(--muted);
+}
+
+a{
+  color:#8a6a18;
+  font-weight:700;
+}
+
 </style>
+
 </head>
+
+
 <body>
+
 <div class="box">
-<div class="spinner"></div>
-<p id="message">A carregar o imóvel...</p>
-<p id="fallback" hidden><a href="/imoveis.html">Voltar aos imóveis</a></p>
+
+<div
+  class="spinner"
+  id="spinner"
+></div>
+
+<p id="message">
+A carregar o imóvel...
+</p>
+
+<p id="fallback" hidden>
+
+<a href="/imoveis.html">
+Voltar aos imóveis
+</a>
+
+</p>
+
 </div>
+
+
 <script>
+
+'use strict';
+
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+'https://scmorocdbdyvnxodpwyi.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM';
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const message =
+document.getElementById(
+  'message'
+);
+
+const fallback =
+document.getElementById(
+  'fallback'
+);
+
+const spinner =
+document.getElementById(
+  'spinner'
+);
+
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+function fail(){
+
+  spinner.style.display =
+    'none';
+
+  message.textContent =
+    'Imóvel não encontrado.';
+
+  fallback.hidden =
+    false;
+
+}
+
+
+/* =========================================================
+   OBTER SLUG
+========================================================= */
+
+const path =
+window.location.pathname;
+
+
 /*
-  Os cartões de imoveis.html usam URLs por slug:
+  Esperamos:
+
   /imoveis/nome-do-imovel/
 
-  O GitHub Pages entrega essas URLs ao 404.html.
-  Em vez de manter uma segunda página de imóvel aqui,
-  este ficheiro resolve o slug no Supabase e envia para
-  a página oficial imovel.html?id=UUID.
+  ou:
 
-  Assim, todas as alterações feitas ao imóvel passam a ser
-  mostradas pela mesma página e pelo mesmo registo da base de dados.
+  /imoveis/nome-do-imovel
 */
-const SUPABASE_URL='https://scmorocdbdyvnxodpwyi.supabase.co';
-const SUPABASE_KEY='sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const cleanPath=location.pathname.replace(/\\/+$/,'');
-const prefix='/imoveis/';
-const slug=cleanPath.startsWith(prefix)
-  ? decodeURIComponent(cleanPath.slice(prefix.length).split('/')[0]||'')
-  : '';
+const match =
+path.match(
+  /^\/imoveis\/([^/]+)\/?$/
+);
 
-const fallback=()=>{
-  document.getElementById('message').textContent='Imóvel não encontrado.';
-  document.getElementById('fallback').hidden=false;
-};
 
-(async()=>{
-  if(!slug){
-    location.replace('/imoveis.html');
-    return;
-  }
+/* =========================================================
+   SE NÃO FOR UMA URL DE IMÓVEL
+========================================================= */
 
-  const {data,error}=await sb
-    .from('imoveis')
-    .select('id')
-    .eq('slug',slug)
-    .eq('publicado',true)
-    .maybeSingle();
+if(!match){
 
-  if(error){
-    console.error('Erro ao resolver slug do imóvel:',error);
-    fallback();
-    return;
-  }
+  window.location.replace(
+    '/imoveis.html'
+  );
 
-  if(!data?.id){
-    fallback();
-    return;
-  }
+}else{
 
-  location.replace('/imovel.html?id='+encodeURIComponent(data.id));
-})().catch(error=>{
-  console.error(error);
-  fallback();
-});
+  const slug =
+    decodeURIComponent(
+      match[1]
+    );
+
+
+  /* =======================================================
+     SUPABASE
+  ======================================================= */
+
+  const sb =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* =======================================================
+     RESOLVER SLUG
+  ======================================================= */
+
+  (async()=>{
+
+    try{
+
+      const result =
+        await sb
+
+        .from('imoveis')
+
+        .select('id')
+
+        .eq(
+          'slug',
+          slug
+        )
+
+        .eq(
+          'publicado',
+          true
+        )
+
+        .maybeSingle();
+
+
+      if(result.error){
+
+        console.error(
+          'Erro Supabase:',
+          result.error
+        );
+
+        fail();
+
+        return;
+
+      }
+
+
+      if(
+        !result.data ||
+        !result.data.id
+      ){
+
+        fail();
+
+        return;
+
+      }
+
+
+      /*
+        Redirecionamento final.
+
+        O slug continua a ser a URL pública.
+        O UUID apenas identifica o imóvel
+        internamente na página de detalhe.
+      */
+
+      const target =
+        '/imovel.html?id=' +
+        encodeURIComponent(
+          result.data.id
+        );
+
+
+      window.location.replace(
+        target
+      );
+
+
+    }catch(error){
+
+      console.error(
+        'Erro ao resolver imóvel:',
+        error
+      );
+
+      fail();
+
+    }
+
+  })();
+
+}
+
 </script>
+
 </body>
+
 </html>
