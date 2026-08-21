@@ -1,0 +1,66 @@
+name: Fix property gallery thumbnails
+
+on:
+  push:
+    branches:
+      - fix/property-gallery-thumbnails-workflow-v5
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add property gallery thumbnails
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('imovel.html')
+          s = p.read_text(encoding='utf-8')
+
+          css = '''\n\n/* GALERIA — MINIATURAS */\n.gallery-thumbnails{position:absolute;left:18px;right:18px;bottom:18px;z-index:35;display:flex;gap:8px;justify-content:center;overflow-x:auto;padding:8px;border-radius:12px;background:rgba(7,23,27,.45);backdrop-filter:blur(4px)}\n.gallery-thumb{width:72px;height:52px;flex:0 0 72px;padding:0;border:2px solid transparent;border-radius:7px;overflow:hidden;background:#07171b;cursor:pointer;opacity:.8}\.gallery-thumb.active{border-color:var(--gold);opacity:1}.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}.gallery-thumb:focus-visible{outline:2px solid var(--gold);outline-offset:2px}\n@media(max-width:760px){.gallery-thumbnails{left:8px;right:8px;bottom:8px;justify-content:flex-start}.gallery-thumb{width:58px;height:44px;flex-basis:58px}}\n'''
+          marker = '\n/* =========================================================\n   PONTOS\n'
+          if '/* GALERIA — MINIATURAS */' not in s:
+              s = s.replace(marker, css + marker, 1)
+
+          old = """    '</section>' +\n\n\n    '<section class=\"content-grid\">' +"""
+          new = """    '</section>' +\n\n\n    (rows.length > 1 ?\n      '<div class=\"gallery-thumbnails\" aria-label=\"Miniaturas das fotografias\">' +\n      rows.map((photo,index) =>\n        '<button class=\"gallery-thumb ' + (index === 0 ? 'active' : '') + '\" type=\"button\" data-thumb=\"' + index + '\" aria-label=\"Ver fotografia ' + (index + 1) + '\">' +\n        '<img src=\"' + esc(img(photo)) + '\" alt=\"\" loading=\"lazy\" draggable=\"false\">' +\n        '</button>'\n      ).join('') +\n      '</div>'\n      : '') +\n\n\n    '<section class=\"content-grid\">' +"""
+          if 'gallery-thumbnails' not in s:
+              if old not in s:
+                  raise SystemExit('gallery insertion anchor not found')
+              s = s.replace(old, new, 1)
+
+          old_init = """  const dots =\n    [\n      ...document.querySelectorAll(\n        '.dot'\n      )\n    ];"""
+          new_init = """  const dots =\n    [\n      ...document.querySelectorAll(\n        '.dot'\n      )\n    ];\n\n\n  const thumbs =\n    [\n      ...document.querySelectorAll(\n        '.gallery-thumb'\n      )\n    ];"""
+          if 'const thumbs =' not in s:
+              if old_init not in s:
+                  raise SystemExit('gallery init anchor not found')
+              s = s.replace(old_init, new_init, 1)
+
+          old_show = """    dots.forEach(\n      (dot,index) => {\n\n        dot.classList.toggle(\n          'active',\n          index === current\n        );\n\n      }\n    );"""
+          new_show = """    dots.forEach(\n      (dot,index) => {\n\n        dot.classList.toggle(\n          'active',\n          index === current\n        );\n\n      }\n    );\n\n\n    thumbs.forEach(\n      (thumb,index) => {\n\n        thumb.classList.toggle(\n          'active',\n          index === current\n        );\n\n      }\n    );"""
+          if 'thumb.classList.toggle' not in s:
+              if old_show not in s:
+                  raise SystemExit('gallery show anchor not found')
+              s = s.replace(old_show, new_show, 1)
+
+          old_dots = """  dots.forEach(\n    dot => {\n\n      dot.onclick =\n      () => {\n\n        show(\n          Number(\n            dot.dataset.i\n          )\n        );\n\n        restart();\n\n      };\n\n    }\n  );"""
+          new_dots = old_dots + """\n\n\n  thumbs.forEach(\n    thumb => {\n\n      thumb.onclick =\n      () => {\n\n        show(\n          Number(\n            thumb.dataset.thumb\n          )\n        );\n\n        restart();\n\n      };\n\n    }\n  );"""
+          if 'thumb.dataset.thumb' not in s:
+              if old_dots not in s:
+                  raise SystemExit('gallery dots anchor not found')
+              s = s.replace(old_dots, new_dots, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit gallery fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imovel.html
+          git commit -m "fix: restore property gallery thumbnails" || exit 0
+          git push
