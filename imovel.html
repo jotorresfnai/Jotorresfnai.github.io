@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="pt-PT">
 
@@ -249,10 +250,10 @@ a{
 
 /* =========================================================
    WATERMARK FNAI
+   ELEMENTO HTML ESTÁTICO — NÃO PARTICIPA DO JAVASCRIPT
 ========================================================= */
 
-.gallery:after{
-  content:"";
+.gallery-watermark{
   position:absolute;
 
   left:50%;
@@ -263,19 +264,15 @@ a{
   width:120px;
   height:80px;
 
-  background-image:url(
-    'https://raw.githubusercontent.com/jotorresfnai/Jtorresfnai.github.io/main/fnai_logo_transparente.png'
-  );
-
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:contain;
+  object-fit:contain;
 
   opacity:.78;
 
-  z-index:5;
+  z-index:20;
 
-  pointer-events:none
+  pointer-events:none;
+
+  user-select:none
 }
 
 
@@ -313,7 +310,7 @@ a{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
-  z-index:10;
+  z-index:30;
 
   width:52px;
   height:52px;
@@ -346,7 +343,7 @@ a{
 .dots{
   position:absolute;
 
-  z-index:10;
+  z-index:30;
 
   left:50%;
   bottom:20px;
@@ -809,7 +806,7 @@ a{
      WATERMARK MOBILE
   ======================================================= */
 
-  .gallery:after{
+  .gallery-watermark{
     width:92px;
     height:62px
   }
@@ -1551,6 +1548,19 @@ function render(
 
   slides +
 
+  /*
+     WATERMARK ESTÁTICA.
+     NÃO É CRIADA NEM ALTERADA PELO JAVASCRIPT.
+  */
+
+  '<img ' +
+  'class="gallery-watermark" ' +
+  'src="https://raw.githubusercontent.com/jotorresfnai/Jtorresfnai.github.io/main/fnai_logo_transparente.png" ' +
+  'alt="" ' +
+  'aria-hidden="true" ' +
+  'draggable="false" ' +
+  '>' +
+
 
   (
     rows.length > 1
@@ -2265,7 +2275,7 @@ document
 
 
 /* =========================================================
-   INICIAR
+   INICIAR — UMA ÚNICA VEZ
 ========================================================= */
 
 load();
@@ -2274,3 +2284,4 @@ load();
 
 </body>
 </html>
+```
