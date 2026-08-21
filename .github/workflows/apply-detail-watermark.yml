@@ -1,0 +1,65 @@
+name: Apply FNAI watermark to property detail galleries
+
+on:
+  push:
+    branches: [watermark-detail-pages-2026-08-21]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply watermark to detail pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          files = [Path('imovel.html')]
+          files += list(Path('imoveis').glob('*/index.html'))
+
+          css = '''.fnai-watermark{
+            position:absolute;
+            left:50%;
+            top:50%;
+            right:auto;
+            bottom:auto;
+            transform:translate(-50%,-50%);
+            width:100px;
+            height:auto;
+            z-index:5;
+            opacity:.80;
+            pointer-events:none;
+          }'''
+
+          for p in files:
+              s = p.read_text(encoding='utf-8')
+              # Replace the existing watermark CSS block, regardless of its old placement.
+              s, n = re.subn(r'\.fnai-watermark\s*\{.*?\n\}', css, s, count=1, flags=re.S)
+              if n == 0:
+                  raise SystemExit(f'Watermark CSS not found in {p}')
+
+              # Replace text watermark markup with the approved transparent PNG.
+              pattern = r'<div\s+class=["\']fnai-watermark["\']\s*>.*?</div>'
+              replacement = '''<img class="fnai-watermark" src="/fnai_logo_transparente.png" alt="FNAI" width="100" height="66">'''
+              s, n = re.subn(pattern, replacement, s, count=1, flags=re.S)
+              if n == 0:
+                  # If already an image, normalize it instead of duplicating it.
+                  pattern_img = r'<img\s+class=["\']fnai-watermark["\'][^>]*>'
+                  s, n = re.subn(pattern_img, replacement, s, count=1, flags=re.S)
+              if n == 0:
+                  raise SystemExit(f'Watermark HTML not found in {p}')
+
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imovel.html imoveis .github/workflows/apply-detail-watermark.yml
+          git commit -m "Apply FNAI watermark to property detail galleries" || exit 0
+          git push
