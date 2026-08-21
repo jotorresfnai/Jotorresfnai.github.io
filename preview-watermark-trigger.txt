@@ -1,0 +1,1 @@
+Approved preview watermark: 100px, 80% opacity, centered.
