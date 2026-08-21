@@ -1826,11 +1826,19 @@ Não foi possível carregar o imóvel selecionado.
         class="slide ${i===0?'active':''}"
         data-index="${i}"
       >
-        ${imageHtml(
-          photo,
-          i,
-          title
-        )}
+      ${imageHtml(
+  photo,
+  i,
+  title
+)}
+
+<img
+  class="fnai-watermark"
+  src="/fnai_logo_transparente.png"
+  alt="FNAI"
+  width="100"
+  height="66"
+>
       </div>`
 
   )
@@ -1933,7 +1941,6 @@ ${
 }
 
 
-<img class="fnai-watermark" src="/fnai_logo_transparente.png" alt="FNAI" width="100" height="66">
 
 </section>
 
