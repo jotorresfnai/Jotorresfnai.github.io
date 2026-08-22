@@ -1,0 +1,2 @@
+Backup marker before changing the lateral property card text.
+Current stable commit: 8eaee6d61cdff88730b6ca6a7aecaee34b75465a
