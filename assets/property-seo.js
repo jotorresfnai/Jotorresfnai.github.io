@@ -45,6 +45,11 @@
     var activeIndex=slides.findIndex(function(s){ return s.classList.contains('active') || s.style.display==='block'; }); if(activeIndex<0) activeIndex=0; buttons.forEach(function(b,i){ b.classList.toggle('active',i===activeIndex); });
   }
   function ensureWatermarkCss(){ if(document.getElementById('fnai-watermark-fix')) return; var link=document.createElement('link'); link.id='fnai-watermark-fix'; link.rel='stylesheet'; link.href='/watermark-fix.css?v=20260822'; document.head.appendChild(link); }
-  function repair(){ ensureCard(); ensureGalleryThumbnails(); ensureWatermarkCss(); }
+  function ensureWatermarkElement(){
+    var gallery=document.querySelector('.gallery'); if(!gallery || gallery.querySelector('.gallery-watermark')) return;
+    if(getComputedStyle(gallery).position==='static') gallery.style.position='relative';
+    var img=document.createElement('img'); img.className='gallery-watermark'; img.src='/fnai_logo_transparente.png'; img.alt=''; img.setAttribute('aria-hidden','true'); gallery.appendChild(img);
+  }
+  function repair(){ ensureCard(); ensureGalleryThumbnails(); ensureWatermarkCss(); ensureWatermarkElement(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',repair,{once:true}); else repair(); new MutationObserver(repair).observe(document.documentElement,{childList:true,subtree:true});
 })();
