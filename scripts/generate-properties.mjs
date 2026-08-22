@@ -5,7 +5,6 @@ const SUPABASE_URL = "https://scmorocdbdyvnxodpwyi.supabase.co";
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM";
 const SITE_URL = "https://jotorresfnai.github.io";
 const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" };
-
 function esc(value) { return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;"); }
 function slugify(value) { return String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," e ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").replace(/-+/g,"-").slice(0,120); }
 function money(value) { if(value===null||value===undefined||value==="") return "Preço sob consulta"; const n=Number(value); if(Number.isNaN(n)) return esc(value); return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n); }
