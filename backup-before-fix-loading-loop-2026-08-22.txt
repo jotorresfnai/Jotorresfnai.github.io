@@ -1,0 +1,1 @@
+Backup marker: main state before loading-loop fix. Original parent 539c5a0d2d1f301e3a337528a82ee0d10c378232. Fix will replace only imovel.html with the static version from backup/imovel-card-before-2026-08-22.
