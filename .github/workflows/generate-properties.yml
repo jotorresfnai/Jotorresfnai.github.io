@@ -40,8 +40,10 @@ jobs:
         run: |
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
+          test -f scripts/apply-watermark.mjs
           node --check scripts/generate-properties.mjs
           node --check scripts/add-gallery-slideshow.mjs
+          node --check scripts/apply-watermark.mjs
 
       - name: Gerar páginas dos imóveis
         env:
@@ -82,6 +84,9 @@ jobs:
                   html = html.replace(marker, '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' + marker, 1)
                   path.write_text(html, encoding="utf-8")
           PY
+
+      - name: Aplicar watermark FNAI
+        run: node scripts/apply-watermark.mjs
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
