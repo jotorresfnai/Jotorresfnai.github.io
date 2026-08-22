@@ -1,10 +1,6 @@
 name: Repair panel automatic slug
 
 on:
-  push:
-    paths:
-      - 'painel.html'
-      - '.github/workflows/repair-panel-slug.yml'
   workflow_dispatch:
 
 permissions:
@@ -16,94 +12,5 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Repair painel.html
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          path = Path('painel.html')
-          text = path.read_text(encoding='utf-8')
-          original = text
-
-          # State used by the title -> slug automation.
-          if 'let autoSlug=true;' not in text:
-              marker = "function slugify(text){"
-              if marker not in text:
-                  raise SystemExit('Não encontrei slugify().')
-              text = text.replace(marker, "let autoSlug=true;\n" + marker, 1)
-
-          # New property: slug follows the title and publication is enabled by default.
-          text = re.sub(
-              r"function openNew\(\)\{\s*",
-              "function openNew(){\n\nautoSlug=true;\n\n",
-              text,
-              count=1,
-          )
-          text = text.replace(
-              "$('propertyId').value='';\n\n$('modalTitle').textContent=",
-              "$('propertyId').value='';\n\n$('publicado').checked=true;\n\n$('modalTitle').textContent=",
-              1,
-          )
-
-          # Editing an existing property must not unexpectedly overwrite its slug.
-          text = re.sub(
-              r"async function editProperty\(id\)\{\s*",
-              "async function editProperty(id){\n\nautoSlug=false;\n\n",
-              text,
-              count=1,
-          )
-
-          # Always show a slug when an old record has an empty slug.
-          text = text.replace(
-              "$('slug').value=p.slug || '';",
-              "$('slug').value=p.slug || slugify(p.titulo || '');",
-              1,
-          )
-
-          # Replace any previous title/slug SEO listeners with one deterministic handler.
-          pattern = re.compile(
-              r"\['titulo','localizacao','seo_titulo','seo_descricao','slug'\]\.forEach\(id=>\$\(id\)\.addEventListener\('input',\(\)=>\{.*?\}\)\);",
-              re.S,
-          )
-          replacement = """$('titulo').addEventListener('input',()=>{
-            if(autoSlug) $('slug').value=slugify($('titulo').value);
-            if(!$('seo_titulo').value.trim()) $('seo_titulo').value=$('titulo').value.trim() ? $('titulo').value.trim()+' | Jo Torres Imobiliário' : '';
-            updateSeoPreview();
-          });
-
-          $('slug').addEventListener('input',()=>{
-            autoSlug=false;
-            updateSeoPreview();
-          });
-
-          ['localizacao','seo_titulo','seo_descricao'].forEach(id=>$(id).addEventListener('input',updateSeoPreview));"""
-
-          text, count = pattern.subn(replacement, text, count=1)
-          if count != 1:
-              # If the old listener is already absent, accept the file only if the new
-              # listener is already present. This keeps the workflow idempotent.
-              if "$('titulo').addEventListener('input',()=>{" not in text:
-                  raise SystemExit('Não encontrei o listener atual de slug.')
-
-          if text == original:
-              print('painel.html já estava corrigido.')
-              raise SystemExit(0)
-
-          path.write_text(text, encoding='utf-8')
-          print('painel.html corrigido.')
-          PY
-
-      - name: Commit repair
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add painel.html
-          if git diff --cached --quiet; then
-            echo 'Sem alterações.'
-            exit 0
-          fi
-          git commit -m 'Fix automatic slug in property panel'
-          git push
+      - name: Manual repair only
+        run: echo "Manual repair workflow. Automatic push trigger disabled for site stability."

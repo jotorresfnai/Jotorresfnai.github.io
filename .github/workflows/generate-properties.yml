@@ -9,7 +9,7 @@ on:
     - cron: "0 */6 * * *"
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -30,6 +30,26 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+
+      - name: Normalizar painel de imóveis
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          path = Path("painel.html")
+          text = path.read_text(encoding="utf-8")
+          required = [
+              "area:Number($('area').value)||null,",
+              "area_util:Number($('area_util').value)||null,",
+              "area_bruta:Number($('area_bruta').value)||null,",
+              "area_terreno:Number($('area_terreno').value)||null,",
+          ]
+          if not all(x in text for x in required):
+              raise SystemExit("O painel não contém todos os campos de área no payload.")
+          text = re.sub(r'(autoSlug=true;\s*){2,}', 'autoSlug=true;\n', text)
+          text = re.sub(r'(autoSlug=false;\s*){2,}', 'autoSlug=false;\n', text)
+          print("Painel validado; nenhuma alteração será feita durante o deploy.")
+          PY
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
@@ -54,7 +74,6 @@ jobs:
         run: |
           test -f sitemap.xml
           test -f imoveis.html
-          echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
       - name: Corrigir fundo das miniaturas
