@@ -41,9 +41,11 @@ jobs:
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
           test -f scripts/apply-watermark.mjs
+          test -f scripts/add-mobile-menu.mjs
           node --check scripts/generate-properties.mjs
           node --check scripts/add-gallery-slideshow.mjs
           node --check scripts/apply-watermark.mjs
+          node --check scripts/add-mobile-menu.mjs
 
       - name: Gerar páginas dos imóveis
         env:
@@ -51,6 +53,7 @@ jobs:
         run: |
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
+          node scripts/add-mobile-menu.mjs
 
       - name: Validar páginas geradas
         run: |
