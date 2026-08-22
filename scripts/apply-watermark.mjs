@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 
 const ROOT = process.cwd();
-const LOGO = "/fnai_logo_transparente.png";
 const CSS = `<style id="fnai-logo-watermark-css">
 .fnai-watermark { display: none !important; }
 .property-image, .property-list-image, .gallery-slide, .gallery-thumb { position: relative; }
@@ -19,14 +18,12 @@ function removeOldTextWatermarks(html) {
 }
 function processFile(file) {
   let html = fs.readFileSync(file, "utf8");
-  const before = html;
   html = removeOldTextWatermarks(html);
   html = html.replace(/\s*<style id="fnai-logo-watermark-css">[\s\S]*?<\/style>/i, "");
   html = html.replace("</head>", `${CSS}\n</head>`);
-  if (html !== before) { fs.writeFileSync(file, html, "utf8"); return true; }
-  return false;
+  fs.writeFileSync(file, html, "utf8");
+  return true;
 }
 const files = [path.join(ROOT,"index.html"),path.join(ROOT,"imoveis.html"),path.join(ROOT,"painel.html"),...(fs.existsSync(path.join(ROOT,"imoveis")) ? fs.readdirSync(path.join(ROOT,"imoveis"),{withFileTypes:true}).filter(e=>e.isDirectory()).map(e=>path.join(ROOT,"imoveis",e.name,"index.html")) : [])];
-let changed=0;
-for (const file of files) if (fs.existsSync(file) && processFile(file)) { changed++; console.log(`Watermark atualizada: ${path.relative(ROOT,file)}`); }
-console.log(`Watermark: ${changed} página(s) atualizada(s).`);
+for (const file of files) if (fs.existsSync(file)) { processFile(file); console.log(`Watermark atualizada: ${path.relative(ROOT,file)}`); }
+console.log(`Watermark aplicada a ${files.filter(f=>fs.existsSync(f)).length} página(s).`);
