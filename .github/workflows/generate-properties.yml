@@ -50,6 +50,21 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
+      - name: Adicionar favicon JT
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          favicon = '<link rel="icon" type="image/svg+xml" href="/Jotorresfnai.github.io/favicon.svg">'
+          for path in Path('.').rglob('*.html'):
+              html = path.read_text(encoding='utf-8')
+              if 'href="/Jotorresfnai.github.io/favicon.svg"' in html:
+                  continue
+              html, count = re.subn(r'(<head[^>]*>)', r'\1\n' + favicon, html, count=1, flags=re.I)
+              if count:
+                  path.write_text(html, encoding='utf-8')
+          PY
+
       - name: Validar páginas geradas
         run: |
           test -f sitemap.xml
