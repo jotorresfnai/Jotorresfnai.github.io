@@ -17,6 +17,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  FORCE_REGENERATION: "true"
+
 jobs:
   generate:
     runs-on: ubuntu-latest
