@@ -1,0 +1,2 @@
+Backup marker for imovel.html before stable rebuild.
+Current base: 26bb9abd6541aa11533d5eadfd9a8526d7707b2a
