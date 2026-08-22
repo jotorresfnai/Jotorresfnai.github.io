@@ -50,21 +50,6 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
-      - name: Adicionar favicon JT
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          favicon = '<link rel="icon" type="image/svg+xml" href="/Jotorresfnai.github.io/favicon.svg">'
-          for path in Path('.').rglob('*.html'):
-              html = path.read_text(encoding='utf-8')
-              if 'href="/Jotorresfnai.github.io/favicon.svg"' in html:
-                  continue
-              html, count = re.subn(r'(<head[^>]*>)', r'\1\n' + favicon, html, count=1, flags=re.I)
-              if count:
-                  path.write_text(html, encoding='utf-8')
-          PY
-
       - name: Validar páginas geradas
         run: |
           test -f sitemap.xml
@@ -96,6 +81,20 @@ jobs:
               html = re.sub(r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
               html = re.sub(r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
               path.write_text(html, encoding="utf-8")
+          PY
+
+      - name: Adicionar favicon
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for path in [Path("index.html"), Path("imoveis.html"), *Path("imoveis").glob("*/index.html")]:
+              if not path.exists():
+                  continue
+              html = path.read_text(encoding="utf-8")
+              if 'href="/favicon.svg"' not in html:
+                  marker = '</head>'
+                  html = html.replace(marker, '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' + marker, 1)
+                  path.write_text(html, encoding="utf-8")
           PY
 
       - name: Configurar GitHub Pages
