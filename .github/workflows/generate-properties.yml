@@ -41,9 +41,11 @@ jobs:
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
           test -f scripts/apply-watermark.mjs
+          test -f scripts/cleanup-legacy-watermark.mjs
           node --check scripts/generate-properties.mjs
           node --check scripts/add-gallery-slideshow.mjs
           node --check scripts/apply-watermark.mjs
+          node --check scripts/cleanup-legacy-watermark.mjs
 
       - name: Gerar páginas dos imóveis
         env:
@@ -87,6 +89,9 @@ jobs:
 
       - name: Aplicar watermark FNAI
         run: node scripts/apply-watermark.mjs
+
+      - name: Remover watermark FNAI antiga
+        run: node scripts/cleanup-legacy-watermark.mjs
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
