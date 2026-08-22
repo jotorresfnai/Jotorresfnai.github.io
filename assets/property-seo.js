@@ -76,4 +76,23 @@
     setMeta('#twitterTitle',document.title); setMeta('#twitterDescription',description.slice(0,155));
     addJsonLd(property,photos);
   };
+
+  /* Card contact heading — intentionally isolated from gallery/slideshow. */
+  function restoreCardIntro(){
+    var card=document.querySelector('.card');
+    if(!card || card.querySelector('.card-intro')) return;
+    var heading=card.querySelector('h2');
+    if(!heading) return;
+    var intro=document.createElement('div');
+    intro.className='card-intro';
+    intro.textContent='Fale comigo...';
+    intro.style.cssText='font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#c9a34a;margin-bottom:8px;';
+    card.insertBefore(intro,heading);
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',restoreCardIntro,{once:true});
+  }else{
+    restoreCardIntro();
+  }
+  new MutationObserver(restoreCardIntro).observe(document.documentElement,{childList:true,subtree:true});
 })();
