@@ -114,7 +114,16 @@
     buttons.forEach(function(b,i){ b.classList.toggle('active',i===activeIndex); });
   }
 
-  function repair(){ ensureCard(); ensureGalleryThumbnails(); }
+  function ensureWatermarkCss(){
+    if(document.getElementById('fnai-watermark-fix')) return;
+    var link=document.createElement('link');
+    link.id='fnai-watermark-fix';
+    link.rel='stylesheet';
+    link.href='/watermark-fix.css?v=20260822';
+    document.head.appendChild(link);
+  }
+
+  function repair(){ ensureCard(); ensureGalleryThumbnails(); ensureWatermarkCss(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',repair,{once:true}); else repair();
   new MutationObserver(repair).observe(document.documentElement,{childList:true,subtree:true});
 })();
