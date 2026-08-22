@@ -57,20 +57,6 @@ jobs:
           echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
-      - name: Remover FNAI dos cards
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          for name in ("index.html", "imoveis.html"):
-              path = Path(name)
-              if not path.exists():
-                  continue
-              html = path.read_text(encoding="utf-8")
-              html = re.sub(r'<[^>]*class=["\'][^"\']*fnai-watermark[^"\']*["\'][^>]*>.*?</[^>]+>', '', html, flags=re.S|re.I)
-              path.write_text(html, encoding="utf-8")
-          PY
-
       - name: Corrigir fundo das miniaturas
         run: |
           python3 - <<'PY'
