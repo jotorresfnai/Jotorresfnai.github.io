@@ -38,7 +38,8 @@ function matchingDivEnd(html,start){let depth=0;const re=/<\/?div\b[^>]*>/gi;re.
 function extractImages(block){
   const out=[];
   for(const m of block.matchAll(/<img\b[^>]*>/gi)){
-    const tag=m[0],src=(tag.match(/\bsrc="([^"]+)"/i)||[])[1];
+    const tag=m[0];
+    const src=(tag.match(/\b(?:src|data-src|data-lazy-src|data-original|data-image)="([^"]+)"/i)||[])[1];
     if(src&&!out.some(x=>x.src===src))out.push({src,alt:(tag.match(/\balt="([^"]*)"/i)||[])[1]||"Imóvel"});
   }
   return out;
