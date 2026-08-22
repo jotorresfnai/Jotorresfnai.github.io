@@ -40,6 +40,30 @@ const JS = `
 })();
 </script>`;
 
+const MENU_LINKS = `
+<a href="/">Início</a>
+<a href="/#sobre">Sobre</a>
+<a href="/imoveis.html">Imóveis</a>
+<a href="/#contactos">Contactos</a>
+<a class="whatsapp" href="https://wa.me/41798362510" target="_blank" rel="noopener">WhatsApp</a>`;
+
+function ensureMenuLinks(html) {
+  const navMatch = html.match(/<nav\b[^>]*id=["']navigation["'][^>]*>[\s\S]*?<\/nav>/i);
+  if (!navMatch) return html;
+  const nav = navMatch[0];
+  const hasMainLinks = /href=["']\/["'][^>]*>\s*Início\s*</i.test(nav) && /href=["']\/imoveis\.html["']/i.test(nav);
+  if (hasMainLinks) return html;
+
+  const whatsapp = nav.match(/<a\b[^>]*class=["'][^"']*\bwhatsapp\b[^"']*["'][^>]*>[\s\S]*?<\/a>/i);
+  const whatsappHtml = whatsapp ? whatsapp[0] : '';
+  const cleanNav = nav
+    .replace(/<a\b[^>]*class=["'][^"']*\bwhatsapp\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '')
+    .replace(/<\/nav>\s*$/i, '');
+  const finalWhatsapp = whatsappHtml || MENU_LINKS.match(/<a class="whatsapp"[\s\S]*?<\/a>/i)?.[0] || '';
+  const links = MENU_LINKS.replace(/<a class="whatsapp"[\s\S]*?<\/a>/i, finalWhatsapp);
+  return html.replace(nav, `${cleanNav}${links}</nav>`);
+}
+
 for (const file of files) {
   if (!fs.existsSync(file)) continue;
   let html = fs.readFileSync(file, 'utf8');
@@ -51,6 +75,8 @@ for (const file of files) {
     const replacement = navTag.replace(/<nav\b/i, '<nav id="navigation"');
     html = html.replace(navTag, replacement);
   }
+
+  html = ensureMenuLinks(html);
 
   if (!/id=["']menuToggle["']/i.test(html)) {
     const button = `\n<button class="mobile-menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>\n`;
