@@ -1,0 +1,1 @@
+Backup marker: created before the card-text-only change to imovel.html. The protected main state is preserved in the backup branch created immediately before this change.
