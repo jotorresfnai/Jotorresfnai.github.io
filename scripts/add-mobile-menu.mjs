@@ -43,12 +43,18 @@ const JS = `
 for (const file of files) {
   if (!fs.existsSync(file)) continue;
   let html = fs.readFileSync(file, 'utf8');
-  if (!/<nav[^>]+class=["']navigation["'][^>]*id=["']navigation["']/i.test(html) && !/<nav[^>]+id=["']navigation["'][^>]+class=["']navigation["']/i.test(html)) continue;
+  const navMatch = html.match(/<nav\b[^>]*class=["'][^"']*\bnavigation\b[^"']*["'][^>]*>/i) || html.match(/<nav\b[^>]*>/i);
+  if (!navMatch) continue;
+
+  const navTag = navMatch[0];
+  if (!/\bid=["']navigation["']/i.test(navTag)) {
+    const replacement = navTag.replace(/<nav\b/i, '<nav id="navigation"');
+    html = html.replace(navTag, replacement);
+  }
 
   if (!/id=["']menuToggle["']/i.test(html)) {
     const button = `\n<button class="mobile-menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>\n`;
-    html = html.replace(/(<nav\b[^>]*class=["']navigation["'][^>]*id=["']navigation["'][^>]*>)/i, `${button}$1`);
-    html = html.replace(/(<nav\b[^>]*id=["']navigation["'][^>]*class=["']navigation["'][^>]*>)/i, `${button}$1`);
+    html = html.replace(/(<nav\b[^>]*id=["']navigation["'][^>]*>)/i, `${button}$1`);
   }
 
   if (!html.includes('id="site-mobile-menu-css"')) {
