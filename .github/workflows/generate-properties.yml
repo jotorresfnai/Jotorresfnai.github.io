@@ -23,42 +23,39 @@ env:
 jobs:
   generate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Obter código
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 1
-
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Verificar geradores
         run: |
           test -f scripts/generate-properties.mjs
           test -f scripts/add-gallery-slideshow.mjs
           test -f scripts/apply-watermark.mjs
+          test -f scripts/add-mobile-menu.mjs
           node --check scripts/generate-properties.mjs
           node --check scripts/add-gallery-slideshow.mjs
           node --check scripts/apply-watermark.mjs
-
+          node --check scripts/add-mobile-menu.mjs
       - name: Gerar páginas dos imóveis
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
-
+          node scripts/add-mobile-menu.mjs
       - name: Validar páginas geradas
         run: |
           test -f sitemap.xml
           test -f imoveis.html
           echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
-
       - name: Corrigir fundo das miniaturas
         run: |
           python3 - <<'PY'
@@ -70,7 +67,6 @@ jobs:
               html = re.sub(r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
               path.write_text(html, encoding="utf-8")
           PY
-
       - name: Adicionar favicon
         run: |
           python3 - <<'PY'
@@ -84,18 +80,14 @@ jobs:
                   html = html.replace(marker, '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' + marker, 1)
                   path.write_text(html, encoding="utf-8")
           PY
-
       - name: Aplicar watermark FNAI
         run: node scripts/apply-watermark.mjs
-
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
-
       - name: Preparar site para publicação
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
-
   deploy:
     needs: generate
     runs-on: ubuntu-latest
