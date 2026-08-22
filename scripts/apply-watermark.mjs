@@ -5,8 +5,8 @@ const ROOT = process.cwd();
 const LOGO = "/fnai_logo_transparente.png";
 const CSS = `<style id="fnai-logo-watermark-css">
 .fnai-watermark { display: none !important; }
-.property-image, .property-list-image, .gallery-slide, .gallery-thumb { position: relative; }
-.property-image::after, .property-list-image::after, .gallery-slide::after, .gallery-thumb::after {
+.property-image, .property-list-image, .property-slideshow, .gallery-slide, .gallery-thumb { position: relative; }
+.property-image::after, .property-list-image::after, .property-slideshow::after, .gallery-slide::after, .gallery-thumb::after {
   content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(28%, 260px); height: min(28%, 260px);
   background: url("/fnai_logo_transparente.png") center / contain no-repeat;
