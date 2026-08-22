@@ -1,0 +1,1 @@
+Backup marker for main state before loading-loop fix. Current main commit was restored to 539c5a0d2d1f301e3a337528a82ee0d10c378232.
