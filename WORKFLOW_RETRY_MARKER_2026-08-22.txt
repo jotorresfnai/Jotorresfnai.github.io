@@ -1,0 +1,1 @@
+Temporary marker to trigger generate-properties.yml from main after restoring the property generator. Remove after successful deployment.
