@@ -60,14 +60,23 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           old = "https://jotorresimobiliaria.github.io"
           new = "https://jotorresfnai.github.io"
-          paths = [Path("index.html"), Path("imoveis.html"), *Path("imoveis").glob("*/index.html")]
+
+          paths = [
+              Path("index.html"),
+              Path("imoveis.html"),
+              *Path("imoveis").glob("*/index.html")
+          ]
+
           for path in paths:
               if not path.exists():
                   continue
+
               html = path.read_text(encoding="utf-8")
               updated = html.replace(old, new)
+
               if updated != html:
                   path.write_text(updated, encoding="utf-8")
                   print(f"Canonical/domínio corrigido: {path}")
@@ -80,18 +89,57 @@ jobs:
         run: |
           test -f sitemap.xml
           test -f imoveis.html
+
           node - <<'NODE'
           const fs = require('fs');
+
           const xml = fs.readFileSync('sitemap.xml', 'utf8');
-          if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) throw new Error('Sitemap XML inválido');
-          if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) throw new Error('Namespace do sitemap inválido');
-          const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
-          if (new Set(urls).size !== urls.length) throw new Error('Sitemap contém URLs duplicados');
-          for (const url of urls) {
-            if (!url.startsWith('https://jotorresfnai.github.io/')) throw new Error(`URL fora do domínio: ${url}`);
+
+          if (
+            !xml.startsWith(
+              '<?xml version="1.0" encoding="UTF-8"?>'
+            )
+          ) {
+            throw new Error('Sitemap XML inválido');
           }
-          console.log(`Sitemap válido: ${urls.length} URLs.`);
+
+          if (
+            !xml.includes(
+              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            )
+          ) {
+            throw new Error('Namespace do sitemap inválido');
+          }
+
+          const urls = [
+            ...xml.matchAll(/<loc>(.*?)<\/loc>/g)
+          ].map(m => m[1]);
+
+          if (
+            new Set(urls).size !== urls.length
+          ) {
+            throw new Error(
+              'Sitemap contém URLs duplicados'
+            );
+          }
+
+          for (const url of urls) {
+            if (
+              !url.startsWith(
+                'https://jotorresfnai.github.io/'
+              )
+            ) {
+              throw new Error(
+                `URL fora do domínio: ${url}`
+              );
+            }
+          }
+
+          console.log(
+            `Sitemap válido: ${urls.length} URLs.`
+          );
           NODE
+
           echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
@@ -100,25 +148,61 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
+
           for path in Path("imoveis").glob("*/index.html"):
               html = path.read_text(encoding="utf-8")
-              html = re.sub(r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
-              html = re.sub(r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})', r'\1#ffffff\2', html, flags=re.S)
-              path.write_text(html, encoding="utf-8")
+
+              html = re.sub(
+                  r'(\.gallery-thumbs-wrap\s*\{.*?background:)#07171b(;.*?\})',
+                  r'\1#ffffff\2',
+                  html,
+                  flags=re.S
+              )
+
+              html = re.sub(
+                  r'(\.gallery-thumb\s*\{.*?background:)#172126(;.*?\})',
+                  r'\1#ffffff\2',
+                  html,
+                  flags=re.S
+              )
+
+              path.write_text(
+                  html,
+                  encoding="utf-8"
+              )
           PY
 
       - name: Adicionar favicon
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          for path in [Path("index.html"), Path("imoveis.html"), *Path("imoveis").glob("*/index.html")]:
+
+          for path in [
+              Path("index.html"),
+              Path("imoveis.html"),
+              *Path("imoveis").glob("*/index.html")
+          ]:
               if not path.exists():
                   continue
-              html = path.read_text(encoding="utf-8")
+
+              html = path.read_text(
+                  encoding="utf-8"
+              )
+
               if 'href="/favicon.svg"' not in html:
                   marker = '</head>'
-                  html = html.replace(marker, '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' + marker, 1)
-                  path.write_text(html, encoding="utf-8")
+
+                  html = html.replace(
+                      marker,
+                      '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
+                      + marker,
+                      1
+                  )
+
+                  path.write_text(
+                      html,
+                      encoding="utf-8"
+                  )
           PY
 
       - name: Aplicar watermark FNAI
@@ -126,35 +210,6 @@ jobs:
 
       - name: Remover watermark FNAI antiga
         run: node scripts/cleanup-legacy-watermark.mjs
-
-      - name: Alinhar botões dos cards de imóveis
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          path = Path("imoveis.html")
-          html = path.read_text(encoding="utf-8")
-
-          old = '''    .property-card {\n\n      background: white;'''
-          new = '''    .property-card {\n\n      display: flex;\n\n      flex-direction: column;\n\n      background: white;'''
-          if old not in html:
-              raise SystemExit("property-card block not found")
-          html = html.replace(old, new, 1)
-
-          old = '''    .property-info {\n\n      padding: 22px;'''
-          new = '''    .property-info {\n\n      flex: 1;\n\n      display: flex;\n\n      flex-direction: column;\n\n      padding: 22px;'''
-          if old not in html:
-              raise SystemExit("property-info block not found")
-          html = html.replace(old, new, 1)
-
-          old = '''      transition: .2s;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
-          new = '''      transition: .2s;\n\n      margin-top: auto;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
-          if old not in html:
-              raise SystemExit("property-button block not found")
-          html = html.replace(old, new, 1)
-
-          path.write_text(html, encoding="utf-8")
-          PY
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
@@ -167,9 +222,11 @@ jobs:
   deploy:
     needs: generate
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Publicar no GitHub Pages
         id: deployment
