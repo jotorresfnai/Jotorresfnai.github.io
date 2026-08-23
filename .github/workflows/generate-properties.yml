@@ -186,34 +186,33 @@ jobs:
           path = Path("imoveis.html")
           html = path.read_text(encoding="utf-8")
 
-          marker = "/* FNAI_CARD_ALIGNMENT_SAFE */"
-          css = f"""
-          <style>
-          {marker}
-          .property-card {{
+          marker = "FNAI_CARD_ALIGNMENT_SAFE"
+          css = """
+          <style data-fnai-card-alignment="safe">
+          .property-card {
             display: flex;
             flex-direction: column;
-          }}
-          .property-info {{
+          }
+          .property-info {
             flex: 1;
             display: flex;
             flex-direction: column;
-          }}
-          .property-button {{
+          }
+          .property-button {
             margin-top: auto;
-          }}
+          }
           </style>
           """
 
-          if marker not in html:
-              closing = html.rfind("</style>")
-              if closing == -1:
-                  raise SystemExit("Não foi encontrado o bloco <style> em imoveis.html")
-              html = html[:closing] + "\n" + css + html[closing:]
+          if marker in html:
+              print("Alinhamento seguro dos cards já estava aplicado.")
+          else:
+              marker_html = '<!-- FNAI_CARD_ALIGNMENT_SAFE -->'
+              if '</head>' not in html:
+                  raise SystemExit("Não foi encontrado </head> em imoveis.html")
+              html = html.replace('</head>', marker_html + '\n' + css + '\n</head>', 1)
               path.write_text(html, encoding="utf-8")
               print("Alinhamento seguro dos cards aplicado.")
-          else:
-              print("Alinhamento seguro dos cards já estava aplicado.")
           PY
 
       - name: Configurar GitHub Pages
