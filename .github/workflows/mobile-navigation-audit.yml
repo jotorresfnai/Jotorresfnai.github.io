@@ -1,0 +1,131 @@
+name: Mobile navigation audit
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: mobile-navigation-audit
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Wait for property generator triggered by this push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in {1..60}; do
+            status=$(gh run list --repo "${{ github.repository }}" --workflow generate-properties.yml --limit 20 --json headSha,status --jq '.[] | select(.headSha=="${{ github.sha }}") | .status' | head -n1)
+            if [ "$status" = "completed" ]; then break; fi
+            sleep 5
+          done
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Patch mobile navigation and audit duplicates
+        run: |
+          cat > /tmp/mobile_patch.py <<'PY'
+          from pathlib import Path
+          import re
+
+          BUTTON='''<button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>'''
+          CSS='''
+          /* MOBILE NAVIGATION — UNIFIED */
+          .mobile-menu-toggle{display:none;width:46px;height:46px;padding:0;border:0;background:transparent;color:#fff;align-items:center;justify-content:center;cursor:pointer;font-size:22px;flex:0 0 auto}
+          @media(max-width:760px){
+          .mobile-menu-toggle{display:flex}
+          .header .navigation{position:absolute;top:100%;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;flex-wrap:nowrap;padding:10px 5% 18px;background:#07171b;box-shadow:0 14px 28px rgba(0,0,0,.25);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+          .header .navigation.mobile-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+          .header .navigation a{display:flex;align-items:center;min-height:48px;padding:12px 5px;border-bottom:1px solid rgba(255,255,255,.1);font-size:16px}
+          .header .navigation .whatsapp{margin-top:12px;justify-content:center;border-bottom:0;text-align:center}
+          }
+          '''
+          JS='''<script>
+          (function(){
+            const toggle=document.querySelector('.mobile-menu-toggle');
+            const nav=document.querySelector('.header .navigation');
+            if(!toggle||!nav)return;
+            const setOpen=open=>{nav.classList.toggle('mobile-open',open);toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');const i=toggle.querySelector('i');if(i)i.className=open?'fa-solid fa-xmark':'fa-solid fa-bars';};
+            toggle.addEventListener('click',()=>setOpen(!nav.classList.contains('mobile-open')));
+            nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
+            document.addEventListener('click',e=>{if(nav.classList.contains('mobile-open')&&!nav.contains(e.target)&&!toggle.contains(e.target))setOpen(false)});
+            window.addEventListener('resize',()=>{if(window.innerWidth>760)setOpen(false)});
+          })();
+          </script>'''
+
+          for name in ['index.html','imoveis.html','imovel.html']:
+              p=Path(name); s=p.read_text(encoding='utf-8')
+              s=re.sub(r'\s*<button[^>]*class=["\']mobile-menu-toggle["\'][\s\S]*?</button>\s*','\n',s,count=1)
+              s=re.sub(r'\n<script>\s*\(function\(\)\{\s*const toggle=document\.querySelector\(\x27\.mobile-menu-toggle\x27\);[\s\S]*?</script>\s*','\n',s,count=1)
+              m=re.search(r'<nav\b[^>]*class=["\']navigation["\'][^>]*>',s,re.I)
+              if not m: raise SystemExit(f'{name}: nav not found')
+              s=s[:m.start()]+BUTTON+'\n'+s[m.start():]
+              s=s.replace('</style>',CSS+'\n</style>',1)
+              s=s.replace('</body>',JS+'\n</body>',1)
+              p.write_text(s,encoding='utf-8')
+
+          p=Path('scripts/generate-properties.mjs'); s=p.read_text(encoding='utf-8')
+          needle='</a><nav class="navigation">'
+          if needle not in s: raise SystemExit('generator: navigation insertion point not found')
+          s=s.replace(needle,'</a>'+BUTTON+'<nav class="navigation">',1)
+          old='@media(max-width:850px){.navigation a:not(.whatsapp){display:none}.gallery{height:420px;grid-template-columns:1fr}.gallery img:first-child{grid-row:auto}.gallery img:nth-child(n+2){display:none}.main-grid{grid-template-columns:1fr;gap:30px}footer{flex-direction:column}}'
+          new='@media(max-width:850px){.gallery{height:420px;grid-template-columns:1fr}.gallery img:first-child{grid-row:auto}.gallery img:nth-child(n+2){display:none}.main-grid{grid-template-columns:1fr;gap:30px}footer{flex-direction:column}}' + CSS.replace('\n','')
+          if old not in s: raise SystemExit('generator: mobile media block not found')
+          s=s.replace(old,new,1)
+          needle='</body></html>`;'
+          if needle not in s: raise SystemExit('generator: body end not found')
+          s=s.replace(needle,JS+'</body></html>`;',1)
+          p.write_text(s,encoding='utf-8')
+
+          print('patched index.html, imoveis.html, imovel.html and scripts/generate-properties.mjs')
+          PY
+          python3 /tmp/mobile_patch.py
+
+      - name: Validate patched files
+        run: |
+          python3 -m py_compile /tmp/mobile_patch.py
+          test -s index.html
+          test -s imoveis.html
+          test -s imovel.html
+          test -s scripts/generate-properties.mjs
+          grep -q 'mobile-menu-toggle' index.html
+          grep -q 'mobile-menu-toggle' imoveis.html
+          grep -q 'mobile-menu-toggle' imovel.html
+          grep -q 'mobile-menu-toggle' scripts/generate-properties.mjs
+          echo 'Mobile navigation audit OK'
+
+      - name: Commit fix and remove temporary workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -f .github/workflows/mobile-navigation-audit.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html imoveis.html imovel.html scripts/generate-properties.mjs
+          git add -u .github/workflows/mobile-navigation-audit.yml || true
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git commit -m "fix: unificar menu mobile nas páginas imobiliárias"
+          git push origin main
+
+      - name: Regenerate property pages and deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run generate-properties.yml --repo "${{ github.repository }}" --ref main
+          echo 'Workflow de geração/publicação acionado.'
