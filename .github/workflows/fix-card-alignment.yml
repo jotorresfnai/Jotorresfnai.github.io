@@ -1,0 +1,54 @@
+name: Fix card alignment
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply card layout fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('imoveis.html')
+          text = path.read_text(encoding='utf-8')
+
+          old = '''    .property-card {\n\n      background: white;'''
+          new = '''    .property-card {\n\n      display: flex;\n\n      flex-direction: column;\n\n      background: white;'''
+          if old not in text:
+              raise SystemExit('property-card block not found')
+          text = text.replace(old, new, 1)
+
+          old = '''    .property-info {\n\n      padding: 22px;'''
+          new = '''    .property-info {\n\n      flex: 1;\n\n      display: flex;\n\n      flex-direction: column;\n\n      padding: 22px;'''
+          if old not in text:
+              raise SystemExit('property-info block not found')
+          text = text.replace(old, new, 1)
+
+          old = '''      transition: .2s;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
+          new = '''      transition: .2s;\n\n      margin-top: auto;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
+          if old not in text:
+              raise SystemExit('property-button spacing block not found')
+          text = text.replace(old, new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit fix and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imoveis.html
+          git rm .github/workflows/fix-card-alignment.yml
+          git commit -m "fix: alinhar botoes dos cards de imoveis"
+          git push
