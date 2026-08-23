@@ -1,0 +1,35 @@
+name: Fix mobile menu Imóveis link
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fix link in homepage
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<a href="#imoveis">Imóveis</a>'
+          new = '<a href="https://jotorresfnai.github.io/imoveis.html">Imóveis</a>'
+          if old not in s:
+              raise SystemExit('Expected mobile/desktop Imóveis link not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git rm .github/workflows/fix-mobile-nav-imoveis.yml
+          git commit -m "fix: corrigir link de Imóveis no menu mobile"
+          git push origin main
