@@ -138,6 +138,10 @@
       margin-top: 25px;
     }
 
+    .cf-turnstile {
+      margin-bottom: 18px;
+    }
+
     button {
       border: 0;
       border-radius: 10px;
@@ -304,21 +308,19 @@
           </div>
 
         </div>
-        <div class="submit-area">
-  <div class="cf-turnstile"
-       data-sitekey="0x4AAAAAAEZaDiev9t4nJjXh"
-       data-theme="light">
-  </div>
 
-  <button type="submit" id="submitButton">
-    Enviar
-  </button>
-</div>
-        
         <div class="submit-area">
+
+          <div
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAAEZaDiev9t4nJjXh"
+            data-theme="light">
+          </div>
+
           <button type="submit" id="submitButton">
             Enviar
           </button>
+
         </div>
 
         <div id="status" class="status"></div>
@@ -346,6 +348,19 @@
       status.className = "status";
       status.textContent = "";
 
+      const turnstileToken =
+        document.querySelector(
+          '[name="cf-turnstile-response"]'
+        )?.value || "";
+
+      if (!turnstileToken) {
+        status.className = "status error";
+        status.textContent =
+          "Por favor, complete a verificação anti-spam.";
+
+        return;
+      }
+
       button.disabled = true;
       button.textContent = "A enviar...";
 
@@ -354,17 +369,21 @@
         email: document.getElementById("email").value.trim(),
         telefone: document.getElementById("telefone").value.trim(),
         assunto: document.getElementById("assunto").value.trim(),
-        mensagem: document.getElementById("mensagem").value.trim()
+        mensagem: document.getElementById("mensagem").value.trim(),
+        "cf-turnstile-response": turnstileToken
       };
 
       try {
-        const response = await fetch(SUPABASE_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
+        const response = await fetch(
+          SUPABASE_FUNCTION_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          }
+        );
 
         let result = {};
 
@@ -376,7 +395,8 @@
 
         if (!response.ok) {
           throw new Error(
-            result.error || "Não foi possível enviar a mensagem."
+            result.error ||
+            "Não foi possível enviar a mensagem."
           );
         }
 
@@ -386,8 +406,18 @@
 
         form.reset();
 
+        if (
+          typeof turnstile !== "undefined" &&
+          typeof turnstile.reset === "function"
+        ) {
+          turnstile.reset();
+        }
+
       } catch (error) {
-        console.error("Erro ao enviar contacto:", error);
+        console.error(
+          "Erro ao enviar contacto:",
+          error
+        );
 
         status.className = "status error";
         status.textContent =
@@ -399,7 +429,13 @@
       button.textContent = "Enviar";
     });
   </script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer>
+  </script>
+
 </body>
 </html>
 ```
