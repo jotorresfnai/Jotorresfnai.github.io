@@ -2,7 +2,6 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Contacto | FNAI</title>
@@ -116,7 +115,7 @@
       color: #657177;
     }
 
-    /* CONTACT AREA */
+    /* CONTACT */
 
     .contact-section {
       max-width: 1100px;
@@ -288,13 +287,34 @@
       transform: translateY(-1px);
     }
 
-    .form-note {
-      margin: 14px 0 0;
+    .submit-button:disabled {
+      opacity: .65;
+      cursor: wait;
+      transform: none;
+    }
 
-      font-size: 12px;
+    .form-message {
+      display: none;
+
+      margin-top: 18px;
+      padding: 13px 15px;
+
+      border-radius: 10px;
+
+      font-size: 14px;
       line-height: 1.5;
-      color: #7a858a;
-      text-align: center;
+    }
+
+    .form-message.success {
+      display: block;
+      background: #edf8f5;
+      color: #126b57;
+    }
+
+    .form-message.error {
+      display: block;
+      background: #fff1f1;
+      color: #a33a3a;
     }
 
     /* FOOTER */
@@ -436,8 +456,6 @@
 
   <main class="contact-section">
 
-    <!-- INFORMAÇÃO -->
-
     <div class="contact-info">
 
       <h2>Fale connosco</h2>
@@ -446,7 +464,6 @@
         Tem alguma dúvida sobre um imóvel, pretende vender ou arrendar
         uma propriedade? Envie-nos uma mensagem.
       </p>
-
 
       <div class="contact-item">
 
@@ -464,7 +481,6 @@
 
       </div>
 
-
       <div class="contact-item">
 
         <div class="contact-icon">
@@ -480,7 +496,6 @@
         </div>
 
       </div>
-
 
       <div class="contact-item">
 
@@ -501,17 +516,11 @@
     </div>
 
 
-    <!-- FORMULÁRIO -->
-
     <div class="contact-form">
 
       <h2>Envie uma mensagem</h2>
 
-      <form
-        action="mailto:SEU_EMAIL"
-        method="post"
-        enctype="text/plain"
-      >
+      <form id="contactForm">
 
         <div class="form-group">
 
@@ -522,8 +531,9 @@
           <input
             type="text"
             id="nome"
-            name="Nome"
+            name="nome"
             placeholder="O seu nome"
+            maxlength="100"
             required
           >
 
@@ -539,8 +549,9 @@
           <input
             type="email"
             id="email"
-            name="Email"
+            name="email"
             placeholder="O seu email"
+            maxlength="150"
             required
           >
 
@@ -556,8 +567,9 @@
           <input
             type="tel"
             id="telefone"
-            name="Telefone"
+            name="telefone"
             placeholder="O seu número de telefone"
+            maxlength="40"
           >
 
         </div>
@@ -571,8 +583,9 @@
 
           <textarea
             id="mensagem"
-            name="Mensagem"
+            name="mensagem"
             placeholder="Escreva a sua mensagem..."
+            maxlength="5000"
             required
           ></textarea>
 
@@ -582,14 +595,16 @@
         <button
           type="submit"
           class="submit-button"
+          id="submitButton"
         >
           Enviar mensagem
         </button>
 
-        <p class="form-note">
-          Ao clicar em enviar, será aberta a aplicação de email
-          configurada no seu dispositivo.
-        </p>
+        <div
+          id="formMessage"
+          class="form-message"
+          role="alert"
+        ></div>
 
       </form>
 
@@ -615,6 +630,95 @@
     </div>
 
   </footer>
+
+
+  <script>
+    /*
+      IMPORTANTE:
+      Substituir estes dois valores pelos dados do teu projeto Supabase.
+    */
+
+    const SUPABASE_URL = "https://SEU_PROJECT_REF.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "SUA_PUBLISHABLE_KEY";
+
+    const form = document.getElementById("contactForm");
+    const submitButton = document.getElementById("submitButton");
+    const formMessage = document.getElementById("formMessage");
+
+    form.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      formMessage.className = "form-message";
+      formMessage.textContent = "";
+
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const mensagem = document.getElementById("mensagem").value.trim();
+
+      if (!nome || !email || !mensagem) {
+        formMessage.className = "form-message error";
+        formMessage.textContent =
+          "Preencha os campos obrigatórios.";
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "A enviar...";
+
+      try {
+
+        const response = await fetch(
+          `${SUPABASE_URL}/functions/v1/contacto`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_PUBLISHABLE_KEY
+            },
+
+            body: JSON.stringify({
+              nome,
+              email,
+              telefone,
+              mensagem
+            })
+          }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Não foi possível enviar a mensagem."
+          );
+        }
+
+        form.reset();
+
+        formMessage.className = "form-message success";
+        formMessage.textContent =
+          "Mensagem enviada com sucesso. Obrigado pelo contacto!";
+
+      } catch (error) {
+
+        console.error(error);
+
+        formMessage.className = "form-message error";
+        formMessage.textContent =
+          "Não foi possível enviar a mensagem. Tente novamente mais tarde.";
+
+      } finally {
+
+        submitButton.disabled = false;
+        submitButton.textContent = "Enviar mensagem";
+
+      }
+
+    });
+  </script>
 
 </body>
 </html>
