@@ -1,15 +1,12 @@
+```html
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Contacto | FNAI</title>
-
-  <meta
-    name="description"
-    content="Entre em contacto com a FNAI. Estamos disponíveis para ajudar na compra, venda ou arrendamento do seu imóvel."
-  >
+  <title>Contacto | Jotorres FNAI</title>
+  <meta name="description" content="Entre em contacto com a Jotorres FNAI. Envie-nos a sua mensagem através do formulário de contacto.">
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
@@ -18,396 +15,210 @@
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #f7f9f9;
+      background: #f5f7f7;
       color: #172126;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* HEADER */
-
     header {
-      background: white;
+      background: #ffffff;
       border-bottom: 1px solid #e6e9ea;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      padding: 18px 24px;
     }
 
     .header-inner {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 18px 24px;
-
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 30px;
+      gap: 20px;
     }
 
     .logo {
-      font-size: 25px;
-      font-weight: 800;
-      letter-spacing: .5px;
-    }
-
-    .logo span {
-      color: #168c72;
+      font-size: 22px;
+      font-weight: 700;
+      color: #172126;
+      text-decoration: none;
     }
 
     nav {
       display: flex;
+      gap: 22px;
       align-items: center;
-      gap: 28px;
     }
 
     nav a {
+      color: #172126;
+      text-decoration: none;
       font-size: 15px;
       font-weight: 600;
-      color: #374247;
-      transition: color .2s;
     }
 
-    nav a:hover,
-    nav a.active {
-      color: #168c72;
+    nav a:hover {
+      color: #087f5b;
     }
 
-    /* HERO */
-
-    .hero {
-      background: linear-gradient(
-        135deg,
-        #edf8f5 0%,
-        #ffffff 100%
-      );
-
-      padding: 75px 24px 65px;
-      text-align: center;
+    main {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
     }
 
-    .hero-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .hero h1 {
-      margin: 0 0 18px;
-      font-size: 46px;
-      line-height: 1.1;
-      color: #172126;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.7;
-      color: #657177;
-    }
-
-    /* CONTACT */
-
-    .contact-section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 70px 24px 90px;
-
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
-      gap: 45px;
-    }
-
-    /* CONTACT INFO */
-
-    .contact-info {
-      background: white;
+    .contact-card {
+      background: #ffffff;
       border: 1px solid #e6e9ea;
       border-radius: 18px;
-      padding: 35px;
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.06);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      padding: 38px;
     }
 
-    .contact-info h2 {
-      margin: 0 0 15px;
-      font-size: 28px;
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
     }
 
-    .contact-info > p {
+    .intro {
       margin: 0 0 30px;
-      color: #68747a;
-      line-height: 1.7;
+      color: #667174;
+      line-height: 1.6;
     }
 
-    .contact-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-
-      padding: 18px 0;
-      border-top: 1px solid #edf0f1;
-    }
-
-    .contact-icon {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-
-      border-radius: 12px;
-      background: #edf8f5;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 20px;
-    }
-
-    .contact-item h3 {
-      margin: 0 0 5px;
-      font-size: 15px;
-    }
-
-    .contact-item p,
-    .contact-item a {
-      margin: 0;
-      color: #68747a;
-      line-height: 1.5;
-      font-size: 15px;
-    }
-
-    .contact-item a:hover {
-      color: #168c72;
-    }
-
-    /* FORM */
-
-    .contact-form {
-      background: white;
-      border: 1px solid #e6e9ea;
-      border-radius: 18px;
-      padding: 35px;
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.06);
-    }
-
-    .contact-form h2 {
-      margin: 0 0 25px;
-      font-size: 28px;
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
+    .full {
+      grid-column: 1 / -1;
+    }
 
+    label {
       font-size: 14px;
       font-weight: 700;
-      color: #374247;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-
-      padding: 14px 15px;
-
-      border: 1px solid #dce2e4;
-      border-radius: 10px;
-
-      background: #fbfcfc;
-
-      font-family: inherit;
-      font-size: 15px;
       color: #172126;
+    }
 
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #d9dfe1;
+      border-radius: 10px;
+      padding: 13px 14px;
+      font: inherit;
+      color: #172126;
+      background: #ffffff;
       outline: none;
-
-      transition:
-        border-color .2s,
-        box-shadow .2s,
-        background .2s;
+      transition: border-color .2s, box-shadow .2s;
     }
 
-    .form-group input {
-      height: 50px;
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #087f5b;
+      box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.10);
     }
 
-    .form-group textarea {
-      min-height: 150px;
+    textarea {
+      min-height: 160px;
       resize: vertical;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
-      background: white;
-      border-color: #168c72;
-
-      box-shadow:
-        0 0 0 3px rgba(22,140,114,.10);
+    .submit-area {
+      margin-top: 25px;
     }
 
-    .submit-button {
-      width: 100%;
+    button {
       border: 0;
       border-radius: 10px;
-
-      padding: 15px 20px;
-
-      background: #168c72;
-      color: white;
-
-      font-size: 15px;
+      padding: 14px 28px;
+      background: #087f5b;
+      color: #ffffff;
+      font-size: 16px;
       font-weight: 700;
-
       cursor: pointer;
-
-      transition:
-        background .2s,
-        transform .2s;
+      transition: background .2s, transform .2s;
     }
 
-    .submit-button:hover {
-      background: #11745e;
+    button:hover {
+      background: #066b4d;
       transform: translateY(-1px);
     }
 
-    .submit-button:disabled {
+    button:disabled {
       opacity: .65;
-      cursor: wait;
+      cursor: not-allowed;
       transform: none;
     }
 
-    .form-message {
+    .status {
       display: none;
-
-      margin-top: 18px;
-      padding: 13px 15px;
-
+      margin-top: 20px;
+      padding: 14px 16px;
       border-radius: 10px;
-
-      font-size: 14px;
       line-height: 1.5;
+      font-size: 14px;
     }
 
-    .form-message.success {
+    .status.success {
       display: block;
-      background: #edf8f5;
-      color: #126b57;
+      background: #e9f8f1;
+      border: 1px solid #b8e5d1;
+      color: #176b4d;
     }
 
-    .form-message.error {
+    .status.error {
       display: block;
-      background: #fff1f1;
-      color: #a33a3a;
+      background: #fff0f0;
+      border: 1px solid #f0c4c4;
+      color: #a52a2a;
     }
-
-    /* FOOTER */
 
     footer {
-      background: #172126;
-      color: white;
-      padding: 35px 24px;
+      text-align: center;
+      padding: 30px 20px;
+      color: #737d80;
+      font-size: 14px;
     }
 
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 25px;
-    }
-
-    .footer-brand {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .footer-brand span {
-      color: #36b899;
-    }
-
-    .footer-copy {
-      color: #aab4b8;
-      font-size: 13px;
-    }
-
-    /* MOBILE */
-
-    @media (max-width: 800px) {
-
+    @media (max-width: 700px) {
       .header-inner {
-        padding: 16px 18px;
+        flex-direction: column;
       }
 
       nav {
-        gap: 15px;
-      }
-
-      nav a {
-        font-size: 13px;
-      }
-
-      .hero {
-        padding: 55px 20px 50px;
-      }
-
-      .hero h1 {
-        font-size: 36px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      .contact-section {
-        grid-template-columns: 1fr;
-        padding: 45px 18px 65px;
-        gap: 25px;
-      }
-
-      .contact-info,
-      .contact-form {
-        padding: 25px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
-    @media (max-width: 500px) {
-
-      .header-inner {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      nav {
-        width: 100%;
+        flex-wrap: wrap;
         justify-content: center;
       }
 
-      .hero h1 {
-        font-size: 32px;
+      main {
+        margin: 30px auto;
+      }
+
+      .contact-card {
+        padding: 25px 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      h1 {
+        font-size: 28px;
       }
     }
   </style>
@@ -415,310 +226,170 @@
 
 <body>
 
-  <!-- HEADER -->
-
   <header>
     <div class="header-inner">
-
-      <a href="/" class="logo">
-        FNAI<span>.</span>
-      </a>
+      <a class="logo" href="/">Jotorres FNAI</a>
 
       <nav>
         <a href="/">Início</a>
         <a href="/imoveis.html">Imóveis</a>
-        <a href="/contacto.html" class="active">Contacto</a>
+        <a href="/contacto.html">Contacto</a>
       </nav>
-
     </div>
   </header>
 
-
-  <!-- HERO -->
-
-  <section class="hero">
-
-    <div class="hero-content">
+  <main>
+    <section class="contact-card">
 
       <h1>Entre em contacto</h1>
 
-      <p>
-        Estamos disponíveis para ajudar a encontrar o imóvel certo
-        ou para esclarecer qualquer questão.
+      <p class="intro">
+        Preencha o formulário e envie-nos a sua mensagem.
+        Responderemos assim que possível.
       </p>
-
-    </div>
-
-  </section>
-
-
-  <!-- CONTACTO -->
-
-  <main class="contact-section">
-
-    <div class="contact-info">
-
-      <h2>Fale connosco</h2>
-
-      <p>
-        Tem alguma dúvida sobre um imóvel, pretende vender ou arrendar
-        uma propriedade? Envie-nos uma mensagem.
-      </p>
-
-      <div class="contact-item">
-
-        <div class="contact-icon">
-          📧
-        </div>
-
-        <div>
-          <h3>Email</h3>
-
-          <a href="mailto:SEU_EMAIL">
-            SEU_EMAIL
-          </a>
-        </div>
-
-      </div>
-
-      <div class="contact-item">
-
-        <div class="contact-icon">
-          📞
-        </div>
-
-        <div>
-          <h3>Telefone</h3>
-
-          <a href="tel:SEU_TELEFONE">
-            SEU_TELEFONE
-          </a>
-        </div>
-
-      </div>
-
-      <div class="contact-item">
-
-        <div class="contact-icon">
-          📍
-        </div>
-
-        <div>
-          <h3>Morada</h3>
-
-          <p>
-            SEU_ENDERECO
-          </p>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="contact-form">
-
-      <h2>Envie uma mensagem</h2>
 
       <form id="contactForm">
 
-        <div class="form-group">
+        <div class="form-grid">
 
-          <label for="nome">
-            Nome
-          </label>
+          <div class="form-group">
+            <label for="nome">Nome *</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              required
+              autocomplete="name"
+              placeholder="O seu nome">
+          </div>
 
-          <input
-            type="text"
-            id="nome"
-            name="nome"
-            placeholder="O seu nome"
-            maxlength="100"
-            required
-          >
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="o.seu@email.com">
+          </div>
 
-        </div>
+          <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input
+              type="tel"
+              id="telefone"
+              name="telefone"
+              autocomplete="tel"
+              placeholder="912 345 678">
+          </div>
 
+          <div class="form-group">
+            <label for="assunto">Assunto</label>
+            <input
+              type="text"
+              id="assunto"
+              name="assunto"
+              value="Contacto através do site"
+              placeholder="Assunto">
+          </div>
 
-        <div class="form-group">
-
-          <label for="email">
-            Email
-          </label>
-
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="O seu email"
-            maxlength="150"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="telefone">
-            Telefone
-          </label>
-
-          <input
-            type="tel"
-            id="telefone"
-            name="telefone"
-            placeholder="O seu número de telefone"
-            maxlength="40"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="mensagem">
-            Mensagem
-          </label>
-
-          <textarea
-            id="mensagem"
-            name="mensagem"
-            placeholder="Escreva a sua mensagem..."
-            maxlength="5000"
-            required
-          ></textarea>
+          <div class="form-group full">
+            <label for="mensagem">Mensagem *</label>
+            <textarea
+              id="mensagem"
+              name="mensagem"
+              required
+              placeholder="Escreva aqui a sua mensagem..."></textarea>
+          </div>
 
         </div>
 
+        <div class="submit-area">
+          <button type="submit" id="submitButton">
+            Enviar
+          </button>
+        </div>
 
-        <button
-          type="submit"
-          class="submit-button"
-          id="submitButton"
-        >
-          Enviar mensagem
-        </button>
-
-        <div
-          id="formMessage"
-          class="form-message"
-          role="alert"
-        ></div>
+        <div id="status" class="status"></div>
 
       </form>
 
-    </div>
-
+    </section>
   </main>
 
-
-  <!-- FOOTER -->
-
   <footer>
-
-    <div class="footer-inner">
-
-      <div class="footer-brand">
-        FNAI<span>.</span>
-      </div>
-
-      <div class="footer-copy">
-        © 2026 FNAI. Todos os direitos reservados.
-      </div>
-
-    </div>
-
+    © Jotorres FNAI — Todos os direitos reservados.
   </footer>
 
-
   <script>
-    /*
-      IMPORTANTE:
-      Substituir estes dois valores pelos dados do teu projeto Supabase.
-    */
-
-    const SUPABASE_URL = "https://SEU_PROJECT_REF.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "SUA_PUBLISHABLE_KEY";
+    const SUPABASE_FUNCTION_URL =
+      "https://scmorocdbdyvnxodpwyi.supabase.co/functions/v1/smooth-handler";
 
     const form = document.getElementById("contactForm");
-    const submitButton = document.getElementById("submitButton");
-    const formMessage = document.getElementById("formMessage");
+    const button = document.getElementById("submitButton");
+    const status = document.getElementById("status");
 
-    form.addEventListener("submit", async function(event) {
-
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      formMessage.className = "form-message";
-      formMessage.textContent = "";
+      status.className = "status";
+      status.textContent = "";
 
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const telefone = document.getElementById("telefone").value.trim();
-      const mensagem = document.getElementById("mensagem").value.trim();
+      button.disabled = true;
+      button.textContent = "A enviar...";
 
-      if (!nome || !email || !mensagem) {
-        formMessage.className = "form-message error";
-        formMessage.textContent =
-          "Preencha os campos obrigatórios.";
-        return;
-      }
-
-      submitButton.disabled = true;
-      submitButton.textContent = "A enviar...";
+      const data = {
+        nome: document.getElementById("nome").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        telefone: document.getElementById("telefone").value.trim(),
+        assunto: document.getElementById("assunto").value.trim(),
+        mensagem: document.getElementById("mensagem").value.trim()
+      };
 
       try {
+        const response = await fetch(SUPABASE_FUNCTION_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
 
-        const response = await fetch(
-          `${SUPABASE_URL}/functions/v1/contacto`,
-          {
-            method: "POST",
+        let result = {};
 
-            headers: {
-              "Content-Type": "application/json",
-              "apikey": SUPABASE_PUBLISHABLE_KEY
-            },
-
-            body: JSON.stringify({
-              nome,
-              email,
-              telefone,
-              mensagem
-            })
-          }
-        );
-
-        const data = await response.json().catch(() => ({}));
+        try {
+          result = await response.json();
+        } catch {
+          result = {};
+        }
 
         if (!response.ok) {
           throw new Error(
-            data.error || "Não foi possível enviar a mensagem."
+            result.error || "Não foi possível enviar a mensagem."
           );
         }
 
+        status.className = "status success";
+        status.textContent =
+          "Mensagem enviada com sucesso. Obrigado pelo seu contacto!";
+
         form.reset();
 
-        formMessage.className = "form-message success";
-        formMessage.textContent =
-          "Mensagem enviada com sucesso. Obrigado pelo contacto!";
-
       } catch (error) {
+        console.error("Erro ao enviar contacto:", error);
 
-        console.error(error);
-
-        formMessage.className = "form-message error";
-        formMessage.textContent =
-          "Não foi possível enviar a mensagem. Tente novamente mais tarde.";
-
-      } finally {
-
-        submitButton.disabled = false;
-        submitButton.textContent = "Enviar mensagem";
-
+        status.className = "status error";
+        status.textContent =
+          error.message ||
+          "Ocorreu um erro ao enviar a mensagem. Tente novamente.";
       }
 
+      button.disabled = false;
+      button.textContent = "Enviar";
     });
   </script>
 
 </body>
 </html>
+```
