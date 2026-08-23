@@ -121,6 +121,8 @@ a{
 ========================================================= */
 
 .header{
+  position:relative;
+  z-index:1000;
   height:82px;
   background:var(--dark);
   display:flex;
@@ -736,6 +738,7 @@ a{
 
   .navigation{
     position:absolute;
+    z-index:1100;
 
     top:100%;
     left:0;
@@ -891,7 +894,7 @@ a{
 .mobile-menu-toggle{display:none;width:46px;height:46px;padding:0;border:0;background:transparent;color:#fff;align-items:center;justify-content:center;cursor:pointer;font-size:22px;flex:0 0 auto}
 @media(max-width:760px){
 .mobile-menu-toggle{display:flex}
-.header .navigation{position:absolute;top:100%;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;flex-wrap:nowrap;padding:10px 5% 18px;background:#07171b;box-shadow:0 14px 28px rgba(0,0,0,.25);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+.header .navigation{position:absolute;z-index:1100;z-index:1100;top:100%;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;flex-wrap:nowrap;padding:10px 5% 18px;background:#07171b;box-shadow:0 14px 28px rgba(0,0,0,.25);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
 .header .navigation.mobile-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
 .header .navigation a{display:flex;align-items:center;min-height:48px;padding:12px 5px;border-bottom:1px solid rgba(255,255,255,.1);font-size:16px}
 .header .navigation .whatsapp{margin-top:12px;justify-content:center;border-bottom:0;text-align:center}
