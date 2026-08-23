@@ -39,10 +39,12 @@ jobs:
       - name: Verificar geradores
         run: |
           test -f scripts/generate-properties.mjs
+          test -f scripts/generate-sitemap.mjs
           test -f scripts/add-gallery-slideshow.mjs
           test -f scripts/apply-watermark.mjs
           test -f scripts/cleanup-legacy-watermark.mjs
           node --check scripts/generate-properties.mjs
+          node --check scripts/generate-sitemap.mjs
           node --check scripts/add-gallery-slideshow.mjs
           node --check scripts/apply-watermark.mjs
           node --check scripts/cleanup-legacy-watermark.mjs
@@ -54,10 +56,42 @@ jobs:
           node scripts/generate-properties.mjs
           node scripts/add-gallery-slideshow.mjs
 
-      - name: Validar páginas geradas
+      - name: Corrigir canonical e referências de domínio antigo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          old = "https://jotorresimobiliaria.github.io"
+          new = "https://jotorresfnai.github.io"
+          paths = [Path("index.html"), Path("imoveis.html"), *Path("imoveis").glob("*/index.html")]
+          for path in paths:
+              if not path.exists():
+                  continue
+              html = path.read_text(encoding="utf-8")
+              updated = html.replace(old, new)
+              if updated != html:
+                  path.write_text(updated, encoding="utf-8")
+                  print(f"Canonical/domínio corrigido: {path}")
+          PY
+
+      - name: Gerar sitemap a partir das páginas reais
+        run: node scripts/generate-sitemap.mjs
+
+      - name: Validar páginas e sitemap
         run: |
           test -f sitemap.xml
           test -f imoveis.html
+          node - <<'NODE'
+          const fs = require('fs');
+          const xml = fs.readFileSync('sitemap.xml', 'utf8');
+          if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) throw new Error('Sitemap XML inválido');
+          if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) throw new Error('Namespace do sitemap inválido');
+          const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
+          if (new Set(urls).size !== urls.length) throw new Error('Sitemap contém URLs duplicados');
+          for (const url of urls) {
+            if (!url.startsWith('https://jotorresfnai.github.io/')) throw new Error(`URL fora do domínio: ${url}`);
+          }
+          console.log(`Sitemap válido: ${urls.length} URLs.`);
+          NODE
           echo "Páginas geradas:"
           find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
