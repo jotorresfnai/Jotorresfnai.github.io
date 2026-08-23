@@ -95,49 +95,27 @@ jobs:
 
           const xml = fs.readFileSync('sitemap.xml', 'utf8');
 
-          if (
-            !xml.startsWith(
-              '<?xml version="1.0" encoding="UTF-8"?>'
-            )
-          ) {
+          if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
             throw new Error('Sitemap XML inválido');
           }
 
-          if (
-            !xml.includes(
-              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-            )
-          ) {
+          if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
             throw new Error('Namespace do sitemap inválido');
           }
 
-          const urls = [
-            ...xml.matchAll(/<loc>(.*?)<\/loc>/g)
-          ].map(m => m[1]);
+          const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
 
-          if (
-            new Set(urls).size !== urls.length
-          ) {
-            throw new Error(
-              'Sitemap contém URLs duplicados'
-            );
+          if (new Set(urls).size !== urls.length) {
+            throw new Error('Sitemap contém URLs duplicados');
           }
 
           for (const url of urls) {
-            if (
-              !url.startsWith(
-                'https://jotorresfnai.github.io/'
-              )
-            ) {
-              throw new Error(
-                `URL fora do domínio: ${url}`
-              );
+            if (!url.startsWith('https://jotorresfnai.github.io/')) {
+              throw new Error(`URL fora do domínio: ${url}`);
             }
           }
 
-          console.log(
-            `Sitemap válido: ${urls.length} URLs.`
-          );
+          console.log(`Sitemap válido: ${urls.length} URLs.`);
           NODE
 
           echo "Páginas geradas:"
@@ -166,10 +144,7 @@ jobs:
                   flags=re.S
               )
 
-              path.write_text(
-                  html,
-                  encoding="utf-8"
-              )
+              path.write_text(html, encoding="utf-8")
           PY
 
       - name: Adicionar favicon
@@ -185,24 +160,16 @@ jobs:
               if not path.exists():
                   continue
 
-              html = path.read_text(
-                  encoding="utf-8"
-              )
+              html = path.read_text(encoding="utf-8")
 
               if 'href="/favicon.svg"' not in html:
                   marker = '</head>'
-
                   html = html.replace(
                       marker,
-                      '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
-                      + marker,
+                      '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' + marker,
                       1
                   )
-
-                  path.write_text(
-                      html,
-                      encoding="utf-8"
-                  )
+                  path.write_text(html, encoding="utf-8")
           PY
 
       - name: Aplicar watermark FNAI
@@ -210,6 +177,44 @@ jobs:
 
       - name: Remover watermark FNAI antiga
         run: node scripts/cleanup-legacy-watermark.mjs
+
+      - name: Alinhar botões dos cards sem alterar o HTML existente
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("imoveis.html")
+          html = path.read_text(encoding="utf-8")
+
+          marker = "/* FNAI_CARD_ALIGNMENT_SAFE */"
+          css = f"""
+          <style>
+          {marker}
+          .property-card {{
+            display: flex;
+            flex-direction: column;
+          }}
+          .property-info {{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }}
+          .property-button {{
+            margin-top: auto;
+          }}
+          </style>
+          """
+
+          if marker not in html:
+              closing = html.rfind("</style>")
+              if closing == -1:
+                  raise SystemExit("Não foi encontrado o bloco <style> em imoveis.html")
+              html = html[:closing] + "\n" + css + html[closing:]
+              path.write_text(html, encoding="utf-8")
+              print("Alinhamento seguro dos cards aplicado.")
+          else:
+              print("Alinhamento seguro dos cards já estava aplicado.")
+          PY
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
