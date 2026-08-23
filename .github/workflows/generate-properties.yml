@@ -93,6 +93,35 @@ jobs:
       - name: Remover watermark FNAI antiga
         run: node scripts/cleanup-legacy-watermark.mjs
 
+      - name: Alinhar botões dos cards de imóveis
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("imoveis.html")
+          html = path.read_text(encoding="utf-8")
+
+          old = '''    .property-card {\n\n      background: white;'''
+          new = '''    .property-card {\n\n      display: flex;\n\n      flex-direction: column;\n\n      background: white;'''
+          if old not in html:
+              raise SystemExit("property-card block not found")
+          html = html.replace(old, new, 1)
+
+          old = '''    .property-info {\n\n      padding: 22px;'''
+          new = '''    .property-info {\n\n      flex: 1;\n\n      display: flex;\n\n      flex-direction: column;\n\n      padding: 22px;'''
+          if old not in html:
+              raise SystemExit("property-info block not found")
+          html = html.replace(old, new, 1)
+
+          old = '''      transition: .2s;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
+          new = '''      transition: .2s;\n\n      margin-top: auto;\n\n      margin-bottom: 10px;\n    }\n\n    .property-button:hover'''
+          if old not in html:
+              raise SystemExit("property-button block not found")
+          html = html.replace(old, new, 1)
+
+          path.write_text(html, encoding="utf-8")
+          PY
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
