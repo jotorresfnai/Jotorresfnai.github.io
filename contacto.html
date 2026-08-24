@@ -1,540 +1,239 @@
-html
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Contacto | Jotorres FNAI</title>
-  <meta
-    name="description"
-    content="Entre em contacto com a Jotorres FNAI. Envie-nos a sua mensagem através do formulário de contacto."
-  >
+<title>Contacto | Jo Torres | FNAI</title>
+<meta name="description" content="Entre em contacto com Jo Torres, consultor imobiliário e representante da FNAI na Suíça.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jotorresfnai.github.io/contacto.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7f7;
-      color: #172126;
-    }
-
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #e6e9ea;
-      padding: 18px 24px;
-    }
-
-    .header-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: #172126;
-      text-decoration: none;
-    }
-
-    nav {
-      display: flex;
-      gap: 22px;
-      align-items: center;
-    }
-
-    nav a {
-      color: #172126;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    nav a:hover {
-      color: #087f5b;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-
-    .contact-card {
-      background: #ffffff;
-      border: 1px solid #e6e9ea;
-      border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-      padding: 38px;
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-    }
-
-    .intro {
-      margin: 0 0 30px;
-      color: #667174;
-      line-height: 1.6;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-size: 14px;
-      font-weight: 700;
-      color: #172126;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid #d9dfe1;
-      border-radius: 10px;
-      padding: 13px 14px;
-      font: inherit;
-      color: #172126;
-      background: #ffffff;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #087f5b;
-      box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.10);
-    }
-
-    textarea {
-      min-height: 160px;
-      resize: vertical;
-    }
-
-    .submit-area {
-      margin-top: 25px;
-    }
-
-    .cf-turnstile {
-      margin-bottom: 18px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 14px 28px;
-      background: #087f5b;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    button:hover {
-      background: #066b4d;
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .status {
-      display: none;
-      margin-top: 20px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .status.success {
-      display: block;
-      background: #e9f8f1;
-      border: 1px solid #b8e5d1;
-      color: #176b4d;
-    }
-
-    .status.error {
-      display: block;
-      background: #fff0f0;
-      border: 1px solid #f0c4c4;
-      color: #a52a2a;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 20px;
-      color: #737d80;
-      font-size: 14px;
-    }
-
-    @media (max-width: 700px) {
-      .header-inner {
-        flex-direction: column;
-      }
-
-      nav {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      main {
-        margin: 30px auto;
-      }
-
-      .contact-card {
-        padding: 25px 20px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .full {
-        grid-column: auto;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-    }
-  </style>
+<style>
+:root{
+  --dark:#07171b;
+  --dark2:#0d252b;
+  --gold:#c9a34a;
+  --gold-light:#e2c477;
+  --cream:#f7f5f0;
+  --white:#fff;
+  --text:#172126;
+  --muted:#687277;
+  --border:#e5e2db;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"DM Sans",Arial,sans-serif;color:var(--text);background:var(--cream)}
+a{color:inherit;text-decoration:none}
+.header{position:fixed;z-index:100;top:0;left:0;right:0;height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:rgba(7,23,27,.94);backdrop-filter:blur(15px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-circle{width:43px;height:43px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold-light);font-family:"Playfair Display",serif;font-weight:700}
+.logo-text strong{display:block;font-size:15px;letter-spacing:2px}.logo-text span{display:block;margin-top:3px;font-size:9px;letter-spacing:1.6px;color:#b9c2c4}
+.navigation{display:flex;align-items:center;gap:28px}.navigation>a{font-size:13px;color:#e9eeee;transition:.25s}.navigation>a:hover{color:var(--gold-light)}
+.whatsapp{padding:11px 17px;border:1px solid rgba(201,163,74,.7);border-radius:30px;color:#fff!important}
+.mobile-menu-toggle{display:none;width:46px;height:46px;padding:0;border:0;background:transparent;color:#fff;align-items:center;justify-content:center;cursor:pointer;font-size:22px}
+main{padding:155px 7vw 105px;min-height:calc(100vh - 120px)}
+.contact-wrap{max-width:1150px;margin:auto}
+.eyebrow{color:var(--gold);font-size:11px;letter-spacing:3px;font-weight:700;margin-bottom:18px}
+.contact-heading{max-width:760px;margin-bottom:45px}.contact-heading h1{margin:0;font-family:"Playfair Display",serif;font-size:clamp(48px,6vw,72px);line-height:1.02;font-weight:600}.contact-heading h1 span{color:var(--gold)}.contact-heading p{max-width:650px;margin:25px 0 0;color:var(--muted);font-size:16px;line-height:1.8}
+.contact-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:start}
+.form-card{background:#fff;border:1px solid var(--border);padding:38px;box-shadow:0 15px 40px rgba(7,23,27,.06)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.form-group{display:flex;flex-direction:column;gap:8px}.full{grid-column:1/-1}
+label{font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--text)}
+input,textarea{width:100%;border:1px solid #d8d8d2;border-radius:4px;padding:14px;font:inherit;color:var(--text);background:#fff;outline:none;transition:.2s}
+input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,163,74,.12)}
+textarea{min-height:175px;resize:vertical}
+.submit-area{margin-top:25px}.cf-turnstile{margin-bottom:18px}
+button[type="submit"]{border:0;border-radius:5px;padding:15px 25px;background:var(--gold);color:#101719;font-size:13px;font-weight:800;cursor:pointer;transition:.25s}button[type="submit"]:hover{background:var(--gold-light);transform:translateY(-2px)}button[type="submit"]:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.status{display:none;margin-top:20px;padding:14px 16px;border-radius:4px;font-size:14px;line-height:1.5}.status.success{display:block;background:#edf8f1;border:1px solid #c8e7d3;color:#176b4d}.status.error{display:block;background:#fff1f1;border:1px solid #efcaca;color:#9d2b2b}
+.contact-details{display:flex;flex-direction:column;gap:15px}.contact-box{padding:25px;background:#fff;border:1px solid var(--border)}.contact-box small{display:block;color:var(--gold);font-size:10px;letter-spacing:1.5px;font-weight:800;margin-bottom:8px}.contact-box strong{font-size:18px}.contact-box p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+.security-note{margin-top:15px;color:var(--muted);font-size:12px;line-height:1.6}.security-note i{color:var(--gold);margin-right:6px}
+footer{padding:35px 7vw;background:#041114;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px}.footer-logo strong{display:block;letter-spacing:2px}.footer-logo span{color:#899496;font-size:9px;letter-spacing:1.5px}footer p{margin:0;color:#899496;font-size:11px}
+@media(max-width:1000px){.contact-grid{grid-template-columns:1fr;gap:35px}}
+@media(max-width:760px){.header{height:70px;padding:0 18px}.mobile-menu-toggle{display:flex}.header .navigation{position:absolute;top:100%;left:0;right:0;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:10px 5% 18px;background:#07171b;box-shadow:0 14px 28px rgba(0,0,0,.25);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-6px);transition:.2s}.header .navigation.mobile-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}.header .navigation a{display:flex;align-items:center;min-height:48px;padding:12px 5px;border-bottom:1px solid rgba(255,255,255,.1);font-size:16px}.header .navigation .whatsapp{margin-top:12px;justify-content:center;border-bottom:0;text-align:center}main{padding:120px 6vw 75px}.contact-heading h1{font-size:44px}.form-card{padding:25px 20px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}footer{flex-direction:column;align-items:flex-start}}
+</style>
 </head>
 
 <body>
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-circle">JT</div>
+    <div class="logo-text"><strong>JO TORRES</strong><span>CONSULTOR IMOBILIÁRIO</span></div>
+  </a>
 
-  <header>
-    <div class="header-inner">
-      <a class="logo" href="/">Jotorres FNAI</a>
+  <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+  </button>
 
-      <nav>
-        <a href="/">Início</a>
-        <a href="/imoveis.html">Imóveis</a>
-        <a href="/contacto.html">Contacto</a>
-      </nav>
+  <nav class="navigation">
+    <a href="index.html">Início</a>
+    <a href="imoveis.html">Imóveis</a>
+    <a href="index.html#sobre">Sobre mim</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="https://wa.me/41792601145" target="_blank" rel="noopener" class="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+  </nav>
+</header>
+
+<main>
+  <div class="contact-wrap">
+    <div class="contact-heading">
+      <div class="eyebrow">CONTACTO</div>
+      <h1>Vamos falar sobre <span>o seu próximo imóvel.</span></h1>
+      <p>Preencha o formulário e envie a sua mensagem. Responderei assim que possível, com acompanhamento personalizado.</p>
     </div>
-  </header>
 
-  <main>
-    <section class="contact-card">
+    <div class="contact-grid">
+      <section class="form-card">
+        <form id="contactForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nome">Nome *</label>
+              <input type="text" id="nome" name="nome" required autocomplete="name" placeholder="O seu nome">
+            </div>
 
-      <h1>Entre em contacto</h1>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required autocomplete="email" placeholder="o.seu@email.com">
+            </div>
 
-      <p class="intro">
-        Preencha o formulário e envie-nos a sua mensagem.
-        Responderemos assim que possível.
-      </p>
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" autocomplete="tel" placeholder="912 345 678">
+            </div>
 
-      <form id="contactForm">
+            <div class="form-group">
+              <label for="assunto">Assunto</label>
+              <input type="text" id="assunto" name="assunto" value="Contacto através do site" placeholder="Assunto">
+            </div>
 
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label for="nome">Nome *</label>
-
-            <input
-              type="text"
-              id="nome"
-              name="nome"
-              required
-              autocomplete="name"
-              placeholder="O seu nome"
-            >
+            <div class="form-group full">
+              <label for="mensagem">Mensagem *</label>
+              <textarea id="mensagem" name="mensagem" required placeholder="Escreva aqui a sua mensagem..."></textarea>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="email">Email *</label>
-
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              autocomplete="email"
-              placeholder="o.seu@email.com"
-            >
+          <div class="submit-area">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAEZaDiev9t4nJjXh" data-theme="light"></div>
+            <button type="submit" id="submitButton">Enviar mensagem <i class="fa-solid fa-arrow-right"></i></button>
           </div>
 
-          <div class="form-group">
-            <label for="telefone">Telefone</label>
+          <div id="status" class="status" aria-live="polite"></div>
+        </form>
+      </section>
 
-            <input
-              type="tel"
-              id="telefone"
-              name="telefone"
-              autocomplete="tel"
-              placeholder="912 345 678"
-            >
-          </div>
+      <aside class="contact-details">
+        <a href="https://wa.me/41792601145" target="_blank" rel="noopener" class="contact-box">
+          <small>TELEFONE / WHATSAPP</small>
+          <strong>+41 79 260 11 45</strong>
+          <p>Fale comigo diretamente pelo WhatsApp.</p>
+        </a>
 
-          <div class="form-group">
-            <label for="assunto">Assunto</label>
-
-            <input
-              type="text"
-              id="assunto"
-              name="assunto"
-              value="Contacto através do site"
-              placeholder="Assunto"
-            >
-          </div>
-
-          <div class="form-group full">
-            <label for="mensagem">Mensagem *</label>
-
-            <textarea
-              id="mensagem"
-              name="mensagem"
-              required
-              placeholder="Escreva aqui a sua mensagem..."
-            ></textarea>
-          </div>
-
+        <div class="contact-box">
+          <small>REPRESENTAÇÃO</small>
+          <strong>FNAI — Suíça</strong>
+          <p>Consultoria imobiliária e acompanhamento personalizado em Portugal e na Suíça.</p>
         </div>
 
-        <div class="submit-area">
-
-          <!-- Cloudflare Turnstile -->
-          <div
-            class="cf-turnstile"
-            data-sitekey="0x4AAAAAAEZaDiev9t4nJjXh"
-            data-theme="light"
-          ></div>
-
-          <button
-            type="submit"
-            id="submitButton"
-          >
-            Enviar
-          </button>
-
+        <div class="contact-box security-note">
+          <i class="fa-solid fa-shield-halved"></i>
+          O formulário está protegido contra envios automatizados e abuso através do Cloudflare Turnstile.
         </div>
+      </aside>
+    </div>
+  </div>
+</main>
 
-        <div
-          id="status"
-          class="status"
-          aria-live="polite"
-        ></div>
+<footer>
+  <div class="footer-logo"><strong>JO TORRES</strong><span>CONSULTOR IMOBILIÁRIO</span></div>
+  <p>© 2026 Jo Torres. Todos os direitos reservados.</p>
+</footer>
 
-      </form>
+<script>
+const SUPABASE_FUNCTION_URL = "https://scmorocdbdyvnxodpwyi.supabase.co/functions/v1/smooth-handler";
+const form = document.getElementById("contactForm");
+const button = document.getElementById("submitButton");
+const status = document.getElementById("status");
 
-    </section>
-  </main>
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  status.className = "status";
+  status.textContent = "";
 
-  <footer>
-    © Jotorres FNAI — Todos os direitos reservados.
-  </footer>
+  const turnstileToken = form.querySelector('input[name="cf-turnstile-response"]')?.value.trim() || "";
 
-  <script>
-    const SUPABASE_FUNCTION_URL =
-      "https://scmorocdbdyvnxodpwyi.supabase.co/functions/v1/smooth-handler";
+  if (!turnstileToken) {
+    status.className = "status error";
+    status.textContent = "Por favor, complete a verificação anti-spam.";
+    return;
+  }
 
-    const form =
-      document.getElementById("contactForm");
+  button.disabled = true;
+  button.innerHTML = 'A enviar...';
 
-    const button =
-      document.getElementById("submitButton");
+  const data = {
+    nome: document.getElementById("nome").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    telefone: document.getElementById("telefone").value.trim(),
+    assunto: document.getElementById("assunto").value.trim(),
+    mensagem: document.getElementById("mensagem").value.trim(),
+    "cf-turnstile-response": turnstileToken
+  };
 
-    const status =
-      document.getElementById("status");
+  try {
+    const response = await fetch(SUPABASE_FUNCTION_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
 
-    form.addEventListener(
-      "submit",
-      async function (event) {
+    let result = {};
+    try { result = await response.json(); } catch { result = {}; }
 
-        event.preventDefault();
+    if (!response.ok) {
+      throw new Error(result.error || "Não foi possível enviar a mensagem.");
+    }
 
-        status.className = "status";
-        status.textContent = "";
+    status.className = "status success";
+    status.textContent = "Mensagem enviada com sucesso. Obrigado pelo seu contacto!";
+    form.reset();
 
-        /*
-         * O Turnstile cria automaticamente
-         * este campo quando a verificação é concluída.
-         */
-        const turnstileInput =
-          form.querySelector(
-            'input[name="cf-turnstile-response"]'
-          );
+    if (typeof turnstile !== "undefined" && typeof turnstile.reset === "function") {
+      turnstile.reset();
+    }
+  } catch (error) {
+    console.error("Erro ao enviar contacto:", error);
+    status.className = "status error";
+    status.textContent = error.message || "Ocorreu um erro ao enviar a mensagem. Tente novamente.";
+  } finally {
+    button.disabled = false;
+    button.innerHTML = 'Enviar mensagem <i class="fa-solid fa-arrow-right"></i>';
+  }
+});
+</script>
 
-        const turnstileToken =
-          turnstileInput
-            ? turnstileInput.value.trim()
-            : "";
+<script>
+const menuToggle = document.querySelector('.mobile-menu-toggle');
+const navigation = document.querySelector('.navigation');
+if (menuToggle && navigation) {
+  menuToggle.addEventListener('click', () => {
+    const open = navigation.classList.toggle('mobile-open');
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuToggle.innerHTML = open ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i>' : '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  });
+  navigation.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+    navigation.classList.remove('mobile-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  }));
+}
+</script>
 
-        /*
-         * Sem token não enviamos o pedido.
-         */
-        if (!turnstileToken) {
-
-          status.className =
-            "status error";
-
-          status.textContent =
-            "Por favor, complete a verificação anti-spam.";
-
-          return;
-        }
-
-        button.disabled = true;
-        button.textContent = "A enviar...";
-
-        const data = {
-
-          nome:
-            document
-              .getElementById("nome")
-              .value
-              .trim(),
-
-          email:
-            document
-              .getElementById("email")
-              .value
-              .trim(),
-
-          telefone:
-            document
-              .getElementById("telefone")
-              .value
-              .trim(),
-
-          assunto:
-            document
-              .getElementById("assunto")
-              .value
-              .trim(),
-
-          mensagem:
-            document
-              .getElementById("mensagem")
-              .value
-              .trim(),
-
-          /*
-           * Token enviado para a Edge Function.
-           * A Edge Function valida-o através
-           * do Cloudflare Siteverify.
-           */
-          "cf-turnstile-response":
-            turnstileToken
-        };
-
-        try {
-
-          const response =
-            await fetch(
-              SUPABASE_FUNCTION_URL,
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify(data)
-              }
-            );
-
-          let result = {};
-
-          try {
-            result =
-              await response.json();
-          } catch {
-            result = {};
-          }
-
-          if (!response.ok) {
-
-            throw new Error(
-              result.error ||
-              "Não foi possível enviar a mensagem."
-            );
-          }
-
-          status.className =
-            "status success";
-
-          status.textContent =
-            "Mensagem enviada com sucesso. Obrigado pelo seu contacto!";
-
-          form.reset();
-
-          /*
-           * Depois de enviar, pedimos
-           * um novo token ao Turnstile.
-           */
-          if (
-            typeof turnstile !== "undefined" &&
-            typeof turnstile.reset === "function"
-          ) {
-            turnstile.reset();
-          }
-
-        } catch (error) {
-
-          console.error(
-            "Erro ao enviar contacto:",
-            error
-          );
-
-          status.className =
-            "status error";
-
-          status.textContent =
-            error.message ||
-            "Ocorreu um erro ao enviar a mensagem. Tente novamente.";
-
-        } finally {
-
-          button.disabled = false;
-          button.textContent = "Enviar";
-
-        }
-
-      }
-    );
-  </script>
-
-  <!-- Cloudflare Turnstile -->
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-    async
-    defer
-  ></script>
-
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>
-
