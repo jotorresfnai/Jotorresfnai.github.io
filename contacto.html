@@ -1,4 +1,4 @@
-```html
+html
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Contacto | Jotorres FNAI</title>
-  <meta name="description" content="Entre em contacto com a Jotorres FNAI. Envie-nos a sua mensagem através do formulário de contacto.">
+  <meta
+    name="description"
+    content="Entre em contacto com a Jotorres FNAI. Envie-nos a sua mensagem através do formulário de contacto."
+  >
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
@@ -119,7 +122,7 @@
       color: #172126;
       background: #ffffff;
       outline: none;
-      transition: border-color .2s, box-shadow .2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus,
@@ -151,7 +154,7 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: background .2s, transform .2s;
+      transition: background 0.2s, transform 0.2s;
     }
 
     button:hover {
@@ -160,7 +163,7 @@
     }
 
     button:disabled {
-      opacity: .65;
+      opacity: 0.65;
       cursor: not-allowed;
       transform: none;
     }
@@ -258,72 +261,90 @@
 
           <div class="form-group">
             <label for="nome">Nome *</label>
+
             <input
               type="text"
               id="nome"
               name="nome"
               required
               autocomplete="name"
-              placeholder="O seu nome">
+              placeholder="O seu nome"
+            >
           </div>
 
           <div class="form-group">
             <label for="email">Email *</label>
+
             <input
               type="email"
               id="email"
               name="email"
               required
               autocomplete="email"
-              placeholder="o.seu@email.com">
+              placeholder="o.seu@email.com"
+            >
           </div>
 
           <div class="form-group">
             <label for="telefone">Telefone</label>
+
             <input
               type="tel"
               id="telefone"
               name="telefone"
               autocomplete="tel"
-              placeholder="912 345 678">
+              placeholder="912 345 678"
+            >
           </div>
 
           <div class="form-group">
             <label for="assunto">Assunto</label>
+
             <input
               type="text"
               id="assunto"
               name="assunto"
               value="Contacto através do site"
-              placeholder="Assunto">
+              placeholder="Assunto"
+            >
           </div>
 
           <div class="form-group full">
             <label for="mensagem">Mensagem *</label>
+
             <textarea
               id="mensagem"
               name="mensagem"
               required
-              placeholder="Escreva aqui a sua mensagem..."></textarea>
+              placeholder="Escreva aqui a sua mensagem..."
+            ></textarea>
           </div>
 
         </div>
 
         <div class="submit-area">
 
+          <!-- Cloudflare Turnstile -->
           <div
             class="cf-turnstile"
             data-sitekey="0x4AAAAAAEZaDiev9t4nJjXh"
-            data-theme="light">
-          </div>
+            data-theme="light"
+          ></div>
 
-          <button type="submit" id="submitButton">
+          <button
+            type="submit"
+            id="submitButton"
+          >
             Enviar
           </button>
 
         </div>
 
-        <div id="status" class="status"></div>
+        <div
+          id="status"
+          class="status"
+          aria-live="polite"
+        ></div>
 
       </form>
 
@@ -338,104 +359,182 @@
     const SUPABASE_FUNCTION_URL =
       "https://scmorocdbdyvnxodpwyi.supabase.co/functions/v1/smooth-handler";
 
-    const form = document.getElementById("contactForm");
-    const button = document.getElementById("submitButton");
-    const status = document.getElementById("status");
+    const form =
+      document.getElementById("contactForm");
 
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
+    const button =
+      document.getElementById("submitButton");
 
-      status.className = "status";
-      status.textContent = "";
+    const status =
+      document.getElementById("status");
 
-      const turnstileToken =
-        document.querySelector(
-          '[name="cf-turnstile-response"]'
-        )?.value || "";
+    form.addEventListener(
+      "submit",
+      async function (event) {
 
-      if (!turnstileToken) {
-        status.className = "status error";
-        status.textContent =
-          "Por favor, complete a verificação anti-spam.";
+        event.preventDefault();
 
-        return;
-      }
+        status.className = "status";
+        status.textContent = "";
 
-      button.disabled = true;
-      button.textContent = "A enviar...";
+        /*
+         * O Turnstile cria automaticamente
+         * este campo quando a verificação é concluída.
+         */
+        const turnstileInput =
+          form.querySelector(
+            'input[name="cf-turnstile-response"]'
+          );
 
-      const data = {
-        nome: document.getElementById("nome").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        telefone: document.getElementById("telefone").value.trim(),
-        assunto: document.getElementById("assunto").value.trim(),
-        mensagem: document.getElementById("mensagem").value.trim(),
-        "cf-turnstile-response": turnstileToken
-      };
+        const turnstileToken =
+          turnstileInput
+            ? turnstileInput.value.trim()
+            : "";
 
-      try {
-        const response = await fetch(
-          SUPABASE_FUNCTION_URL,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-          }
-        );
+        /*
+         * Sem token não enviamos o pedido.
+         */
+        if (!turnstileToken) {
 
-        let result = {};
+          status.className =
+            "status error";
+
+          status.textContent =
+            "Por favor, complete a verificação anti-spam.";
+
+          return;
+        }
+
+        button.disabled = true;
+        button.textContent = "A enviar...";
+
+        const data = {
+
+          nome:
+            document
+              .getElementById("nome")
+              .value
+              .trim(),
+
+          email:
+            document
+              .getElementById("email")
+              .value
+              .trim(),
+
+          telefone:
+            document
+              .getElementById("telefone")
+              .value
+              .trim(),
+
+          assunto:
+            document
+              .getElementById("assunto")
+              .value
+              .trim(),
+
+          mensagem:
+            document
+              .getElementById("mensagem")
+              .value
+              .trim(),
+
+          /*
+           * Token enviado para a Edge Function.
+           * A Edge Function valida-o através
+           * do Cloudflare Siteverify.
+           */
+          "cf-turnstile-response":
+            turnstileToken
+        };
 
         try {
-          result = await response.json();
-        } catch {
-          result = {};
-        }
 
-        if (!response.ok) {
-          throw new Error(
-            result.error ||
-            "Não foi possível enviar a mensagem."
+          const response =
+            await fetch(
+              SUPABASE_FUNCTION_URL,
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(data)
+              }
+            );
+
+          let result = {};
+
+          try {
+            result =
+              await response.json();
+          } catch {
+            result = {};
+          }
+
+          if (!response.ok) {
+
+            throw new Error(
+              result.error ||
+              "Não foi possível enviar a mensagem."
+            );
+          }
+
+          status.className =
+            "status success";
+
+          status.textContent =
+            "Mensagem enviada com sucesso. Obrigado pelo seu contacto!";
+
+          form.reset();
+
+          /*
+           * Depois de enviar, pedimos
+           * um novo token ao Turnstile.
+           */
+          if (
+            typeof turnstile !== "undefined" &&
+            typeof turnstile.reset === "function"
+          ) {
+            turnstile.reset();
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Erro ao enviar contacto:",
+            error
           );
+
+          status.className =
+            "status error";
+
+          status.textContent =
+            error.message ||
+            "Ocorreu um erro ao enviar a mensagem. Tente novamente.";
+
+        } finally {
+
+          button.disabled = false;
+          button.textContent = "Enviar";
+
         }
 
-        status.className = "status success";
-        status.textContent =
-          "Mensagem enviada com sucesso. Obrigado pelo seu contacto!";
-
-        form.reset();
-
-        if (
-          typeof turnstile !== "undefined" &&
-          typeof turnstile.reset === "function"
-        ) {
-          turnstile.reset();
-        }
-
-      } catch (error) {
-        console.error(
-          "Erro ao enviar contacto:",
-          error
-        );
-
-        status.className = "status error";
-        status.textContent =
-          error.message ||
-          "Ocorreu um erro ao enviar a mensagem. Tente novamente.";
       }
-
-      button.disabled = false;
-      button.textContent = "Enviar";
-    });
+    );
   </script>
 
+  <!-- Cloudflare Turnstile -->
   <script
     src="https://challenges.cloudflare.com/turnstile/v0/api.js"
     async
-    defer>
-  </script>
+    defer
+  ></script>
 
 </body>
 </html>
-```
+
