@@ -1,40 +1,70 @@
 import fs from "fs";
-import path from "path";
 
 const SITE_URL = "https://jotorresfnai.github.io";
+const SUPABASE_URL = "https://scmorocdbdyvnxodpwyi.supabase.co";
+const SUPABASE_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  "sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM";
+
+const headers = {
+  apikey: SUPABASE_KEY,
+  Authorization: `Bearer ${SUPABASE_KEY}`,
+  Accept: "application/json",
+};
+
+async function fetchPublishedProperties() {
+  const url =
+    `${SUPABASE_URL}/rest/v1/imoveis` +
+    `?select=slug,publicado` +
+    `&publicado=eq.true` +
+    `&slug=not.is.null`;
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(
+      `Supabase respondeu ${response.status}: ${await response.text()}`,
+    );
+  }
+
+  return response.json();
+}
+
+function xmlEscape(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 const urls = [
   `${SITE_URL}/`,
   `${SITE_URL}/imoveis.html`,
+  `${SITE_URL}/sobre.html`,
+  `${SITE_URL}/contacto.html`,
 ];
 
-const propertiesDir = path.resolve("imoveis");
-if (fs.existsSync(propertiesDir)) {
-  for (const entry of fs.readdirSync(propertiesDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const indexFile = path.join(propertiesDir, entry.name, "index.html");
-    if (fs.existsSync(indexFile)) {
-      urls.push(`${SITE_URL}/imoveis/${entry.name}/`);
-    }
-  }
+const properties = await fetchPublishedProperties();
+
+for (const property of properties) {
+  const slug = String(property.slug || "").trim();
+  if (!slug) continue;
+  urls.push(`${SITE_URL}/imovel.html?slug=${encodeURIComponent(slug)}`);
 }
 
-const uniqueUrls = [...new Set(urls)].sort((a, b) => {
-  if (a === `${SITE_URL}/`) return -1;
-  if (b === `${SITE_URL}/`) return 1;
-  if (a === `${SITE_URL}/imoveis.html`) return -1;
-  if (b === `${SITE_URL}/imoveis.html`) return 1;
-  return a.localeCompare(b);
-});
+const uniqueUrls = [...new Set(urls)];
 
-const xmlEscape = value => value
-  .replace(/&/g, "&amp;")
-  .replace(/</g, "&lt;")
-  .replace(/>/g, "&gt;")
-  .replace(/\"/g, "&quot;")
-  .replace(/'/g, "&apos;");
-
-const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${uniqueUrls.map(url => `  <url>\n    <loc>${xmlEscape(url)}</loc>\n  </url>`).join("\n")}\n</urlset>\n`;
+const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${uniqueUrls
+  .map(
+    (url) =>
+      `  <url>\n    <loc>${xmlEscape(url)}</loc>\n  </url>`,
+  )
+  .join("\n")}\n</urlset>\n`;
 
 fs.writeFileSync("sitemap.xml", xml, "utf8");
+
 console.log(`Sitemap gerado com ${uniqueUrls.length} URLs.`);
+console.log(`Imóveis publicados incluídos: ${properties.length}`);
 console.log(uniqueUrls.join("\n"));
