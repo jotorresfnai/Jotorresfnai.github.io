@@ -15,6 +15,10 @@ function fixHtml(file) {
   let html = fs.readFileSync(path.join(ROOT, file), 'utf8');
   const before = html;
 
+  if (!/<link[^>]+rel=["'](?:shortcut )?icon["'][^>]+href=["']\/?favicon\.svg["']/i.test(html)) {
+    html = html.replace('</head>', '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n  <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml">\n</head>');
+  }
+
   html = html.replace(/\s*<[^>]+class=["'][^"']*\bfnai-watermark\b[^"']*["'][^>]*>\s*FNAI\s*<\/[^>]+>/gi, '');
   html = html.replace(/\n\s*\/\*[\s\S]*?FNAI\s+WATERMARK[\s\S]*?\*\/\s*\.fnai-watermark\s*\{[\s\S]*?\}\s*/gi, '\n');
 
@@ -61,9 +65,10 @@ function fixHtml(file) {
     html = html.replace(/<style id="jo-gallery-thumbnails-restore">[\s\S]*?<\/style>/i, '');
     html = html.replace(/<style id="jo-gallery-thumbnails-restore-v2">[\s\S]*?<\/style>/i, '');
     html = html.replace(/<style id="jo-gallery-thumbnails-restore-v3">[\s\S]*?<\/style>/i, '');
-    html = html.replace(/<style id="jo-gallery-thumbnails-restore-v3-js">[\s\S]*?<\/style>/i, '');
     html = html.replace(/<style id="jo-gallery-thumbnails-restore-final">[\s\S]*?<\/style>/i, '');
-    html = html.replace('</head>', `${css}\n</head>`);
+    if (!/jo-gallery-thumbnails-restore-final/.test(html)) {
+      html = html.replace('</head>', `${css}\n</head>`);
+    }
 
     const js = `<script id="jo-gallery-thumbnails-restore-final-js">
 (function(){
