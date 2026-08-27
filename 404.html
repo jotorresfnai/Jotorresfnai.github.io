@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecionar | Jo Torres</title>
+<meta name="robots" content="noindex">
+</head>
+<body>
+<script>
+(function(){
+  const path=location.pathname.replace(/^\/+|\/+$/g,'');
+  const prefix='imoveis/';
+  if(path.toLowerCase().startsWith(prefix) && path.length>prefix.length){
+    const slug=path.slice(prefix.length).replace(/\/$/,'');
+    location.replace('/imovel.html?slug='+encodeURIComponent(slug));
+    return;
+  }
+  document.body.innerHTML='<main style="font-family:Arial,sans-serif;padding:40px;text-align:center"><h1>Página não encontrada</h1><p><a href="/">Voltar ao início</a></p></main>';
+})();
+</script>
+</body>
+</html>
