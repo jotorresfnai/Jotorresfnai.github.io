@@ -33,58 +33,5 @@ function render(p,photos){const rows=photos.filter(x=>x.url);if(!rows.length&&p.
 function initGallery(rows){let i=0;const main=document.getElementById('mainImage');const thumbs=[...document.querySelectorAll('.thumb')];const show=n=>{i=(n+rows.length)%rows.length;main.src=rows[i].url;thumbs.forEach((b,k)=>b.classList.toggle('active',k===i))};document.getElementById('prev').onclick=()=>show(i-1);document.getElementById('next').onclick=()=>show(i+1);thumbs.forEach(b=>b.onclick=()=>show(Number(b.dataset.i)))}
 (function(){const t=document.querySelector('.mobile-menu-toggle'),n=document.querySelector('.navigation');if(!t||!n)return;t.onclick=()=>{const o=n.classList.toggle('mobile-open');t.setAttribute('aria-expanded',String(o))};n.querySelectorAll('a').forEach(a=>a.onclick=()=>n.classList.remove('mobile-open'))})();load();
 </script>
-
-
-
-
-
-<script id="jo-gallery-thumbnails-restore-final-js">
-(function(){
-  const API='https://scmorocdbdyvnxodpwyi.supabase.co';
-  const KEY='sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM';
-  const slug=new URLSearchParams(location.search).get('slug');
-  if(!slug)return;
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  async function json(url){const r=await fetch(url,{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});if(!r.ok)throw new Error('Supabase '+r.status);return r.json();}
-  async function ensure(){
-    const app=document.getElementById('app');
-    const gallery=app?.querySelector('.gallery');
-    if(!app||!gallery)return;
-    let thumbs=gallery.querySelector('.thumbs');
-    let wrap=app.querySelector('.jo-gallery-wrap');
-    if(!wrap){wrap=document.createElement('div');wrap.className='jo-gallery-wrap';gallery.parentNode.insertBefore(wrap,gallery);wrap.appendChild(gallery);}
-    if(thumbs){
-      if(thumbs.dataset.moved!=='1'){
-        const out=document.createElement('div');out.className='jo-thumbs-out';
-        while(thumbs.firstChild)out.appendChild(thumbs.firstChild);
-        thumbs.remove();wrap.appendChild(out);out.dataset.moved='1';
-      }
-      return;
-    }
-    const props=await json(API+'/rest/v1/imoveis?select=id,titulo,imagem_capa&slug=eq.'+encodeURIComponent(slug)+'&publicado=eq.true&limit=1');
-    if(!props.length)return;
-    const photos=await json(API+'/rest/v1/imovel_fotos?select=ordem,url&imovel_id=eq.'+encodeURIComponent(props[0].id)+'&order=ordem.asc');
-    const rows=[];
-    if(props[0].imagem_capa)rows.push({url:props[0].imagem_capa});
-    for(const p of photos){if(p.url&&!rows.some(x=>x.url===p.url))rows.push(p);}
-    if(rows.length<2)return;
-    const out=document.createElement('div');out.className='jo-thumbs-out';
-    out.innerHTML=rows.map((x,i)=>'<button type="button" class="thumb '+(i===0?'active':'')+'" data-i="'+i+'"><img src="'+esc(x.url)+'" alt="'+esc(props[0].titulo||'Imóvel')+' - fotografia '+(i+1)+'"></button>').join('');
-    wrap.appendChild(out);
-    const main=document.getElementById('mainImage');
-    const buttons=[...out.querySelectorAll('.thumb')];
-    let index=0;
-    const show=n=>{index=(n+rows.length)%rows.length;if(main)main.src=rows[index].url;buttons.forEach((b,k)=>b.classList.toggle('active',k===index));};
-    buttons.forEach((b,k)=>b.addEventListener('click',()=>show(k)));
-    if(!gallery.querySelector('.jo-fallback-controls')){
-      const controls=document.createElement('div');controls.className='controls jo-fallback-controls';controls.innerHTML='<button type="button" aria-label="Fotografia anterior"><i class="fa-solid fa-chevron-left"></i></button><button type="button" aria-label="Fotografia seguinte"><i class="fa-solid fa-chevron-right"></i></button>';
-      gallery.appendChild(controls);
-      controls.children[0].onclick=()=>show(index-1);controls.children[1].onclick=()=>show(index+1);
-    }
-  }
-  let tries=0;const timer=setInterval(()=>{ensure().catch(e=>console.warn('Galeria do imóvel:',e));if(++tries>60)clearInterval(timer)},250);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>ensure().catch(()=>{}));else ensure().catch(()=>{});
-})();
-</script>
 </body>
 </html>
