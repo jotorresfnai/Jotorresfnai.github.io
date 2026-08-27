@@ -54,15 +54,15 @@ function fixHtml(file) {
     }
   }
 
-  // Restore the gallery thumbnail strip outside the main image with a light background.
+  // Restore the requested detail-gallery layout: thumbnails outside the main photo, on a light strip.
   if (file === 'imovel.html') {
     const css = `<style id="jo-gallery-thumbnails-restore">
-.hero-image{overflow:visible!important;margin-bottom:92px!important;}
-.thumbs{position:absolute!important;left:0!important;right:0!important;bottom:-78px!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;padding:10px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:40!important;}
-.thumbs button{width:72px!important;height:52px!important;flex:0 0 72px!important;background:#fff!important;border:2px solid #e1e5e6!important;border-radius:7px!important;opacity:1!important;padding:0!important;overflow:hidden!important;}
-.thumbs button.active{border-color:var(--gold,#c9a34a)!important;}
-.thumbs img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
-@media(max-width:760px){.hero-image{margin-bottom:82px!important;}.thumbs{bottom:-68px!important;left:0!important;right:0!important;padding:8px!important;}.thumbs button{width:58px!important;height:44px!important;flex-basis:58px!important;}}
+.gallery{overflow:visible!important;margin-bottom:84px!important;}
+.thumbs{position:absolute!important;left:0!important;right:0!important;bottom:-72px!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;padding:10px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:40!important;}
+.thumbs .thumb{width:72px!important;height:52px!important;flex:0 0 72px!important;background:#fff!important;border:2px solid #e1e5e6!important;border-radius:7px!important;opacity:1!important;padding:0!important;overflow:hidden!important;}
+.thumbs .thumb.active{border-color:var(--gold,#c9a34a)!important;}
+.thumbs .thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
+@media(max-width:760px){.gallery{margin-bottom:78px!important;}.thumbs{bottom:-66px!important;padding:8px!important;}.thumbs .thumb{width:58px!important;height:44px!important;flex-basis:58px!important;}}
 </style>`;
     if (!/jo-gallery-thumbnails-restore/.test(html)) {
       html = html.replace('</head>', `${css}\n</head>`);
