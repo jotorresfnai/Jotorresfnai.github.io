@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
->
-
-  <url>
-    <loc>https://jotorresfnai.github.io/</loc>
-    <lastmod>2026-08-18</lastmod>
-  </url>
-  <url>
-    <loc>https://jotorresfnai.github.io/imoveis.html</loc>
-    <lastmod>2026-08-18</lastmod>
-  </url>
-  <url>
-    <loc>https://jotorresfnai.github.io/imoveis/moradia-v4-correlha-ponte-de-lima-com-piscina/</loc>
-    <lastmod>2026-08-18</lastmod>
-  </url>
-  <url>
-    <loc>https://jotorresfnai.github.io/imoveis/moradia-t4-de-luxo/</loc>
-    <lastmod>2026-08-18</lastmod>
-  </url>
-  <url>
-    <loc>https://jotorresfnai.github.io/imoveis/quinta-t8-deocriste/</loc>
-    <lastmod>2026-08-18</lastmod>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jotorresfnai.github.io/</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imoveis.html</loc></url>
+  <url><loc>https://jotorresfnai.github.io/sobre.html</loc></url>
+  <url><loc>https://jotorresfnai.github.io/contacto.html</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=apartamento-t2-viana-do-castelo</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=duas-moradias-t3-res-do-chao-chave-na-mao-viana-do-castelo</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=luxuosa-moradia-t4-quinta-da-barca-esposende</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-do-vale-oportunidade-unica-em-beiral-do-lima-ponte-de-lima</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-t3-chave-na-mao</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-t3-com-suite-arcos-de-valdevez</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-t3-sampriz</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-t4-1-no-centro-de-lanheses</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-t4-de-luxo</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-v3-em-fase-de-contrucao</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=moradia-v4-correlha-ponte-de-lima-com-piscina</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=quinta-com-producao-para-venda-celorico-de-basto</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=quinta-t8-deocriste</loc></url>
+  <url><loc>https://jotorresfnai.github.io/imovel.html?slug=t3-duplex-residence-liceal-arcos-de-valdevez</loc></url>
 </urlset>
