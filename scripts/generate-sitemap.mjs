@@ -1,5 +1,6 @@
 import fs from "fs";
 
+// Sitemap dinâmico: a fonte dos imóveis é o Supabase, não as pastas do GitHub.
 const SITE_URL = "https://jotorresfnai.github.io";
 const SUPABASE_URL = "https://scmorocdbdyvnxodpwyi.supabase.co";
 const SUPABASE_KEY =
