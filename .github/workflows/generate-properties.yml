@@ -1,25 +1,20 @@
-name: Gerar páginas dos imóveis
+name: Atualizar sitemap
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
   push:
     branches:
       - main
     paths:
-      - "scripts/generate-properties.mjs"
-      - "scripts/add-gallery-slideshow.mjs"
       - "scripts/generate-sitemap.mjs"
       - ".github/workflows/generate-properties.yml"
-  workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"
 
 permissions:
   contents: write
   pages: write
   id-token: write
-
-env:
-  FORCE_REGENERATION: "true"
 
 jobs:
   generate:
@@ -36,29 +31,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verificar geradores
+      - name: Verificar gerador do sitemap
         run: |
-          test -f scripts/generate-properties.mjs
           test -f scripts/generate-sitemap.mjs
-          test -f scripts/add-gallery-slideshow.mjs
-          node --check scripts/generate-properties.mjs
           node --check scripts/generate-sitemap.mjs
-          node --check scripts/add-gallery-slideshow.mjs
 
-      - name: Gerar páginas dos imóveis
+      - name: Gerar sitemap a partir do Supabase
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          node scripts/generate-properties.mjs
-          node scripts/add-gallery-slideshow.mjs
-
-      - name: Gerar sitemap
         run: node scripts/generate-sitemap.mjs
 
-      - name: Validar páginas e sitemap
+      - name: Validar sitemap
         run: |
           test -f sitemap.xml
-          test -f imoveis.html
           node - <<'NODE'
           const fs = require('fs');
           const xml = fs.readFileSync('sitemap.xml', 'utf8');
@@ -68,13 +53,10 @@ jobs:
           if (new Set(urls).size !== urls.length) throw new Error('Sitemap contém URLs duplicados');
           for (const url of urls) {
             if (!url.startsWith('https://jotorresfnai.github.io/')) throw new Error(`URL fora do domínio: ${url}`);
+            if (/\/imoveis\/[^/]+\/$/.test(url)) throw new Error(`URL antiga encontrada: ${url}`);
           }
-          const legacy = urls.filter(url => /\/imoveis\/[^/]+\/$/.test(url));
-          if (legacy.length) throw new Error(`Sitemap contém ${legacy.length} URLs antigas /imoveis/<slug>/`);
           console.log(`Sitemap válido: ${urls.length} URLs.`);
           NODE
-          echo "Páginas geradas:"
-          find imoveis -mindepth 2 -maxdepth 2 -name index.html | sort
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
