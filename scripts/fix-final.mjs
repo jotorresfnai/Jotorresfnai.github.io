@@ -49,7 +49,7 @@ function fixHtml(file) {
   }
 
   if (file === 'imovel.html') {
-    const css = `<style id="jo-gallery-thumbnails-restore-v3">
+    const css = `<style id="jo-gallery-thumbnails-restore-final">
 .jo-gallery-wrap{width:100%;position:relative;}
 .jo-gallery-wrap>.gallery{margin:0!important;overflow:visible!important;}
 .jo-gallery-wrap>.jo-thumbs-out{position:static!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;width:100%!important;min-height:72px!important;padding:10px!important;margin-top:12px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:auto!important;}
@@ -61,42 +61,60 @@ function fixHtml(file) {
     html = html.replace(/<style id="jo-gallery-thumbnails-restore">[\s\S]*?<\/style>/i, '');
     html = html.replace(/<style id="jo-gallery-thumbnails-restore-v2">[\s\S]*?<\/style>/i, '');
     html = html.replace(/<style id="jo-gallery-thumbnails-restore-v3">[\s\S]*?<\/style>/i, '');
+    html = html.replace(/<style id="jo-gallery-thumbnails-restore-v3-js">[\s\S]*?<\/style>/i, '');
+    html = html.replace(/<style id="jo-gallery-thumbnails-restore-final">[\s\S]*?<\/style>/i, '');
     html = html.replace('</head>', `${css}\n</head>`);
 
-    const js = `<script id="jo-gallery-thumbnails-restore-v3-js">
+    const js = `<script id="jo-gallery-thumbnails-restore-final-js">
 (function(){
-  function moveThumbs(){
+  const API='https://scmorocdbdyvnxodpwyi.supabase.co';
+  const KEY='sb_publishable_W28Qdq8POfYXjCu3BwUxPQ_2z2o2GcM';
+  const slug=new URLSearchParams(location.search).get('slug');
+  if(!slug)return;
+  const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
+  async function json(url){const r=await fetch(url,{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});if(!r.ok)throw new Error('Supabase '+r.status);return r.json();}
+  async function ensure(){
     const app=document.getElementById('app');
-    if(!app)return;
-    const gallery=app.querySelector('.gallery');
-    const thumbs=gallery?.querySelector('.thumbs');
-    if(!gallery||!thumbs)return;
-    if(thumbs.dataset.moved==='1')return;
+    const gallery=app?.querySelector('.gallery');
+    if(!app||!gallery)return;
+    let thumbs=gallery.querySelector('.thumbs');
     let wrap=app.querySelector('.jo-gallery-wrap');
-    if(!wrap){
-      wrap=document.createElement('div');
-      wrap.className='jo-gallery-wrap';
-      gallery.parentNode.insertBefore(wrap,gallery);
-      wrap.appendChild(gallery);
+    if(!wrap){wrap=document.createElement('div');wrap.className='jo-gallery-wrap';gallery.parentNode.insertBefore(wrap,gallery);wrap.appendChild(gallery);}
+    if(thumbs){
+      if(thumbs.dataset.moved!=='1'){
+        const out=document.createElement('div');out.className='jo-thumbs-out';
+        while(thumbs.firstChild)out.appendChild(thumbs.firstChild);
+        thumbs.remove();wrap.appendChild(out);out.dataset.moved='1';
+      }
+      return;
     }
-    thumbs.classList.add('jo-thumbs-out');
-    wrap.appendChild(thumbs);
-    thumbs.dataset.moved='1';
+    const props=await json(API+'/rest/v1/imoveis?select=id,titulo,imagem_capa&slug=eq.'+encodeURIComponent(slug)+'&publicado=eq.true&limit=1');
+    if(!props.length)return;
+    const photos=await json(API+'/rest/v1/imovel_fotos?select=ordem,url&imovel_id=eq.'+encodeURIComponent(props[0].id)+'&order=ordem.asc');
+    const rows=[];
+    if(props[0].imagem_capa)rows.push({url:props[0].imagem_capa});
+    for(const p of photos){if(p.url&&!rows.some(x=>x.url===p.url))rows.push(p);}
+    if(rows.length<2)return;
+    const out=document.createElement('div');out.className='jo-thumbs-out';
+    out.innerHTML=rows.map((x,i)=>'<button type="button" class="thumb '+(i===0?'active':'')+'" data-i="'+i+'"><img src="'+esc(x.url)+'" alt="'+esc(props[0].titulo||'Imóvel')+' - fotografia '+(i+1)+'"></button>').join('');
+    wrap.appendChild(out);
+    const main=document.getElementById('mainImage');
+    const buttons=[...out.querySelectorAll('.thumb')];
+    let index=0;
+    const show=n=>{index=(n+rows.length)%rows.length;if(main)main.src=rows[index].url;buttons.forEach((b,k)=>b.classList.toggle('active',k===index));};
+    buttons.forEach((b,k)=>b.addEventListener('click',()=>show(k)));
+    if(!gallery.querySelector('.jo-fallback-controls')){
+      const controls=document.createElement('div');controls.className='controls jo-fallback-controls';controls.innerHTML='<button type="button" aria-label="Fotografia anterior"><i class="fa-solid fa-chevron-left"></i></button><button type="button" aria-label="Fotografia seguinte"><i class="fa-solid fa-chevron-right"></i></button>';
+      gallery.appendChild(controls);
+      controls.children[0].onclick=()=>show(index-1);controls.children[1].onclick=()=>show(index+1);
+    }
   }
-  function watch(){
-    const app=document.getElementById('app');
-    if(!app)return;
-    moveThumbs();
-    const observer=new MutationObserver(function(){moveThumbs();});
-    observer.observe(app,{childList:true,subtree:true});
-    setTimeout(moveThumbs,100);
-    setTimeout(moveThumbs,500);
-    setTimeout(moveThumbs,1500);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch);else watch();
+  let tries=0;const timer=setInterval(()=>{ensure().catch(e=>console.warn('Galeria do imóvel:',e));if(++tries>60)clearInterval(timer)},250);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>ensure().catch(()=>{}));else ensure().catch(()=>{});
 })();
 </script>`;
     html = html.replace(/<script id="jo-gallery-thumbnails-restore-v3-js">[\s\S]*?<\/script>/i, '');
+    html = html.replace(/<script id="jo-gallery-thumbnails-restore-final-js">[\s\S]*?<\/script>/i, '');
     html = html.replace('</body>', `${js}\n</body>`);
   }
 
