@@ -54,17 +54,18 @@ function fixHtml(file) {
     }
   }
 
-  // Restore the requested detail-gallery layout: thumbnails outside the main photo, on a light strip.
+  // Restore the detail gallery thumbnails outside the main image with a light background.
   if (file === 'imovel.html') {
-    const css = `<style id="jo-gallery-thumbnails-restore">
-.gallery{overflow:visible!important;margin-bottom:84px!important;}
-.thumbs{position:absolute!important;left:0!important;right:0!important;bottom:-72px!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;padding:10px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:40!important;}
-.thumbs .thumb{width:72px!important;height:52px!important;flex:0 0 72px!important;background:#fff!important;border:2px solid #e1e5e6!important;border-radius:7px!important;opacity:1!important;padding:0!important;overflow:hidden!important;}
-.thumbs .thumb.active{border-color:var(--gold,#c9a34a)!important;}
-.thumbs .thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
-@media(max-width:760px){.gallery{margin-bottom:78px!important;}.thumbs{bottom:-66px!important;padding:8px!important;}.thumbs .thumb{width:58px!important;height:44px!important;flex-basis:58px!important;}}
+    const css = `<style id="jo-gallery-thumbnails-restore-v2">
+.gallery{overflow:visible!important;margin-bottom:96px!important;}
+.gallery > .thumbs{position:absolute!important;left:0!important;right:0!important;bottom:-84px!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;padding:10px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:40!important;min-height:72px!important;visibility:visible!important;opacity:1!important;}
+.gallery > .thumbs .thumb{width:72px!important;height:52px!important;flex:0 0 72px!important;background:#f7f5f0!important;border:2px solid #e1e5e6!important;border-radius:7px!important;opacity:1!important;padding:0!important;overflow:hidden!important;display:block!important;visibility:visible!important;}
+.gallery > .thumbs .thumb.active{border-color:var(--gold,#c9a34a)!important;}
+.gallery > .thumbs .thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;visibility:visible!important;opacity:1!important;}
+@media(max-width:760px){.gallery{margin-bottom:82px!important;}.gallery > .thumbs{bottom:-70px!important;padding:8px!important;min-height:60px!important;}.gallery > .thumbs .thumb{width:58px!important;height:44px!important;flex-basis:58px!important;}}
 </style>`;
-    if (!/jo-gallery-thumbnails-restore/.test(html)) {
+    html = html.replace(/<style id="jo-gallery-thumbnails-restore">[\s\S]*?<\/style>/i, '');
+    if (!/jo-gallery-thumbnails-restore-v2/.test(html)) {
       html = html.replace('</head>', `${css}\n</head>`);
     }
   }
