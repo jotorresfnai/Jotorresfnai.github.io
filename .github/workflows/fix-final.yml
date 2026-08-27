@@ -15,11 +15,25 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/fix-final.mjs
+      - name: Remover fallback quebrado do slideshow
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("imovel.html")
+          if path.exists():
+              html = path.read_text(encoding="utf-8")
+              html = re.sub(r'\s*<style id="jo-gallery-thumbnails-restore(?:-v3|-final)?">[\s\S]*?</style>\s*', '\n', html)
+              html = re.sub(r'\s*<script id="jo-gallery-thumbnails-restore(?:-v3-js|-final-js)">[\s\S]*?</script>\s*', '\n', html)
+              path.write_text(html, encoding="utf-8")
+              print("Fallback de galeria removido de imovel.html")
+          PY
       - name: Commit fixes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html imoveis.html imovel.html imoveis scripts/fix-final.mjs .github/workflows/fix-final.yml || true
           git diff --cached --quiet && exit 0
-          git commit -m "fix: restaurar watermark transparente e alinhamento dos cards"
+          git commit -m "fix: restaurar slideshow original sem loop"
           git push
