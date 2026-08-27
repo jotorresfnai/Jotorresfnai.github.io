@@ -18,15 +18,7 @@
 
 
 
-<style id="jo-gallery-thumbnails-restore-final">
-.jo-gallery-wrap{width:100%;position:relative;}
-.jo-gallery-wrap>.gallery{margin:0!important;overflow:visible!important;}
-.jo-gallery-wrap>.jo-thumbs-out{position:static!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;width:100%!important;min-height:72px!important;padding:10px!important;margin-top:12px!important;background:#fff!important;border:1px solid var(--border,#e5e2db)!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.06)!important;backdrop-filter:none!important;z-index:auto!important;}
-.jo-gallery-wrap>.jo-thumbs-out .thumb{width:72px!important;height:52px!important;flex:0 0 72px!important;padding:0!important;background:#f7f5f0!important;border:2px solid #e1e5e6!important;border-radius:7px!important;overflow:hidden!important;opacity:1!important;visibility:visible!important;display:block!important;}
-.jo-gallery-wrap>.jo-thumbs-out .thumb.active{border-color:var(--gold,#c9a34a)!important;}
-.jo-gallery-wrap>.jo-thumbs-out .thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;opacity:1!important;visibility:visible!important;}
-@media(max-width:760px){.jo-gallery-wrap>.jo-thumbs-out{min-height:60px!important;padding:8px!important;margin-top:10px!important}.jo-gallery-wrap>.jo-thumbs-out .thumb{width:58px!important;height:44px!important;flex-basis:58px!important;}}
-</style>
+
 </head>
 <body>
 <header class="header"><a href="index.html" class="logo"><div class="logo-circle">JT</div><div class="logo-text"><strong>JO TORRES</strong><span>CONSULTOR IMOBILIÁRIO</span></div></a><button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><nav class="navigation"><a href="index.html">Início</a><a href="imoveis.html">Imóveis</a><a href="sobre.html">Sobre mim</a><a href="contacto.html">Contacto</a><a href="https://wa.me/41792601145" target="_blank" rel="noopener" class="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a></nav></header>
@@ -41,6 +33,7 @@ function render(p,photos){const rows=photos.filter(x=>x.url);if(!rows.length&&p.
 function initGallery(rows){let i=0;const main=document.getElementById('mainImage');const thumbs=[...document.querySelectorAll('.thumb')];const show=n=>{i=(n+rows.length)%rows.length;main.src=rows[i].url;thumbs.forEach((b,k)=>b.classList.toggle('active',k===i))};document.getElementById('prev').onclick=()=>show(i-1);document.getElementById('next').onclick=()=>show(i+1);thumbs.forEach(b=>b.onclick=()=>show(Number(b.dataset.i)))}
 (function(){const t=document.querySelector('.mobile-menu-toggle'),n=document.querySelector('.navigation');if(!t||!n)return;t.onclick=()=>{const o=n.classList.toggle('mobile-open');t.setAttribute('aria-expanded',String(o))};n.querySelectorAll('a').forEach(a=>a.onclick=()=>n.classList.remove('mobile-open'))})();load();
 </script>
+
 
 <script id="jo-gallery-thumbnails-restore-final-js">
 (function(){
