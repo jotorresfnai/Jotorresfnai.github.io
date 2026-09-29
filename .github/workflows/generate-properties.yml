@@ -1,4 +1,4 @@
-name: Atualizar sitemap
+name: Gerar páginas dos imóveis
 
 on:
   workflow_dispatch:
@@ -8,13 +8,11 @@ on:
     branches:
       - main
     paths:
-      - "scripts/generate-sitemap.mjs"
+      - "scripts/generate-properties.mjs"
       - ".github/workflows/generate-properties.yml"
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   generate:
@@ -31,48 +29,45 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verificar gerador do sitemap
+      - name: Verificar gerador
         run: |
-          test -f scripts/generate-sitemap.mjs
-          node --check scripts/generate-sitemap.mjs
+          test -f scripts/generate-properties.mjs
+          node --check scripts/generate-properties.mjs
 
-      - name: Gerar sitemap a partir do Supabase
+      - name: Gerar páginas dos imóveis
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: node scripts/generate-sitemap.mjs
+        run: node scripts/generate-properties.mjs
 
-      - name: Validar sitemap
+      - name: Validar páginas geradas
         run: |
           test -f sitemap.xml
+          test -d imoveis
+          test -f fnai_logo_transparente.png
           node - <<'NODE'
           const fs = require('fs');
-          const xml = fs.readFileSync('sitemap.xml', 'utf8');
-          if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) throw new Error('Sitemap XML inválido');
-          if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) throw new Error('Namespace do sitemap inválido');
-          const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
-          if (new Set(urls).size !== urls.length) throw new Error('Sitemap contém URLs duplicados');
-          for (const url of urls) {
-            if (!url.startsWith('https://jotorresfnai.github.io/')) throw new Error(`URL fora do domínio: ${url}`);
-            if (/\/imoveis\/[^/]+\/$/.test(url)) throw new Error(`URL antiga encontrada: ${url}`);
+          const path = require('path');
+          const root = 'imoveis';
+          const dirs = fs.readdirSync(root, { withFileTypes: true }).filter(e => e.isDirectory());
+          if (!dirs.length) throw new Error('Nenhum imóvel foi gerado');
+          for (const dir of dirs) {
+            const file = path.join(root, dir.name, 'index.html');
+            if (!fs.existsSync(file)) throw new Error(`Página em falta: ${file}`);
+            const html = fs.readFileSync(file, 'utf8');
+            if (!html.includes('gallery-watermark')) throw new Error(`Watermark FNAI em falta: ${file}`);
+            if (!html.includes('/fnai_logo_transparente.png')) throw new Error(`Logo FNAI em falta: ${file}`);
           }
-          console.log(`Sitemap válido: ${urls.length} URLs.`);
+          console.log(`Validação concluída: ${dirs.length} páginas de imóveis.`);
           NODE
 
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Preparar site para publicação
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-  publish:
-    needs: generate
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publicar no GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Guardar páginas geradas no Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add imoveis sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração para guardar."
+            exit 0
+          fi
+          git commit -m "chore: regenerar páginas dos imóveis"
+          git push
