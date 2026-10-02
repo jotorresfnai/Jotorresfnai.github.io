@@ -1,4 +1,5 @@
 name: Publicar site no GitHub Pages
+# Atualização forçada da publicação — 2026-10-02
 
 on:
   push:
